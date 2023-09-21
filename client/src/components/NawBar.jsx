@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
-import { SHOP_ROUTE } from '../utils/constants';
+import { LOGIN_ROUTE, SHOP_ROUTE } from '../utils/constants';
 
 import { observer } from 'mobx-react-lite'; // Оновлено імпорт
 
@@ -20,21 +20,22 @@ const NavBar = observer(() => {
           </NavLink>
           {user.isAuth ? (
             <Nav className="ml-auto" style={{ color: 'white' }}>
-              <Button variant="outline-light">Адміністратору</Button>{' '}
-              <Button variant="outline-light" className="ml-2">
+              <Button className="ml-2" variant="outline-light">
                 Вийти
               </Button>{' '}
             </Nav>
           ) : (
             <Nav className="ml-auto" style={{ color: 'white' }}>
-              <Button
-                variant="outline-light"
-                onClick={() => {
-                  user.setIsAuth(true);
-                }}
-              >
-                Авторизація
-              </Button>{' '}
+              <NavLink to={LOGIN_ROUTE}>
+                <Button
+                  variant="outline-light"
+                  onClick={() => {
+                    user.setIsAuth(true);
+                  }}
+                >
+                  Авторизація
+                </Button>{' '}
+              </NavLink>
             </Nav>
           )}
         </Container>
