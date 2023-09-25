@@ -9,37 +9,69 @@ export default class DeviceStore {
     this._brands = [
       { id: 1, name: 'Samsung' },
       { id: 2, name: 'Apple' },
+      { id: 3, name: 'Lenovo' },
+      { id: 4, name: 'Asus' },
     ];
     this._devices = [
       {
         id: 1,
         name: 'Iphone 14 pro',
-        price: 25000,
+        price: 50000,
         rating: 5,
         img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
       },
       {
         id: 2,
         name: 'Iphone 14 pro',
-        price: 25000,
+        price: 50000,
         rating: 5,
         img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
       },
       {
         id: 3,
         name: 'Iphone 14 pro',
-        price: 25000,
+        price: 50000,
         rating: 5,
         img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
       },
       {
         id: 4,
         name: 'Iphone 14 pro',
-        price: 25000,
+        price: 50000,
+        rating: 5,
+        img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
+      },
+      {
+        id: 5,
+        name: 'Iphone 14 pro',
+        price: 50000,
+        rating: 5,
+        img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
+      },
+      {
+        id: 6,
+        name: 'Iphone 14 pro',
+        price: 50000,
+        rating: 5,
+        img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
+      },
+      {
+        id: 7,
+        name: 'Iphone 14 pro',
+        price: 50000,
+        rating: 5,
+        img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
+      },
+      {
+        id: 8,
+        name: 'Iphone 14 pro',
+        price: 50000,
         rating: 5,
         img: 'https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iphone/iphone-14-pro-max-colors.png',
       },
     ];
+    this._selectedType = {};
+    this._selectedBrand = {};
 
     makeAutoObservable(this);
   }
@@ -55,7 +87,12 @@ export default class DeviceStore {
   setDevices(devices) {
     this._devices = devices;
   }
-
+  setSelectedType(type) {
+    this._selectedType = type;
+  }
+  setSelectedBrand(brand) {
+    this._selectedBrand = brand;
+  }
   get types() {
     return this._types;
   }
@@ -66,5 +103,11 @@ export default class DeviceStore {
 
   get devices() {
     return this._devices;
+  }
+  get selectedType() {
+    return this._selectedType;
+  }
+  get selectedBrand() {
+    return this._selectedBrand;
   }
 }
