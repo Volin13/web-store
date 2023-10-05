@@ -21,20 +21,21 @@ const Auth = observer(() => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const click = () => async () => {
+  const click = async () => {
     try {
-      let data;
+      let userData;
       if (isLogin) {
-        data = await login(email, password);
+        userData = await login(email, password);
       } else {
-        data = await registration(email, password);
-        console.log(data);
+        userData = await registration(email, password);
       }
-      user.setUser(user);
+      console.log(userData);
+      user.setUser(userData);
       user.setIsAuth(true);
       navigate(SHOP_ROUTE);
     } catch (e) {
-      alert(e.response.data.message);
+      alert(e.response?.data?.message) ||
+        console.error('An error occurred:', e);
     }
   };
   return (

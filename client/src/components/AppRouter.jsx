@@ -5,7 +5,7 @@ import { authRoutes, publicRoutes } from '../routes';
 
 const AppRouter = () => {
   const { user } = useContext(Context);
-
+  console.log(user.isAuth);
   return (
     <Routes>
       {user.isAuth &&
@@ -15,7 +15,6 @@ const AppRouter = () => {
       {publicRoutes.map(({ path, Component }) => (
         <Route key={path} path={path} element={<Component />} match="full" />
       ))}
-      {/* <Route path="*" element={<Navigate to={SHOP_ROUTE} />} /> */}
     </Routes>
   );
 };
