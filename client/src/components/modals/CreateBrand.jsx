@@ -6,7 +6,7 @@ import { createBrand } from '../../http/deviceApi';
 const CreateBrand = ({ show, onHide }) => {
   const [value, setValue] = useState('');
   const addBrand = () => {
-    createBrand().then()(data => {
+    createBrand({ name: value }).then(data => {
       setValue('');
       onHide();
     });
@@ -24,7 +24,7 @@ const CreateBrand = ({ show, onHide }) => {
             type="text"
             placeholder="Введіть назву типу"
             value={value}
-            onClick={e => setValue(e.target.value)}
+            onChange={e => setValue(e.target.value)}
           />
         </Form>
       </Modal.Body>

@@ -14,11 +14,12 @@ const CreateDevice = observer(({ show, onHide }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
-
+  console.log(info);
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
-  }, [device]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addInfo = () => {
     setInfo([...info, { title: '', description: '', number: Date.now() }]);
@@ -28,9 +29,11 @@ const CreateDevice = observer(({ show, onHide }) => {
   };
 
   const changeInfo = (key, value, number) => {
-    setInfo(info.map(i => (i.number ? { ...i, [key]: value } : i)));
+    setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
-
+  const selectFile = e => {
+    setFile(e.target.files[0]);
+  };
   const addDevice = () => {
     const formData = new FormData();
     formData.append('name', name);
@@ -41,10 +44,6 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('info', JSON.stringify(info));
 
     createDevice(formData).then(data => onHide());
-  };
-
-  const selectFile = e => {
-    setFile(e.target.files[0]);
   };
 
   return (
