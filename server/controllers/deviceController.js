@@ -8,7 +8,7 @@ class DeviceController {
       let { name, price, brandId, typeId, info } = req.body;
       const { img } = req.files;
       let fileName = uuid.v4() + '.jpg';
-      img.nv(path.resolve(__dirname, '..', 'static', fileName));
+      img.mv(path.resolve(__dirname, '..', 'static', fileName));
       const device = await Device.create({
         name,
         price,
@@ -67,7 +67,7 @@ class DeviceController {
   }
 
   async getOne(req, res) {
-    const { id } = req.parems;
+    const { id } = req.params;
     const device = await Device.findOne({
       where: { id },
       include: [{ model: DeviceInfo, as: 'info' }],

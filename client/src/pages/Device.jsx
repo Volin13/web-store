@@ -6,14 +6,14 @@ import { fetchSingleDevice } from '../http/deviceApi';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
-
+  console.log(device);
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
   }, [id]);
 
   return (
     <Container className="mt-3">
-      <Row>
+      <Row className="d-flex align-items-center">
         <Col md={4}>
           <Image
             width={300}
