@@ -7,6 +7,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/constants';
 import { observer } from 'mobx-react-lite';
+import { Image } from 'react-bootstrap';
+import storeLogo from '../assets/shoppingLogo.svg';
+
 const NavBar = observer(() => {
   const navigate = useNavigate();
   const { user } = useContext(Context);
@@ -21,7 +24,9 @@ const NavBar = observer(() => {
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
           <NavLink style={{ color: 'white' }} to={SHOP_ROUTE}>
-            OnlineStore
+            Online
+            <Image src={storeLogo} width={25} height={25} />
+            Store
           </NavLink>
           {user.isAuth ? (
             <Nav className="ml-auto" style={{ color: 'white' }}>

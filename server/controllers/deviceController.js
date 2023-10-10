@@ -18,13 +18,13 @@ class DeviceController {
       });
       if (info) {
         info = JSON.parse(info);
-        info.forEach(i => {
+        info.forEach(i =>
           DeviceInfo.create({
             title: i.title,
             description: i.description,
             deviceId: device.id,
-          });
-        });
+          })
+        );
       }
 
       return res.json(device);
