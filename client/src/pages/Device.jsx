@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 import { fetchSingleDevice } from '../http/deviceApi';
 import pickStarColor from '../utils/pickStarColor';
 import CountUp from 'react-countup';
+import packageImg from '../assets/shopIcons/packageImg.svg';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
-  console.log(device);
+
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
   }, [id]);
@@ -16,7 +17,11 @@ const Device = () => {
     <Container className="mt-3">
       <Row className="d-flex align-items-center">
         <Col md={4}>
-          <Image width={300} height={300} src={device.img} />
+          <Image
+            width={300}
+            height={300}
+            src={process.env.REACT_APP_API_URL + device.img}
+          />
         </Col>
         <Col md={4}>
           <Row className="d-flex flex-column align-items-center text-center">
@@ -32,7 +37,7 @@ const Device = () => {
                   device.rating
                 )}%, #f0f0f0 ${100 - pickStarColor(device.rating)}%)`,
                 fontSize: 64,
-                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)',
+                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.5)',
               }}
             >
               {device.rating}
@@ -54,6 +59,7 @@ const Device = () => {
               <CountUp start={0} end={+device.price} duration={2} />
               грн.
             </h3>
+            <Image width={100} height={100} src={packageImg} />
             <Button variant={'outline-dark'}>Додати до корзини</Button>
           </Card>
         </Col>

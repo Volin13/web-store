@@ -1,20 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
+import * as yup from 'yup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Context } from '../../index';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Image, InputGroup, Row } from 'react-bootstrap';
 import { createDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
 import { observer } from 'mobx-react-lite';
+import { useFormik } from 'formik';
+
+import imageIcon from '../../assets/adminIcons/imageIcon.svg';
+import nameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
+import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState(0);
-  const [file, setFile] = useState(null);
-  console.log(info);
+  // const [name, setName] = useState('');
+  // const [price, setPrice] = useState(0);
+  // const [image, setImage] = useState(null);
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
@@ -32,20 +37,76 @@ const CreateDevice = observer(({ show, onHide }) => {
     setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
   const selectFile = e => {
-    setFile(e.target.files[0]);
-  };
-  const addDevice = () => {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', `${price}`);
-    formData.append('img', file);
-    formData.append('brandId', device.selectedBrand.id);
-    formData.append('typeId', device.selectedType.id);
-    formData.append('info', JSON.stringify(info));
+    const selectedFile = e.target.files[0];
+    // setFile(e.target.files[0]);
 
-    createDevice(formData).then(data => onHide());
+    if (selectedFile) {
+      formik.setFieldValue('img', selectedFile);
+      // setImage(selectedFile);
+    } else {
+      formik.setFieldValue('img', '');
+    }
   };
+  const addDevice = values => {
+    // const formData = new FormData();
+    // formData.append('name', name);
+    // formData.append('price', `${price}`);
+    // formData.append('img', file);
+    // formData.append('brandId', device.selectedBrand.id);
+    // formData.append('typeId', device.selectedType.id);
+    // formData.append('info', JSON.stringify(info));
 
+    // createDevice(formData).then(data => onHide());
+    createDevice(values).then(data => onHide());
+  };
+  let deviceNames = [];
+  device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
+
+  let deviceSchema = yup.object().shape({
+    name: yup
+      .string()
+      .trim()
+      .min(3, 'Назва девайсу занадто коротка')
+      .max(80, 'Назва девайсу занадто довга')
+      .lowercase()
+      .notOneOf(deviceNames, 'Такий девайс вже існує')
+      .required('Введіть девайс'),
+    price: yup
+      .number('ціна повинна бути числом')
+      .positive('ціна повинна бути додатнім числом')
+      .integer('ціна повинна бути цілим числом')
+      .required('введіть ціну'),
+    img: yup
+      .mixed()
+      .test('type', 'Only image files are allowed', value => {
+        return (
+          !value || (value && ['image/jpeg', 'image/png'].includes(value.type))
+        );
+      })
+      .test('size', 'Розмір зображення має бути менше 5 MB', value => {
+        return !value || (value && value.size <= 5000000);
+      })
+      .required('Додайте зображення'),
+  });
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      price: 0,
+      img: null,
+      brandId: '',
+      typeId: '',
+      info: JSON.stringify(info),
+    },
+    validationSchema: deviceSchema,
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      setSubmitting(false);
+      resetForm(true);
+    },
+  });
+  const isValid = deviceSchema.isValidSync(formik.values);
+
+  console.log(formik.values);
+  console.log(isValid);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -63,7 +124,10 @@ const CreateDevice = observer(({ show, onHide }) => {
               {device.types.map(type => (
                 <Dropdown.Item
                   key={type.id}
-                  onClick={() => device.setSelectedType(type)}
+                  onClick={() => {
+                    device.setSelectedType(type);
+                    formik.setFieldValue('typeId', device.selectedType.id);
+                  }}
                 >
                   {type.name}
                 </Dropdown.Item>
@@ -78,33 +142,83 @@ const CreateDevice = observer(({ show, onHide }) => {
               {device.brands.map(brand => (
                 <Dropdown.Item
                   key={brand.id}
-                  onClick={() => device.setSelectedBrand(brand)}
+                  onClick={() => {
+                    device.setSelectedBrand(brand);
+                    formik.setFieldValue('brandId', device.selectedBrand.id);
+                  }}
                 >
                   {brand.name}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
-          <Form.Control
+          <InputGroup
+            hasValidation
             className="mt-3"
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Введіть назву пристрою"
-          />
-          <Form.Control
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={30} height={30} src={nameIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="text"
+              name="name"
+              value={formik.name}
+              isInvalid={formik.values.name && formik.errors.name}
+              onChange={formik.handleChange}
+              placeholder="Введіть назву пристрою"
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.name}
+            </Form.Control.Feedback>
+          </InputGroup>
+          <InputGroup
+            hasValidation
             className="mt-3"
-            type="number"
-            value={price}
-            onChange={e => setPrice(Number(e.target.value))}
-            placeholder="Введіть вартість пристрою"
-          />
-          <Form.Control
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={30} height={30} src={priceIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="number"
+              name="price"
+              isInvalid={formik.values.price && formik.errors.price}
+              value={formik.price}
+              onChange={e => {
+                const newValue = Number(e.target.value);
+                formik.setFieldValue('price', newValue);
+              }}
+              placeholder="Введіть вартість пристрою"
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.price}
+            </Form.Control.Feedback>
+          </InputGroup>
+          <InputGroup
+            hasValidation
             className="mt-3"
-            type="file"
-            placeholder="Завантажте зображення пристрою"
-            onChange={selectFile}
-          />
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={30} height={30} src={imageIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="file"
+              isInvalid={formik.values.img && formik.errors.img}
+              placeholder="Завантажте зображення пристрою"
+              onChange={e => {
+                selectFile(e);
+              }}
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.img}
+            </Form.Control.Feedback>
+          </InputGroup>
+
           <hr />
           <Button variant="outline-dark" onClick={addInfo}>
             Додати нову властивість
@@ -148,7 +262,11 @@ const CreateDevice = observer(({ show, onHide }) => {
         <Button variant="outline-danger" onClick={onHide}>
           Вийти
         </Button>
-        <Button variant="outline-success" onClick={addDevice}>
+        <Button
+          disabled={!isValid}
+          variant="outline-success"
+          onClick={() => addDevice(formik.values)}
+        >
           Додати
         </Button>
       </Modal.Footer>

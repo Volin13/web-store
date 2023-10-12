@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Col, Image } from 'react-bootstrap';
-import star from '../assets/star-svgrepo-com.svg';
 import { useNavigate } from 'react-router-dom';
 import { DEVICE_ROUTE } from '../utils/constants';
+import star from '../assets/shopIcons/smallStar.svg';
 const DeviceItem = ({ device }) => {
   const navigate = useNavigate();
   return (

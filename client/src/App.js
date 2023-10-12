@@ -10,15 +10,23 @@ import { check } from './http/userAPI';
 const App = observer(() => {
   const { user } = useContext(Context);
   const [loading, setLoading] = useState(true);
-
+  const token = localStorage.getItem('token');
   useEffect(() => {
-    check()
-      .then(data => {
-        user.setUser(true);
-        user.setIsAuth(true);
-      })
-      .finally(() => setLoading(false));
-  }, [user]);
+    if (token) {
+      check()
+        .then(data => {
+          user.setUser(true);
+          user.setIsAuth(true);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      user.setUser(false);
+      user.setIsAuth(false);
+      setLoading(false);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <Spinner animation={'grow'} />;

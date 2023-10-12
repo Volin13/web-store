@@ -4,36 +4,33 @@ import { observer } from 'mobx-react-lite';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import * as yup from 'yup';
 import { useFormik } from 'formik';
 import {
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
 } from '../utils/constants';
-import { Row } from 'react-bootstrap';
+import { Image, InputGroup, Row } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { login, registration } from '../http/userAPI';
 import { Context } from '..';
-let initialValues = {
-  email: '',
-  password: '',
-};
+import { authSchema } from '../utils/authSchema';
+import emailIcon from '../assets/authIcons/emailIcon.svg';
+import passwordIcon from '../assets/authIcons/passwordIcon.svg';
+
 const Auth = observer(() => {
   const { user } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const click = async () => {
+  const hendleBtnClick = async (email, password) => {
     try {
       let userData;
       if (isLogin) {
-        userData = await login(formik.email, formik.password);
+        userData = await login(email, password);
       } else {
-        userData = await registration(formik.email, formik.password);
+        userData = await registration(email, password);
       }
       user.setUser(userData);
       user.setIsAuth(true);
@@ -44,42 +41,18 @@ const Auth = observer(() => {
     }
   };
 
-  const myEmailRegex =
-    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-  let registrationSchema = yup.object().shape({
-    email: yup
-      .string()
-      .matches(myEmailRegex, {
-        message: 'Your email must be valid',
-        name: 'email',
-        excludeEmptyString: true,
-      })
-      .min(5, 'Your email is too short')
-      .max(254, 'Your email is too long')
-      .lowercase()
-      .required('Type your email please'),
-    password: yup
-      .string()
-      .trim()
-      .matches(
-        /^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ0-9]+(([' -][a-zA-Zа-яА-Я0-9 ])?[a-zA-Zа-яА-Я0-9]*)*$/,
-        'Special symbols are not allowed'
-      )
-      .min(6, 'Your password is too short')
-      .max(16, 'Your password must be 16 characters max')
-      .required('Type your password please'),
-  });
-
   const formik = useFormik({
-    initialValues,
-    validationSchema: registrationSchema,
-
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: authSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      click();
       setSubmitting(false);
+      resetForm(false);
     },
   });
-
+  const isValid = authSchema.isValidSync(formik.values);
   return (
     <Container
       className="d-flex justify-content-center
@@ -89,23 +62,53 @@ const Auth = observer(() => {
       <Card style={{ width: 600 }} className="p-5">
         <h2 className="m-auto">{isLogin ? 'Авторизація' : 'Регістрація'}</h2>
         <Form className="d-flex flex-column">
-          <Form.Control
+          <InputGroup
+            hasValidation
             className="mt-3"
-            type="email"
-            placeholder="Введіть ваш email"
-            erorr={formik.errors.email}
-            value={formik.values.email}
-            onChange={formik.handleChange}
-          />
-          <Form.Control
-            className="mt-3"
-            type="password"
-            placeholder="Введіть ваш пароль"
-            erorr={formik.errors.password}
-            value={formik.values.password}
-            onChange={formik.handleChange}
-          />
-          <Row className="d-flex align-items-center justify-content-between mt-3 px-3">
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={18} height={18} src={emailIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="email"
+              name="email"
+              value={formik.values.email}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              isInvalid={formik.values.email && formik.errors.email}
+              placeholder="Введіть ваш email"
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.email}
+            </Form.Control.Feedback>
+          </InputGroup>
+
+          <InputGroup
+            hasValidation
+            className="mt-1"
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={18} height={18} src={passwordIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="password"
+              name="password"
+              value={formik.values.password}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              isInvalid={formik.values.password && formik.errors.password}
+              placeholder="Введіть ваш пароль"
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.password}
+            </Form.Control.Feedback>
+          </InputGroup>
+
+          <Row className="d-flex align-items-center justify-content-between  px-3">
             {isLogin ? (
               <div style={{ display: 'inline', width: '70%' }}>
                 Немає акаунта?{' '}
@@ -118,10 +121,13 @@ const Auth = observer(() => {
             )}
             <Button
               variant={'outline-success'}
+              disabled={!isValid}
               type="button"
               className="ml-auto"
               style={{ maxWidth: '30%' }}
-              onClick={click}
+              onClick={() =>
+                hendleBtnClick(formik.values.email, formik.values.password)
+              }
             >
               {isLogin ? 'Увійти' : 'Регістрація'}
             </Button>
