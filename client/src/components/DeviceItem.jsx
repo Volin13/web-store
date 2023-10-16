@@ -5,6 +5,13 @@ import { DEVICE_ROUTE } from '../utils/constants';
 import star from '../assets/shopIcons/smallStar.svg';
 const DeviceItem = ({ device }) => {
   const navigate = useNavigate();
+
+  const styledContainer = {
+    width: 150,
+    overflow: 'hidden',
+    cursor: 'pointer',
+  };
+
   return (
     <Col
       md={3}
@@ -26,7 +33,18 @@ const DeviceItem = ({ device }) => {
             <Image src={star} width={18} height={18} />
           </div>
         </div>
-        <div>{device.name}</div>
+        <div style={styledContainer}>
+          <span
+            style={{
+              display: 'inline-block',
+              height: '3em',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}
+          >
+            {device.name}
+          </span>
+        </div>
       </Card>
     </Col>
   );

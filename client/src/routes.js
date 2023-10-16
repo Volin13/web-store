@@ -1,9 +1,4 @@
-import Admin from './pages/Admin';
-import Auth from './pages/Auth';
-import Basket from './pages/Basket';
-import Device from './pages/Device';
-import NotFound from './pages/NotFound';
-import Shop from './pages/Shop';
+import { lazy } from 'react';
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
@@ -14,43 +9,50 @@ import {
   SHOP_ROUTE,
 } from './utils/constants';
 
+const AdminPage = lazy(() => import('./pages/AdminPage/AdminPage'));
+const AuthPage = lazy(() => import('./pages/AuthPage/AuthPage'));
+const BasketPage = lazy(() => import('./pages/BasketPage/BasketPage'));
+const DevicePage = lazy(() => import('./pages/DevicePage/DevicePage'));
+const ShopPage = lazy(() => import('./pages/ShopPage/ShopPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage/NotFound'));
+
 export const authRoutes = [
   {
     path: ADMIN_ROUTE,
-    Component: Admin,
+    Component: AdminPage,
   },
   {
     path: BASKET_ROUTE,
-    Component: Basket,
+    Component: BasketPage,
   },
   {
     path: SHOP_ROUTE,
-    Component: Shop,
+    Component: ShopPage,
   },
   {
     path: DEVICE_ROUTE + '/:id',
-    Component: Device,
+    Component: DevicePage,
   },
   {
     path: NOT_FOUND_ROUTE,
-    Component: NotFound,
+    Component: NotFoundPage,
   },
 ];
 export const publicRoutes = [
   {
     path: SHOP_ROUTE,
-    Component: Shop,
+    Component: ShopPage,
   },
   {
     path: LOGIN_ROUTE,
-    Component: Auth,
+    Component: AuthPage,
   },
   {
     path: REGISTRATION_ROUTE,
-    Component: Auth,
+    Component: AuthPage,
   },
   {
     path: DEVICE_ROUTE + '/:id',
-    Component: Device,
+    Component: DevicePage,
   },
 ];

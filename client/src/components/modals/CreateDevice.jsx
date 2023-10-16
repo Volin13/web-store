@@ -28,9 +28,11 @@ const CreateDevice = observer(({ show, onHide }) => {
 
   const addInfo = () => {
     setInfo([...info, { title: '', description: '', number: Date.now() }]);
+    formik.setFieldValue('info', JSON.stringify(info));
   };
   const removeInfo = number => {
     setInfo(info.filter(i => i.number !== number));
+    formik.setFieldValue('info', JSON.stringify(info));
   };
 
   const changeInfo = (key, value, number) => {
@@ -47,17 +49,17 @@ const CreateDevice = observer(({ show, onHide }) => {
       formik.setFieldValue('img', '');
     }
   };
-  const addDevice = values => {
-    // const formData = new FormData();
-    // formData.append('name', name);
-    // formData.append('price', `${price}`);
-    // formData.append('img', file);
-    // formData.append('brandId', device.selectedBrand.id);
-    // formData.append('typeId', device.selectedType.id);
-    // formData.append('info', JSON.stringify(info));
-
-    // createDevice(formData).then(data => onHide());
-    createDevice(values).then(data => onHide());
+  const addDevice = () => {
+    const formData = new FormData();
+    formData.append('name', formik.values.name);
+    formData.append('price', `${formik.values.price}`);
+    formData.append('img', formik.values.img);
+    formData.append('brandId', device.selectedBrand.id);
+    formData.append('typeId', device.selectedType.id);
+    formData.append('info', JSON.stringify(info));
+    console.log(formData);
+    createDevice(formData).then(data => onHide());
+    // createDevice(values).then(data => onHide());
   };
   let deviceNames = [];
   device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
@@ -95,7 +97,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       img: null,
       brandId: '',
       typeId: '',
-      info: JSON.stringify(info),
+      info: [],
     },
     validationSchema: deviceSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -103,10 +105,9 @@ const CreateDevice = observer(({ show, onHide }) => {
       resetForm(true);
     },
   });
+  // console.log(formik.values);
   const isValid = deviceSchema.isValidSync(formik.values);
 
-  console.log(formik.values);
-  console.log(isValid);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
       <Modal.Header closeButton>

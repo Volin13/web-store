@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite';
+import { Suspense } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { BrowserRouter } from 'react-router-dom';
@@ -29,14 +30,42 @@ const App = observer(() => {
   }, []);
 
   if (loading) {
-    return <Spinner animation={'grow'} />;
+    return (
+      <Spinner
+        style={{
+          height: 200,
+          width: 200,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        animation={'border'}
+      />
+    );
   }
 
   return (
     <div className="App">
       <BrowserRouter>
-        <NavBar />
-        <AppRouter />
+        <Suspense
+          fallback={
+            <Spinner
+              style={{
+                height: 200,
+                width: 200,
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+              animation={'border'}
+            />
+          }
+        >
+          <NavBar />
+          <AppRouter />
+        </Suspense>
       </BrowserRouter>
     </div>
   );

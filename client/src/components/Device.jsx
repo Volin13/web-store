@@ -12,7 +12,6 @@ const Device = () => {
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
   }, [id]);
-
   return (
     <Container className="mt-3">
       <Row className="d-flex align-items-center">

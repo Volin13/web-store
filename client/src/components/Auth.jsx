@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import Card from 'react-bootstrap/Card';
 import { observer } from 'mobx-react-lite';
 import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { useFormik } from 'formik';
 import {
@@ -13,7 +12,7 @@ import {
 import { Image, InputGroup, Row } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { login, registration } from '../http/userAPI';
-import { Context } from '..';
+import { Context } from '../index';
 import { authSchema } from '../utils/authSchema';
 import emailIcon from '../assets/authIcons/emailIcon.svg';
 import passwordIcon from '../assets/authIcons/passwordIcon.svg';
@@ -54,11 +53,7 @@ const Auth = observer(() => {
   });
   const isValid = authSchema.isValidSync(formik.values);
   return (
-    <Container
-      className="d-flex justify-content-center
-  align-items-center"
-      style={{ height: window.innerHeight - 54 }}
-    >
+    <>
       <Card style={{ width: 600 }} className="p-5">
         <h2 className="m-auto">{isLogin ? 'Авторизація' : 'Регістрація'}</h2>
         <Form className="d-flex flex-column">
@@ -134,7 +129,7 @@ const Auth = observer(() => {
           </Row>
         </Form>
       </Card>
-    </Container>
+    </>
   );
 });
 
