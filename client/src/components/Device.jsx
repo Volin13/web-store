@@ -5,6 +5,7 @@ import { fetchSingleDevice } from '../http/deviceApi';
 import pickStarColor from '../utils/pickStarColor';
 import CountUp from 'react-countup';
 import packageImg from '../assets/shopIcons/packageImg.svg';
+import Rating from './UI/UX/Rating/Rating';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
@@ -64,7 +65,12 @@ const Device = () => {
         </Col>
       </Row>
       <Row className=" mt-3 d-flex flex-column">
-        <h2>Характеристики</h2>
+        <Row className="d-flex justify-content-between mb-1">
+          <h2 className="mb-0" style={{ maxWidth: '50%' }}>
+            Характеристики
+          </h2>
+          <Rating apiRating={device.rating} />
+        </Row>
         {device.info.map((info, index) => (
           <Row
             key={info.id}
