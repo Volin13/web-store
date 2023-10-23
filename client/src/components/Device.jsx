@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { fetchSingleDevice } from '../http/deviceApi';
-import pickStarColor from '../utils/pickStarColor';
+import { fetchSingleDevice, getDeviceRating } from '../http/deviceApi';
 import CountUp from 'react-countup';
 import packageImg from '../assets/shopIcons/packageImg.svg';
 import Rating from './UI/UX/Rating/Rating';
+import { Context } from '..';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
+  const [rate, setRate] = useState(0);
   const { id } = useParams();
-
+  const { user } = useContext(Context);
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
+    getDeviceRating(id).then(data => setRate(data.averageRating));
   }, [id]);
   return (
     <Container className="mt-3">
@@ -24,31 +26,13 @@ const Device = () => {
           />
         </Col>
         <Col md={4}>
-          <Row className="d-flex flex-column align-items-center text-center">
-            <h1>{device.name}</h1>
-            <div
-              className="d-flex align-items-center justify-content-center"
-              style={{
-                clipPath:
-                  'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
-                width: 240,
-                height: 240,
-                background: `linear-gradient(to top, #ffd000 ${pickStarColor(
-                  device.rating
-                )}%, #f0f0f0 ${100 - pickStarColor(device.rating)}%)`,
-                fontSize: 64,
-                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              {device.rating}
-            </div>
-          </Row>
+          <h1 className="text-center">{device.name}</h1>
         </Col>
         <Col md={4}>
           <Card
             className="d-flex flex-column align-items-center justify-content-around"
             style={{
-              width: 300,
+              width: '100%',
               height: 300,
               fontSize: 32,
               border: '5px solid lightgray',
@@ -60,7 +44,11 @@ const Device = () => {
               грн.
             </h3>
             <Image width={100} height={100} src={packageImg} />
-            <Button variant={'outline-dark'}>Додати до корзини</Button>
+            <Button disabled={!user.isAuth} variant={'outline-dark'}>
+              {!user.isAuth
+                ? 'Увійдіть щоб зробити покупку'
+                : 'Додати до корзини'}
+            </Button>
           </Card>
         </Col>
       </Row>
@@ -69,7 +57,12 @@ const Device = () => {
           <h2 className="mb-0" style={{ maxWidth: '50%' }}>
             Характеристики
           </h2>
-          <Rating apiRating={device.rating} />
+          <Rating
+            userId={user.id}
+            deviceId={device.id}
+            apiRating={rate}
+            isAuth={user.isAuth}
+          />
         </Row>
         {device.info.map((info, index) => (
           <Row
@@ -77,16 +70,16 @@ const Device = () => {
             className="d-flex justify-content-between"
             style={{
               background: index % 2 === 0 ? 'lightgrey' : 'transparent',
-              padding: 10,
+              padding: '10px 0 ',
             }}
           >
-            <span style={{ display: 'inline-block', width: '50%' }}>
+            <span style={{ display: 'inline-block', width: '40%' }}>
               {info.title}:
             </span>
             <span
               style={{
                 display: 'inline-block',
-                width: '50%',
+                width: '40%',
                 textAlign: 'end',
               }}
             >

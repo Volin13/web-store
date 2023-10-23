@@ -17,9 +17,6 @@ import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
-  // const [name, setName] = useState('');
-  // const [price, setPrice] = useState(0);
-  // const [image, setImage] = useState(null);
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
@@ -40,11 +37,9 @@ const CreateDevice = observer(({ show, onHide }) => {
   };
   const selectFile = e => {
     const selectedFile = e.target.files[0];
-    // setFile(e.target.files[0]);
 
     if (selectedFile) {
       formik.setFieldValue('img', selectedFile);
-      // setImage(selectedFile);
     } else {
       formik.setFieldValue('img', '');
     }
@@ -57,9 +52,8 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
-    console.log(formData);
+
     createDevice(formData).then(data => onHide());
-    // createDevice(values).then(data => onHide());
   };
   let deviceNames = [];
   device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
@@ -105,7 +99,6 @@ const CreateDevice = observer(({ show, onHide }) => {
       resetForm(true);
     },
   });
-  // console.log(formik.values);
   const isValid = deviceSchema.isValidSync(formik.values);
 
   return (

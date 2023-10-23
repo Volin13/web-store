@@ -26,7 +26,7 @@ const DeviceItem = ({ device }) => {
         />
         <div className="text-black-50 d-flex justify-content-between align-items-center">
           <div className="mt-1 d-flex justify-content-between align-items-center">
-            Sumsung...
+            {device.price + ' грн'}
           </div>
           <div className="d-flex justify-content-between align-items-center">
             <div>{device.rating}</div>

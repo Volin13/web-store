@@ -1,12 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
+import { createRating } from '../../../../http/deviceApi';
 import css from './Rating.module.css';
 
-const Rating = ({ apiRating }) => {
+const Rating = ({ deviceId, apiRating, isAuth }) => {
   const rating = useRef(null);
   const ratingActive = useRef(null);
   const ratingValue = useRef(null);
-  console.log(apiRating);
+  const [rate, setRate] = useState(0);
+
   const ratingActiveWidth = apiRating / 0.1;
   useEffect(() => {
     ratingActive.current.style.width = `${ratingActiveWidth}%`;
@@ -15,7 +17,6 @@ const Rating = ({ apiRating }) => {
   const hendleActiveStarChange = value => {
     ratingActive.current.style.width = `${value * 10}%`;
   };
-
   return (
     <div ref={rating} className={css.rating} style={{ maxWidth: '50%' }}>
       <div className={css.rating_body}>
@@ -26,7 +27,6 @@ const Rating = ({ apiRating }) => {
               type="radio"
               onMouseEnter={() => {
                 hendleActiveStarChange(item);
-                console.log(item);
               }}
               onMouseLeave={() =>
                 (ratingActive.current.style.width = `${ratingActiveWidth}%`)
@@ -35,6 +35,10 @@ const Rating = ({ apiRating }) => {
               className={css.rating_item}
               value={item}
               name="rating"
+              onClick={e => {
+                setRate(Number(e.target.value));
+                createRating(deviceId, rate, isAuth);
+              }}
             />
           ))}
         </div>
