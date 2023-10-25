@@ -1,32 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { fetchSingleDevice, getDeviceRating } from '../http/deviceApi';
+import { fetchSingleDevice } from '../http/deviceApi';
 import CountUp from 'react-countup';
 import packageImg from '../assets/shopIcons/packageImg.svg';
 import Rating from './UI/UX/Rating/Rating';
 import { Context } from '..';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
-  const [rate, setRate] = useState(0);
   const { id } = useParams();
   const { user } = useContext(Context);
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
-    getDeviceRating(id).then(data => setRate(data.averageRating));
   }, [id]);
   return (
     <Container className="mt-3">
-      <Row className="d-flex align-items-center">
+      <Row className="d-flex align-items-center text-center">
         <Col md={4}>
           <Image
-            width={300}
-            height={300}
+            width={'100%'}
             src={process.env.REACT_APP_API_URL + device.img}
           />
         </Col>
         <Col md={4}>
-          <h1 className="text-center">{device.name}</h1>
+          <h1
+            style={{
+              display: 'inline-block',
+              maxWidth: '100%',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}
+          >
+            {device.name}
+          </h1>
         </Col>
         <Col md={4}>
           <Card
@@ -52,7 +58,7 @@ const Device = () => {
           </Card>
         </Col>
       </Row>
-      <Row className=" mt-3 d-flex flex-column">
+      <Row className=" mt-3 d-flex flex-column align-items-center">
         <Row className="d-flex justify-content-between mb-1">
           <h2 className="mb-0" style={{ maxWidth: '50%' }}>
             Характеристики
@@ -60,14 +66,14 @@ const Device = () => {
           <Rating
             userId={user.id}
             deviceId={device.id}
-            apiRating={rate}
+            apiRating={device.rating}
             isAuth={user.isAuth}
           />
         </Row>
         {device.info.map((info, index) => (
           <Row
             key={info.id}
-            className="d-flex justify-content-between"
+            className="d-flex justify-content-between align-items-center"
             style={{
               background: index % 2 === 0 ? 'lightgrey' : 'transparent',
               padding: '10px 0 ',

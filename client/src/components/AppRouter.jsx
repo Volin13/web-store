@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Context } from '..';
 import { authRoutes, publicRoutes } from '../routes';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const AppRouter = () => {
   const { user } = useContext(Context);
   return (

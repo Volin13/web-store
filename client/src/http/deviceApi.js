@@ -43,10 +43,10 @@ export const createRating = async (deviceId, rate, user) => {
       });
       return data;
     } catch (e) {
-      return toast.info(e.response.message);
+      return toast.info(e.response.data.message);
     }
   }
-  toast.error('Будь-ласка спочатку увійдіть в свій аккаунт');
+  toast.info('Будь-ласка спочатку увійдіть в свій аккаунт');
   return;
 };
 
@@ -66,6 +66,10 @@ export const fetchSingleDevice = async id => {
   return data;
 };
 export const getDeviceRating = async id => {
-  const { data } = await $host.get('api/rating/' + id);
-  return data;
+  try {
+    const { data } = await $host.get('api/rating/' + id);
+    return data;
+  } catch (e) {
+    return toast.error(e.response.data.message);
+  }
 };

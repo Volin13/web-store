@@ -1,18 +1,26 @@
-const { Rating } = require("../models/models");
+const { Device, Rating } = require("../models/models");
 const ApiError = require("../error/ApiError");
+const calculateAverageRating = require("../middleware/CalculateAverageRating");
 
 class RatingController {
   async create(req, res, next) {
     try {
       const { deviceId, userId, rate } = req.body;
       const voted = await Rating.findOne({ where: { userId } });
-      const device = await Rating.findOne({ where: { deviceId } });
-      if (voted && device) {
-        return next(
-          ApiError.internal("You have already voted for this device")
-        );
+      const deviceRating = await Rating.findOne({ where: { deviceId } });
+      if (voted && deviceRating) {
+        return next(ApiError.forbidden("Ви уже голосували за цей девайс"));
       }
       const rating = await Rating.create({ rate, userId, deviceId });
+      const device = await Device.findByPk(deviceId);
+
+      if (!device) {
+        return next(ApiError.badRequest("Девайс не знайдено"));
+      }
+      await device.addRating(rating);
+      device.rating = await calculateAverageRating(device);
+      await device.save();
+
       return res.json(rating);
     } catch (e) {
       next(ApiError.internal(e.message));
@@ -26,17 +34,14 @@ class RatingController {
   async getDeviceRating(req, res, next) {
     try {
       const { id } = req.params;
-      const ratings = await Rating.findAll({ where: { deviceId: id } });
-      if (ratings.length === 0) {
-        return res.json({ averageRating: 0 });
+      const device = await Device.findByPk(id);
+      if (!device) {
+        return next(ApiError.badRequest("Девайс не знайдено"));
       }
-
-      const totalRating = ratings.reduce((acc, rating) => acc + rating.rate, 0);
-      const averageRating = totalRating / ratings.length;
-
-      return res.json({ averageRating });
+      const rating = await calculateAverageRating(device);
+      return res.json({ rating });
     } catch (e) {
-      next(ApiError.badRequest(e.message));
+      next(ApiError.internal(e.message));
     }
   }
 }

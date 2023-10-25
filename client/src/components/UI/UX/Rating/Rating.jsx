@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
-import { createRating } from '../../../../http/deviceApi';
+import { getDeviceRating, createRating } from '../../../../http/deviceApi';
 import css from './Rating.module.css';
 
 const Rating = ({ deviceId, apiRating, isAuth }) => {
@@ -8,7 +8,6 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
   const ratingActive = useRef(null);
   const ratingValue = useRef(null);
   const [rate, setRate] = useState(0);
-
   const ratingActiveWidth = apiRating / 0.1;
   useEffect(() => {
     ratingActive.current.style.width = `${ratingActiveWidth}%`;
@@ -38,6 +37,7 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
               onClick={e => {
                 setRate(Number(e.target.value));
                 createRating(deviceId, rate, isAuth);
+                getDeviceRating(deviceId);
               }}
             />
           ))}
