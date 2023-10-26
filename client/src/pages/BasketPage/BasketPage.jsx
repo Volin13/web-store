@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import Basket from '../../components/Basket';
+import Basket from '../../components/basket/Basket';
 
 const BasketPage = () => {
   return (

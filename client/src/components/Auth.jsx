@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import { observer } from 'mobx-react-lite';
 import Form from 'react-bootstrap/Form';
@@ -16,13 +16,17 @@ import { Context } from '../index';
 import { authSchema } from '../utils/authSchema';
 import emailIcon from '../assets/authIcons/emailIcon.svg';
 import passwordIcon from '../assets/authIcons/passwordIcon.svg';
+import { ReactComponent as VisibleIcon } from '../assets/authIcons/visible-svgrepo-com.svg';
+import { ReactComponent as NotVisible } from '../assets/authIcons/not-visible-svgrepo-com.svg';
 
 const Auth = observer(() => {
+  const passwordInput = useRef(null);
+  const [visiblePassword, setVisiblePassword] = useState(false);
+
   const { user } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
   const navigate = useNavigate();
-
   const hendleBtnClick = async (email, password) => {
     try {
       let userData;
@@ -52,6 +56,15 @@ const Auth = observer(() => {
     },
   });
   const isValid = authSchema.isValidSync(formik.values);
+
+  const togglePasswordVisibility = () => {
+    if (passwordInput.current.type === 'password') {
+      passwordInput.current.type = 'text';
+    } else {
+      passwordInput.current.type = 'password';
+    }
+  };
+
   return (
     <>
       <Card style={{ width: 600 }} className="p-5">
@@ -89,6 +102,7 @@ const Auth = observer(() => {
               <Image width={18} height={18} src={passwordIcon} />
             </InputGroup.Text>
             <Form.Control
+              ref={passwordInput}
               style={{ height: '38px' }}
               type="password"
               name="password"
@@ -98,6 +112,25 @@ const Auth = observer(() => {
               isInvalid={formik.values.password && formik.errors.password}
               placeholder="Введіть ваш пароль"
             />
+
+            {formik.values.password && (
+              <button
+                type="button"
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  height: '38px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                }}
+                onClick={() => {
+                  togglePasswordVisibility();
+                  setVisiblePassword(!visiblePassword);
+                }}
+              >
+                {visiblePassword ? <VisibleIcon /> : <NotVisible />}
+              </button>
+            )}
+
             <Form.Control.Feedback type="invalid">
               {formik.errors.password}
             </Form.Control.Feedback>

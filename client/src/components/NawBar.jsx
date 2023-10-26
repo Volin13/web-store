@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Context } from '..';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -16,8 +16,10 @@ import { Image } from 'react-bootstrap';
 
 import storeLogo from '../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
+import BasketModal from './modals/BasketModal';
 
 const NavBar = observer(() => {
+  const [basketVisible, setBasketVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const authLocation =
@@ -44,19 +46,19 @@ const NavBar = observer(() => {
 
           {user.isAuth ? (
             <Nav className="ml-auto" style={{ color: 'white' }}>
-              <NavLink style={{ color: 'white' }} to={SHOP_ROUTE}>
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{
-                    borderRadius: '50%',
-                    backgroundColor: 'white',
-                    height: '38px',
-                    width: '38px',
-                  }}
-                >
-                  <Image width={30} height={30} src={basketImg} />
-                </div>
-              </NavLink>
+              <button
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  height: '38px',
+                  width: '38px',
+                }}
+                type="button"
+                onClick={() => setBasketVisible(true)}
+              >
+                <Image width={30} height={30} src={basketImg} />
+              </button>
               <NavLink to={ADMIN_ROUTE}>
                 <Button style={{ marginLeft: '1rem' }} variant="outline-light">
                   Адміністратору
@@ -81,6 +83,10 @@ const NavBar = observer(() => {
           )}
         </Container>
       </Navbar>
+      <BasketModal
+        show={basketVisible}
+        onHide={() => setBasketVisible(false)}
+      />
     </>
   );
 });
