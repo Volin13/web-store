@@ -17,7 +17,6 @@ import { Image } from 'react-bootstrap';
 import storeLogo from '../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
 import BasketModal from './modals/BasketModal';
-
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const NavBar = observer(() => {
     location.pathname === LOGIN_ROUTE ||
     location.pathname === REGISTRATION_ROUTE;
 
-  const { user } = useContext(Context);
+  const { user, basket } = useContext(Context);
   const logOut = () => {
     user.setUser({});
     user.setIsAuth(false);
@@ -53,11 +52,30 @@ const NavBar = observer(() => {
                   backgroundColor: 'white',
                   height: '38px',
                   width: '38px',
+                  position: 'relative',
+                  outline: '2px ridge #ffffff99',
                 }}
                 type="button"
                 onClick={() => setBasketVisible(true)}
               >
                 <Image width={30} height={30} src={basketImg} />
+                {basket.basket.length > 0 && (
+                  <div
+                    style={{
+                      width: 15,
+                      height: 15,
+                      fontSize: 10,
+                      color: 'white',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: '-5px',
+                      borderRadius: '50%',
+                      backgroundColor: '#1cb4e3',
+                    }}
+                  >
+                    {basket.basket.length}
+                  </div>
+                )}
               </button>
               <NavLink to={ADMIN_ROUTE}>
                 <Button style={{ marginLeft: '1rem' }} variant="outline-light">

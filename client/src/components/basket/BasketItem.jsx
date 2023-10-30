@@ -1,23 +1,32 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
 
-const BasketItem = (item, index, removeFromBasket) => {
+const BasketItem = ({ item, index, removeCard }) => {
   return (
-    <Card key={index}>
-      <Card.Header>{item.price} грн.</Card.Header>
-      <Card.Body>
-        <Card.Title>{item.name}</Card.Title>
-        <Card.Text>
-          With supporting text below as a natural lead-in to additional content.
-        </Card.Text>
-        <Button
-          type="button"
-          variant="primary"
-          onClick={() => removeFromBasket(index)}
-        >
-          Видалити
-        </Button>
-      </Card.Body>
+    <Card className="mb-1" style={{ width: '80%' }}>
+      <Card.Header>{item.title}</Card.Header>
+      <div className="d-flex align-items-center justify-content-around p-3">
+        <Card.Img
+          style={{ width: 'auto' }}
+          height="130px"
+          variant="top"
+          src={process.env.REACT_APP_API_URL + item.img}
+        />
+        <Card.Body style={{ width: '50%', flex: ' 0 1 auto' }}>
+          <Card.Title>{item.price * item.count} грн.</Card.Title>
+          <Card.Text>
+            {item.price} грн. (x{item.count})
+          </Card.Text>
+
+          <Button
+            type="button"
+            variant="info"
+            onClick={() => removeCard(index)}
+          >
+            Видалити
+          </Button>
+        </Card.Body>
+      </div>
     </Card>
   );
 };

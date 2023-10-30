@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Card, Container, Modal } from 'react-bootstrap';
+import { observer } from 'mobx-react-lite';
+import React, { useContext, useState } from 'react';
+import { useEffect } from 'react';
+import { Card, Container } from 'react-bootstrap';
+import { Context } from '../..';
 import BasketList from './BasketList';
 import Checkout from './Checkout';
 
-const Basket = ({ show, onHide }) => {
+const Basket = observer(({ show, onHide }) => {
+  const { basket } = useContext(Context);
+
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
+  useEffect(() => {
+    setList(...basket.basket);
+  }, [basket]);
 
   const removeFromList = index => {
     const newCart = [...list];
@@ -31,6 +39,6 @@ const Basket = ({ show, onHide }) => {
       <Checkout />
     </Container>
   );
-};
+});
 
 export default Basket;

@@ -6,13 +6,29 @@ import CountUp from 'react-countup';
 import packageImg from '../assets/shopIcons/packageImg.svg';
 import Rating from './UI/UX/Rating/Rating';
 import { Context } from '..';
+import { toast } from 'react-toastify';
+
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
+  const [clickedState, setClickedState] = useState(false);
   const { id } = useParams();
-  const { user } = useContext(Context);
+  const { user, basket } = useContext(Context);
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
   }, [id]);
+  const hendleOrderClick = () => setClickedState(true);
+  const addOrder = () => {
+    basket.addToBasket({
+      id: device.id,
+      title: device.name,
+      price: device.price,
+      added: Date.now(),
+      img: device.img,
+    });
+
+    toast.info(`${device.name} було додано до корзини`);
+  };
+
   return (
     <Container className="mt-3">
       <Row className="d-flex align-items-center text-center">
@@ -50,11 +66,21 @@ const Device = () => {
               грн.
             </h3>
             <Image width={100} height={100} src={packageImg} />
-            <Button disabled={!user.isAuth} variant={'outline-dark'}>
-              {!user.isAuth
-                ? 'Увійдіть щоб зробити покупку'
-                : 'Додати до корзини'}
-            </Button>
+            {user.isAuth ? (
+              <Button
+                variant={clickedState ? 'info' : 'outline-dark'}
+                onClick={() => {
+                  addOrder();
+                  hendleOrderClick();
+                }}
+              >
+                Додати до корзини
+              </Button>
+            ) : (
+              <Button variant="outline-light">
+                Увійдіть щоб зробити покупку
+              </Button>
+            )}
           </Card>
         </Col>
       </Row>
