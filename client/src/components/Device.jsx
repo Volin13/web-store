@@ -27,6 +27,7 @@ const Device = () => {
     });
 
     toast.info(`${device.name} було додано до корзини`);
+    localStorage.setItem('basket', JSON.stringify(basket.basket));
   };
 
   return (
@@ -84,7 +85,7 @@ const Device = () => {
           </Card>
         </Col>
       </Row>
-      <Row className=" mt-3 d-flex flex-column align-items-center">
+      <Row className=" mt-3 d-flex flex-column align-items-center py-3">
         <Row className="d-flex justify-content-between mb-1">
           <h2 className="mb-0" style={{ maxWidth: '50%' }}>
             Характеристики

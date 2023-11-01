@@ -4,7 +4,7 @@ import App from './App';
 import BasketStore from './store/basketStore';
 import DeviceStore from './store/DeviceStore';
 import UserStore from './store/UserStore';
-
+import './index.css';
 export const Context = createContext(null);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

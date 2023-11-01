@@ -1,20 +1,25 @@
 import React from 'react';
 import BasketItem from './BasketItem';
 
-const BasketList = ({ list, removeCard }) => {
+const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
   return (
-    <div style={{ height: '45vh', overflow: 'auto' }}>
+    <div
+      className="d-flex align-items-center justify-content-center"
+      style={{ height: '45vh', overflow: 'auto' }}
+    >
       {list.length > 0 ? (
-        <div className="d-flex flex-column align-items-center justify-content-center">
+        <>
           {list.map((item, index) => (
             <BasketItem
+              addOne={addOne}
+              reduceOne={reduceOne}
               key={index}
               item={item}
               index={index}
               removeCard={removeCard}
             />
           ))}
-        </div>
+        </>
       ) : (
         <h2>Ваша корзина порожня</h2>
       )}

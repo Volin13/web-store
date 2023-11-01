@@ -4,7 +4,7 @@ import Basket from '../../components/basket/Basket';
 
 const BasketPage = () => {
   return (
-    <Container className="d-flex flex-column">
+    <Container className="d-flex flex-column mt-3">
       <Basket />
     </Container>
   );

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '..';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -17,8 +17,10 @@ import { Image } from 'react-bootstrap';
 import storeLogo from '../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
 import BasketModal from './modals/BasketModal';
+
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
+  const [basketLength, setBasketLength] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const authLocation =
@@ -29,9 +31,19 @@ const NavBar = observer(() => {
   const logOut = () => {
     user.setUser({});
     user.setIsAuth(false);
+    localStorage.removeItem('basket');
     localStorage.removeItem('token');
     navigate(LOGIN_ROUTE);
   };
+  const localbasketData = localStorage.getItem('basket');
+  let localBasket = null;
+  localbasketData
+    ? (localBasket = JSON.parse(localbasketData))
+    : (localBasket = basket.basket);
+
+  useEffect(() => {
+    setBasketLength(localBasket.length);
+  }, [basket.basket.length, localBasket.length]);
 
   return (
     <>
@@ -59,7 +71,7 @@ const NavBar = observer(() => {
                 onClick={() => setBasketVisible(true)}
               >
                 <Image width={30} height={30} src={basketImg} />
-                {basket.basket.length > 0 && (
+                {basketLength > 0 && (
                   <div
                     style={{
                       width: 15,
@@ -73,7 +85,7 @@ const NavBar = observer(() => {
                       backgroundColor: '#1cb4e3',
                     }}
                   >
-                    {basket.basket.length}
+                    {basketLength}
                   </div>
                 )}
               </button>
@@ -104,6 +116,8 @@ const NavBar = observer(() => {
       <BasketModal
         show={basketVisible}
         onHide={() => setBasketVisible(false)}
+        basket={basket}
+        localBasket={localBasket}
       />
     </>
   );

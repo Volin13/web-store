@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { Button, Card, Modal, NavLink } from 'react-bootstrap';
-import { Context } from '../..';
 import { BASKET_ROUTE } from '../../utils/constants';
 import BasketList from '../basket/BasketList';
 
-const BasketModal = ({ show, onHide }) => {
+const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const [list, setList] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const { basket } = useContext(Context);
-
   useEffect(() => {
-    const basketData = basket.basket;
     const uniqueItems = [];
-    basketData.forEach(item => {
+    localBasket.forEach(item => {
       const existingItem = uniqueItems.find(uItem => uItem.id === item.id);
       if (existingItem) {
         existingItem.count += 1;
@@ -26,31 +23,42 @@ const BasketModal = ({ show, onHide }) => {
     setList([...uniqueItems]);
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
-  }, [basket.basket]);
+  }, [localBasket, localBasket.length, basket.basket.length]);
 
   const removeFromList = index => {
     const newCart = [...list];
     newCart.splice(index, 1);
     basket.setBasket(newCart);
+    if (newCart) {
+      localStorage.setItem('basket', newCart);
+    } else {
+      localStorage.removeItem('basket');
+    }
     setList(newCart);
+
     recalculateTotal(newCart);
   };
   const addItemCount = id => {
     const listItem = list.find(item => item.id === id);
-    listItem.count = +1;
+    console.log(listItem);
+    listItem.count += 1;
     recalculateTotal(list);
+    recalculateAmount(list);
+    localStorage.setItem('basket', list);
   };
 
   const reduceItemCount = id => {
     const listItem = list.find(item => item.id === id);
     if (listItem.count > 1) {
-      listItem.count = -1;
+      listItem.count -= 1;
     } else {
       const removeIndex = list.indexOf(listItem);
       list.splice(removeIndex, 1);
       setList(list);
     }
     recalculateTotal(list);
+    recalculateAmount(list);
+    localStorage.setItem('basket', list);
   };
 
   const recalculateTotal = cartItems => {
@@ -65,7 +73,6 @@ const BasketModal = ({ show, onHide }) => {
     setTotalAmount(newTotal);
   };
 
-  console.log(list);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered className="text-end">
       <Modal.Header closeButton>
@@ -73,10 +80,10 @@ const BasketModal = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body style={{ textAlign: 'center' }}>
         <BasketList
+          addOne={addItemCount}
+          reduceOne={reduceItemCount}
           list={list}
           removeCard={removeFromList}
-          add={addItemCount}
-          reduce={reduceItemCount}
         />
       </Modal.Body>
       <Card>
@@ -99,6 +106,6 @@ const BasketModal = ({ show, onHide }) => {
       </Modal.Footer>
     </Modal>
   );
-};
+});
 
 export default BasketModal;
