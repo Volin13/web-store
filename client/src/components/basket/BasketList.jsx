@@ -4,7 +4,7 @@ import BasketItem from './BasketItem';
 const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
   return (
     <div
-      className="d-flex align-items-center justify-content-center"
+      className="d-flex align-items-center justify-content-center mb-2"
       style={{ height: '45vh', overflow: 'auto' }}
     >
       {list.length > 0 ? (
@@ -21,7 +21,7 @@ const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
           ))}
         </>
       ) : (
-        <h2>Ваша корзина порожня</h2>
+        <h2>Ваша Кошик порожня</h2>
       )}
     </div>
   );

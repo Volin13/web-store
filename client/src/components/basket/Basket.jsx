@@ -28,7 +28,7 @@ const Basket = observer(() => {
     setList([...uniqueItems]);
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
-  }, [basket.basket.length, basketData, basketData.length, list.length]);
+  }, [basket.basket.length, basketData.length, list.length]);
 
   const removeFromList = index => {
     const newCart = [...list];
@@ -72,11 +72,11 @@ const Basket = observer(() => {
   };
 
   return (
-    <>
+    <div className="pb-3">
       <Row>
-        <h1>Корзина</h1>
+        <h1 className="mb-1">Кошик</h1>
       </Row>
-      <Row>
+      <Row className="text-center">
         <BasketList
           list={list}
           removeCard={removeFromList}
@@ -84,17 +84,17 @@ const Basket = observer(() => {
           reduce={reduceItemCount}
         />
       </Row>
-      <Card>
+      <Card bg="secondary" text="white">
         <Card.Body className="d-flex align-items-center justify-content-around">
           <span>Кількість: {totalAmount} шт.</span>
           <span>Сума: {totalPrice} грн.</span>
         </Card.Body>
       </Card>
       <Row></Row>
-      <Row>
+      <Row className="mt-3">
         <Checkout />
       </Row>
-    </>
+    </div>
   );
 });
 

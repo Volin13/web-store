@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, Card, Col, Row } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { ReactComponent as AddIcon } from '../../assets/basketIcons/arrow-next-small-svgrepo-com.svg';
 import { ReactComponent as ReduceIcon } from '../../assets/basketIcons/arrow-prev-small-svgrepo-com.svg';
 
 const BasketItem = ({ item, index, removeCard, reduceOne, addOne }) => {
-  console.log(item);
   return (
     <Card className="mb-1" style={{ width: '80%' }}>
       <Card.Header>{item.title}</Card.Header>
@@ -25,29 +24,25 @@ const BasketItem = ({ item, index, removeCard, reduceOne, addOne }) => {
             )}
           </Card.Title>
           <Card.Text>
-            <Row className="d-flex align-items-center justify-content-center">
-              <Col md={6}>
-                <div className="d-flex align-items-center justify-content-center p-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      reduceOne(item.id);
-                    }}
-                  >
-                    <ReduceIcon />
-                  </button>
-                  <span>{item.count} шт.</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      addOne(item.id);
-                    }}
-                  >
-                    <AddIcon />
-                  </button>
-                </div>
-              </Col>
-            </Row>
+            <span className="d-flex align-items-center justify-content-center p-1">
+              <button
+                type="button"
+                onClick={() => {
+                  reduceOne(item.id);
+                }}
+              >
+                <ReduceIcon />
+              </button>
+              <span>{item.count} шт.</span>
+              <button
+                type="button"
+                onClick={() => {
+                  addOne(item.id);
+                }}
+              >
+                <AddIcon />
+              </button>
+            </span>
           </Card.Text>
 
           <Button

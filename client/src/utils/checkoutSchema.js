@@ -3,7 +3,9 @@ import * as yup from 'yup';
 const myEmailRegex =
   /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
-export let authSchema = yup.object().shape({
+export const checkoutSchema = yup.object().shape({
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
   email: yup
     .string()
     .matches(myEmailRegex, {
@@ -15,14 +17,8 @@ export let authSchema = yup.object().shape({
     .max(254, 'Ваш імейл занадто довгий')
     .lowercase()
     .required('Введіть ваш імеіл'),
-  password: yup
-    .string()
-    .trim()
-    .matches(
-      /^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ0-9]+(([' -][a-zA-Zа-яА-Я0-9 ])?[a-zA-Zа-яА-Я0-9]*)*$/,
-      'Спеціальні символи не підходять'
-    )
-    .min(6, 'Ваш пароль занадто короткий')
-    .max(16, 'Ваш пароль занадто довгий')
-    .required('Введіть ваш пароль'),
+  city: yup.string().required(),
+  state: yup.string().required(),
+  terminal: yup.string().required(),
+  terms: yup.bool().required().oneOf([true], 'Terms must be accepted'),
 });

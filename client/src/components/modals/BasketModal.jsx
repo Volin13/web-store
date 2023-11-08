@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Card, Modal, NavLink } from 'react-bootstrap';
+import { Button, Card, Modal } from 'react-bootstrap';
+
 import { BASKET_ROUTE } from '../../utils/constants';
 import BasketList from '../basket/BasketList';
+import { NavLink } from 'react-router-dom';
 
 const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const [list, setList] = useState([]);
@@ -40,7 +42,6 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   };
   const addItemCount = id => {
     const listItem = list.find(item => item.id === id);
-    console.log(listItem);
     listItem.count += 1;
     recalculateTotal(list);
     recalculateAmount(list);
@@ -76,7 +77,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   return (
     <Modal size="lg" show={show} onHide={onHide} centered className="text-end">
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Корзина</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">Кошик</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ textAlign: 'center' }}>
         <BasketList
