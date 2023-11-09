@@ -86,13 +86,20 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
           list={list}
           removeCard={removeFromList}
         />
+        <div className="d-flex align-items-end justify-content-end">
+          <Card
+            className="mb-2"
+            bg="secondary"
+            text="white"
+            style={{ width: '50%' }}
+          >
+            <Card.Body className="d-flex align-items-center justify-content-around">
+              <span>Кількість: {totalAmount} шт. </span>
+              <span>Сума: {totalPrice} грн.</span>
+            </Card.Body>
+          </Card>
+        </div>
       </Modal.Body>
-      <Card>
-        <Card.Body className="d-flex align-items-center justify-content-around">
-          <span>Кількість: {totalAmount} шт.</span>
-          <span>Сума: {totalPrice} грн.</span>
-        </Card.Body>
-      </Card>
 
       <Modal.Footer style={{ textAlign: 'center' }}>
         <NavLink to={BASKET_ROUTE}>

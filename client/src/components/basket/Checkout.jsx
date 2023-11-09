@@ -2,17 +2,22 @@ import React, { useRef } from 'react';
 import { useFormik } from 'formik';
 import { Button, Card, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { checkoutSchema } from '../../utils/checkoutSchema';
-import NPterminalFilter from '../UI/UX/NPterminalFilter/NPterminalFilter';
+import NPterminalFilter from '../UI/UX/NPAddressFilters/NPterminalFilter';
+import NPregionsFilter from '../UI/UX/NPAddressFilters/NPregionsFilter';
+import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
 
 const Checkout = ({ list, total }) => {
   const terminalInput = useRef(null);
+  const regionInput = useRef(null);
+  const cityInput = useRef(null);
 
   const formik = useFormik({
     initialValues: {
       firstName: '',
       lastName: '',
       email: '',
-      state: '',
+      region: '',
+      regionRef: '',
       city: '',
       phone: '',
       terminal: '',
@@ -40,6 +45,8 @@ const Checkout = ({ list, total }) => {
           <Card.Body>
             <h2 className="mb-3">Покупець</h2>
             <Row className="mb-3">
+              {/* ІМ'Я */}
+
               <Form.Group as={Col} md="6">
                 <Form.Label>Ім&#39;я</Form.Label>
                 <Form.Control
@@ -56,6 +63,9 @@ const Checkout = ({ list, total }) => {
                   </Form.Control.Feedback>
                 )}
               </Form.Group>
+
+              {/* Прізвище */}
+
               <Form.Group as={Col} md="6">
                 <Form.Label>Прізвище</Form.Label>
                 <Form.Control
@@ -74,6 +84,8 @@ const Checkout = ({ list, total }) => {
               </Form.Group>
             </Row>
             <Row>
+              {/* Email */}
+
               <Form.Group as={Col} md="6">
                 <Form.Label>Email</Form.Label>
                 <InputGroup hasValidation>
@@ -93,6 +105,8 @@ const Checkout = ({ list, total }) => {
                   )}
                 </InputGroup>
               </Form.Group>
+
+              {/* Моб ТЕЛЕФОН */}
 
               <Form.Group as={Col} md="6">
                 <Form.Label>Моб. телефон</Form.Label>
@@ -119,48 +133,29 @@ const Checkout = ({ list, total }) => {
           <Card.Body>
             <h2 className="mb-3">Адреса доставки</h2>
 
+            {/* Область */}
+
             <Row className="mb-3">
               <Form.Group as={Col} md="6">
                 <Form.Label>Область</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="state"
-                  value={formik.values.state}
-                  onChange={formik.handleChange}
-                  isInvalid={formik.touched.state && !formik.errors.state}
-                />
-
-                {formik.touched.state && formik.errors.state && (
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.state}
-                  </Form.Control.Feedback>
-                )}
+                <NPregionsFilter ref={regionInput} formik={formik} />
               </Form.Group>
+
+              {/* МІСТО */}
+
               <Form.Group as={Col} md="6">
                 <Form.Label>Місто</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="city"
-                  value={formik.values.city}
-                  onChange={formik.handleChange}
-                  isInvalid={formik.touched.city && !formik.errors.city}
-                />
-                {formik.touched.city && formik.errors.city && (
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.city}
-                  </Form.Control.Feedback>
-                )}
+
+                <NPcityFilter ref={cityInput} formik={formik} />
               </Form.Group>
             </Row>
+
+            {/* Відділення */}
+
             <Row className="mb-3">
               <Form.Group as={Col} md="6">
                 <Form.Label>№ Відділення (Нова пошта)</Form.Label>
                 <NPterminalFilter ref={terminalInput} formik={formik} />
-                {formik.touched.terminal && formik.errors.terminal && (
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.terminal}
-                  </Form.Control.Feedback>
-                )}
               </Form.Group>
             </Row>
           </Card.Body>
