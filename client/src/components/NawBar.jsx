@@ -7,6 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   ADMIN_ROUTE,
+  BASKET_ROUTE,
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
@@ -26,23 +27,23 @@ const NavBar = observer(() => {
   const authLocation =
     location.pathname === LOGIN_ROUTE ||
     location.pathname === REGISTRATION_ROUTE;
-
+  const basketLocation = location.pathname === BASKET_ROUTE;
   const { user, basket } = useContext(Context);
   const logOut = () => {
     user.setUser({});
     user.setIsAuth(false);
-    localStorage.removeItem('basket');
+    sessionStorage.removeItem('basket');
     localStorage.removeItem('token');
     navigate(LOGIN_ROUTE);
   };
-  const localbasketData = localStorage.getItem('basket');
+  const localbasketData = sessionStorage.getItem('basket');
   let localBasket = null;
   localbasketData
     ? (localBasket = JSON.parse(localbasketData))
     : (localBasket = basket.basket);
 
   useEffect(() => {
-    setBasketLength(localBasket.length);
+    setBasketLength(localBasket?.length);
   }, [basket.basket.length, localBasket.length]);
 
   return (
@@ -57,38 +58,40 @@ const NavBar = observer(() => {
 
           {user.isAuth ? (
             <Nav className="ml-auto" style={{ color: 'white' }}>
-              <button
-                className="d-flex align-items-center justify-content-center"
-                style={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  height: '38px',
-                  width: '38px',
-                  position: 'relative',
-                  outline: '2px ridge #ffffff99',
-                }}
-                type="button"
-                onClick={() => setBasketVisible(true)}
-              >
-                <Image width={30} height={30} src={basketImg} />
-                {basketLength > 0 && (
-                  <div
-                    style={{
-                      width: 15,
-                      height: 15,
-                      fontSize: 10,
-                      color: 'white',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: '-5px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1cb4e3',
-                    }}
-                  >
-                    {basketLength}
-                  </div>
-                )}
-              </button>
+              {!basketLocation && (
+                <button
+                  className="d-flex align-items-center justify-content-center"
+                  style={{
+                    borderRadius: '50%',
+                    backgroundColor: 'white',
+                    height: '38px',
+                    width: '38px',
+                    position: 'relative',
+                    outline: '2px ridge #ffffff99',
+                  }}
+                  type="button"
+                  onClick={() => setBasketVisible(true)}
+                >
+                  <Image width={30} height={30} src={basketImg} />
+                  {basketLength > 0 && (
+                    <div
+                      style={{
+                        width: 15,
+                        height: 15,
+                        fontSize: 10,
+                        color: 'white',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '-5px',
+                        borderRadius: '50%',
+                        backgroundColor: '#1cb4e3',
+                      }}
+                    >
+                      {basketLength}
+                    </div>
+                  )}
+                </button>
+              )}
               <NavLink to={ADMIN_ROUTE}>
                 <Button style={{ marginLeft: '1rem' }} variant="outline-light">
                   Адміністратору

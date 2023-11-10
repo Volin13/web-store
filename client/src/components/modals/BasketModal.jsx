@@ -4,12 +4,13 @@ import { Button, Card, Modal } from 'react-bootstrap';
 
 import { BASKET_ROUTE } from '../../utils/constants';
 import BasketList from '../basket/BasketList';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const [list, setList] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const uniqueItems = [];
@@ -25,16 +26,16 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     setList([...uniqueItems]);
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
-  }, [localBasket, localBasket.length, basket.basket.length]);
+  }, [localBasket, localBasket?.length, basket.basket.length]);
 
   const removeFromList = index => {
     const newCart = [...list];
     newCart.splice(index, 1);
     basket.setBasket(newCart);
     if (newCart) {
-      localStorage.setItem('basket', newCart);
+      sessionStorage.setItem('basket', newCart);
     } else {
-      localStorage.removeItem('basket');
+      sessionStorage.removeItem('basket');
     }
     setList(newCart);
 
@@ -45,7 +46,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     listItem.count += 1;
     recalculateTotal(list);
     recalculateAmount(list);
-    localStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', list);
   };
 
   const reduceItemCount = id => {
@@ -59,7 +60,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     }
     recalculateTotal(list);
     recalculateAmount(list);
-    localStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', list);
   };
 
   const recalculateTotal = cartItems => {
@@ -79,38 +80,41 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">Кошик</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ textAlign: 'center' }}>
+      <Modal.Body className="pt-0 pb-0" style={{ textAlign: 'center' }}>
         <BasketList
           addOne={addItemCount}
           reduceOne={reduceItemCount}
           list={list}
           removeCard={removeFromList}
         />
-        <div className="d-flex align-items-end justify-content-end">
-          <Card
-            className="mb-2"
-            bg="secondary"
-            text="white"
-            style={{ width: '50%' }}
-          >
-            <Card.Body className="d-flex align-items-center justify-content-around">
-              <span>Кількість: {totalAmount} шт. </span>
-              <span>Сума: {totalPrice} грн.</span>
-            </Card.Body>
-          </Card>
-        </div>
+        {totalAmount !== 0 && (
+          <div className="d-flex align-items-end justify-content-end">
+            <Card
+              className="mb-2"
+              bg="secondary"
+              text="white"
+              style={{ width: '50%' }}
+            >
+              <Card.Body className="d-flex align-items-center justify-content-around">
+                <span>Кількість: {totalAmount} шт. </span>
+                <span>Сума: {totalPrice} грн.</span>
+              </Card.Body>
+            </Card>
+          </div>
+        )}
       </Modal.Body>
 
       <Modal.Footer style={{ textAlign: 'center' }}>
-        <NavLink to={BASKET_ROUTE}>
-          <Button
-            disabled={totalAmount === 0}
-            variant={'info'}
-            onClick={onHide}
-          >
-            Оформити замовлення
-          </Button>
-        </NavLink>
+        <Button
+          disabled={totalAmount === 0}
+          variant={'info'}
+          onClick={() => {
+            navigate(BASKET_ROUTE);
+            onHide();
+          }}
+        >
+          Оформити замовлення
+        </Button>
       </Modal.Footer>
     </Modal>
   );

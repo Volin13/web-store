@@ -1,13 +1,18 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { fetchNovaPoshtaRegions } from '../../../../http/npAPI';
+import updateDataOnceAMonth from '../../../../utils/updateDataOnceAMonth ';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
 
 const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
   const [regionInput, setRegionInput] = useState('');
+  const [onShow, setOnShow] = useState(false);
+
   useEffect(() => {
-    fetchNovaPoshtaRegions('').then(data => setNpData(data));
+    const storageList = updateDataOnceAMonth();
+    setNpData(storageList);
+    // fetchNovaPoshtaRegions('').then(data => setNpData(data));
   }, []);
 
   const hendleInputChange = value => {
@@ -23,10 +28,11 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
       <CheckoutDropdown
         list={npData}
         setInput={setRegionInput}
-        formik={formik}
-        inputName="region"
+        setOnShow={setOnShow}
+        onShow={onShow}
       >
         <Form.Control
+          ref={ref}
           type="text"
           name="region"
           value={regionInput}

@@ -40,18 +40,17 @@ export async function fetchNovaPoshtaRegions() {
     return toast.error('Помилка запиту до Нової пошти, спробуйте пізніше');
   }
 }
-export async function fetchNovaPoshtaCities(areaRef, str) {
+export async function fetchNovaPoshtaCities(str) {
   try {
     const response = await axios.post(apiUrl, {
       apiKey: apiKey,
       modelName: modelName,
       calledMethod: 'getSettlements',
       methodProperties: {
-        AreaRef: areaRef,
         Warehouse: '1',
         FindByString: str,
         Page: '1',
-        Limit: 50,
+        Limit: 20,
       },
     });
     const data = response.data;

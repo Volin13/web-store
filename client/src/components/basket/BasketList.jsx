@@ -4,11 +4,19 @@ import BasketItem from './BasketItem';
 const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
   return (
     <div
-      className="d-flex align-items-center justify-content-center mb-2"
-      style={{ height: '45vh', overflow: 'auto' }}
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: '20vh' }}
     >
-      {list.length > 0 ? (
-        <>
+      {list?.length > 0 ? (
+        <ul
+          className="d-flex align-items-center justify-content-center mb-2 "
+          style={{
+            height: '50vh',
+            overflow: 'auto',
+            paddingTop: '10px',
+            width: '100%',
+          }}
+        >
           {list.map((item, index) => (
             <BasketItem
               addOne={addOne}
@@ -19,9 +27,9 @@ const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
               removeCard={removeCard}
             />
           ))}
-        </>
+        </ul>
       ) : (
-        <h2>Ваша Кошик порожня</h2>
+        <h2>Ваш кошик порожній</h2>
       )}
     </div>
   );

@@ -17,7 +17,6 @@ const Checkout = ({ list, total }) => {
       lastName: '',
       email: '',
       region: '',
-      regionRef: '',
       city: '',
       phone: '',
       terminal: '',

@@ -27,7 +27,7 @@ const Device = () => {
     });
 
     toast.info(`${device.name} було додано до корзини`);
-    localStorage.setItem('basket', JSON.stringify(basket.basket));
+    sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
 
   return (

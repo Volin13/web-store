@@ -4,6 +4,7 @@ import { Card, Row } from 'react-bootstrap';
 import BasketList from '../basket/BasketList';
 import Checkout from './Checkout';
 import { Context } from '../..';
+import CountUp from 'react-countup';
 
 const Basket = observer(() => {
   const [list, setList] = useState([]);
@@ -11,7 +12,7 @@ const Basket = observer(() => {
   const [totalAmount, setTotalAmount] = useState(0);
 
   const { basket } = useContext(Context);
-  const localBasket = localStorage.getItem('basket');
+  const localBasket = sessionStorage.getItem('basket');
   const basketData = JSON.parse(localBasket);
 
   useEffect(() => {
@@ -28,13 +29,14 @@ const Basket = observer(() => {
     setList([...uniqueItems]);
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
-  }, [basket.basket.length, basketData.length, list.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [basket.basket.length, basketData?.length, list?.length]);
 
   const removeFromList = index => {
     const newCart = [...list];
     newCart.splice(index, 1);
     basket.setBasket(newCart);
-    localStorage.setItem('basket', newCart);
+    sessionStorage.setItem('basket', newCart);
     setList(newCart);
 
     recalculateTotal(newCart);
@@ -43,7 +45,7 @@ const Basket = observer(() => {
     const listItem = list.find(item => item.id === id);
     listItem.count = +1;
     recalculateTotal(list);
-    localStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', list);
   };
 
   const reduceItemCount = id => {
@@ -56,7 +58,7 @@ const Basket = observer(() => {
       setList(list);
     }
     recalculateTotal(list);
-    localStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', list);
   };
 
   const recalculateTotal = cartItems => {
@@ -86,8 +88,12 @@ const Basket = observer(() => {
       </Row>
       <Card bg="secondary" text="white">
         <Card.Body className="d-flex align-items-center justify-content-around">
-          <span>Кількість: {totalAmount} шт.</span>
-          <span>Сума: {totalPrice} грн.</span>
+          <span>
+            Кількість: <CountUp start={0} end={+totalAmount} duration={2} /> шт.
+          </span>
+          <span>
+            Сума: <CountUp start={0} end={+totalPrice} duration={2} /> грн.
+          </span>
         </Card.Body>
       </Card>
       <Row></Row>
