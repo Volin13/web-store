@@ -82,6 +82,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       </Modal.Header>
       <Modal.Body className="pt-0 pb-0" style={{ textAlign: 'center' }}>
         <BasketList
+          closeModal={onHide}
           addOne={addItemCount}
           reduceOne={reduceItemCount}
           list={list}

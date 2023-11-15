@@ -1,7 +1,7 @@
 import React from 'react';
 import BasketItem from './BasketItem';
 
-const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
+const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
   return (
     <div
       className="d-flex align-items-center justify-content-center"
@@ -19,6 +19,7 @@ const BasketList = ({ list, removeCard, reduceOne, addOne }) => {
         >
           {list.map((item, index) => (
             <BasketItem
+              closeModal={closeModal}
               addOne={addOne}
               reduceOne={reduceOne}
               key={index}

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Col } from 'react-bootstrap';
 
 const CustomMenu = React.forwardRef(
   ({ children, className, 'aria-labelledby': labeledBy }, ref) => {
-    const [value, setValue] = useState('');
-
+    const prefix =
+      className.substring(0, className.indexOf(' ')) !== 'dropdown-menu'
+        ? className.substring(0, className.indexOf(' ')).toLowerCase()
+        : '';
     return (
       <Col
         style={{ maxHeight: 150, overflow: 'auto', width: '100%' }}
@@ -15,7 +17,8 @@ const CustomMenu = React.forwardRef(
         <ul>
           {React.Children.toArray(children).filter(
             child =>
-              !value || child.props.children.toLowerCase().startsWith(value)
+              prefix === '' ||
+              child.props.children.toLowerCase().startsWith(prefix)
           )}
         </ul>
       </Col>

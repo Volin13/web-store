@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  font-size: 40px;
+  font-size: 1.75rem;
   line-height: 0.75;
 }
 .rating_body {
@@ -47,4 +47,10 @@
   font-size: 55%;
   line-height: 1;
   padding: 0 0 0 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .rating {
+    justify-content: flex-start;
+  }
 }

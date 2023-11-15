@@ -6,15 +6,15 @@ import _debounce from 'lodash/debounce';
 
 const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
-  const [officeInput, setOfficeInput] = useState('№');
+  const [officeInput, setOfficeInput] = useState('');
   const [onShow, setOnShow] = useState(false);
 
   useEffect(() => {
     fetchNovaPoshtaOffice('').then(data => setNpData(data));
   }, []);
   const hendlePostDataChange = _debounce(async value => {
-    if (value.trim()) {
-      const number = value.substring(1);
+    const number = value.trim();
+    if (number) {
       const data = await fetchNovaPoshtaOffice(formik.values.city, number);
       setNpData(data);
     } else {
@@ -22,13 +22,13 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
     }
   }, 300);
   const hendleInputChange = value => {
-    if (!officeInput) {
-      setOfficeInput('№');
+    if (!value) {
+      setOfficeInput('');
     } else {
       setOfficeInput(value);
     }
   };
-
+  console.log(officeInput);
   return (
     <>
       <CheckoutDropdown
@@ -36,6 +36,8 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
         setInput={setOfficeInput}
         setOnShow={setOnShow}
         onShow={onShow}
+        inputName="terminal"
+        formik={formik}
       >
         <Form.Control
           ref={ref}
@@ -51,8 +53,9 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
           }}
           onBlur={e => {
             hendleInputChange(e.target.value);
+            formik.handleBlur();
           }}
-          isInvalid={formik.touched.terminal && !formik.errors.terminal}
+          isInvalid={formik.touched.terminal && !!formik.errors.terminal}
         />
       </CheckoutDropdown>
       {formik.touched.terminal && formik.errors.terminal && (

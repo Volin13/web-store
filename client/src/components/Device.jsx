@@ -34,10 +34,16 @@ const Device = () => {
     <Container className="mt-3">
       <Row className="d-flex align-items-center text-center">
         <Col md={4}>
-          <Image
-            width={'100%'}
-            src={process.env.REACT_APP_API_URL + device.img}
-          />
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ minHeight: '300px' }}
+          >
+            <Image
+              width={'100%'}
+              src={process.env.REACT_APP_API_URL + device.img}
+              fluid
+            />
+          </div>
         </Col>
         <Col md={4}>
           <h1
@@ -87,15 +93,19 @@ const Device = () => {
       </Row>
       <Row className=" mt-3 d-flex flex-column align-items-center py-3">
         <Row className="d-flex justify-content-between mb-1">
-          <h2 className="mb-0" style={{ maxWidth: '50%' }}>
-            Характеристики
-          </h2>
-          <Rating
-            userId={user.id}
-            deviceId={device.id}
-            apiRating={device.rating}
-            isAuth={user.isAuth}
-          />
+          <Col md={6}>
+            <h2 className="mb-0" style={{ maxWidth: '50%' }}>
+              Характеристики
+            </h2>
+          </Col>
+          <Col md={6}>
+            <Rating
+              userId={user.id}
+              deviceId={device.id}
+              apiRating={device.rating}
+              isAuth={user.isAuth}
+            />
+          </Col>
         </Row>
         {device.info.map((info, index) => (
           <Row

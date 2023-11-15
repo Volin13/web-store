@@ -1,19 +1,48 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as AddIcon } from '../../assets/basketIcons/arrow-next-small-svgrepo-com.svg';
 import { ReactComponent as ReduceIcon } from '../../assets/basketIcons/arrow-prev-small-svgrepo-com.svg';
+import { DEVICE_ROUTE } from '../../utils/constants';
 
-const BasketItem = ({ item, index, removeCard, reduceOne, addOne }) => {
+const BasketItem = ({
+  item,
+  index,
+  removeCard,
+  reduceOne,
+  addOne,
+  closeModal,
+}) => {
+  const navigate = useNavigate();
   return (
     <Card className="mb-1" style={{ width: '80%' }}>
-      <Card.Header>{item.title}</Card.Header>
+      <Card.Header>
+        <button
+          type="button"
+          onClick={() => {
+            navigate(DEVICE_ROUTE + '/' + item.id);
+            closeModal();
+          }}
+          style={{ width: '100%' }}
+        >
+          {item.title}
+        </button>
+      </Card.Header>
       <div className="d-flex align-items-center justify-content-around p-3">
-        <Card.Img
-          style={{ width: 'auto' }}
-          height="130px"
-          variant="top"
-          src={process.env.REACT_APP_API_URL + item.img}
-        />
+        <button
+          type="button"
+          onClick={() => {
+            navigate(DEVICE_ROUTE + '/' + item.id);
+            closeModal();
+          }}
+        >
+          <Card.Img
+            style={{ width: 'auto' }}
+            height="130px"
+            variant="top"
+            src={process.env.REACT_APP_API_URL + item.img}
+          />
+        </button>
         <Card.Body style={{ width: '50%', flex: ' 0 1 auto' }}>
           <Card.Title>
             {item.price * item.count} грн.{' '}

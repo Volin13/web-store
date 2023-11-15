@@ -17,7 +17,7 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
     ratingActive.current.style.width = `${value * 10}%`;
   };
   return (
-    <div ref={rating} className={css.rating} style={{ maxWidth: '50%' }}>
+    <div ref={rating} className={css.rating}>
       <div className={css.rating_body}>
         <div ref={ratingActive} className={css.rating_active}></div>
         <div className={css.rating_items}>

@@ -36,7 +36,8 @@ const Checkout = ({ list, total }) => {
   const submitOrder = order => {
     console.log('Замовлення відправлено:', order);
   };
-
+  const isValid = checkoutSchema.isValidSync(formik.values);
+  console.log(formik.values);
   return (
     <>
       <Form noValidate onSubmit={handleSubmit}>
@@ -46,14 +47,17 @@ const Checkout = ({ list, total }) => {
             <Row className="mb-3">
               {/* ІМ'Я */}
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Ім&#39;я</Form.Label>
                 <Form.Control
                   type="text"
                   name="firstName"
                   value={formik.values.firstName}
                   onChange={formik.handleChange}
-                  isValid={formik.touched.firstName && !formik.errors.firstName}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    formik.touched.firstName && !!formik.errors.firstName
+                  }
                 />
 
                 {formik.touched.firstName && formik.errors.firstName && (
@@ -65,14 +69,17 @@ const Checkout = ({ list, total }) => {
 
               {/* Прізвище */}
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Прізвище</Form.Label>
                 <Form.Control
                   type="text"
                   name="lastName"
                   value={formik.values.lastName}
                   onChange={formik.handleChange}
-                  isValid={formik.touched.lastName && !formik.errors.lastName}
+                  onBlur={formik.handleBlur}
+                  isInvalid={
+                    formik.touched.lastName && !!formik.errors.lastName
+                  }
                 />
 
                 {formik.touched.lastName && formik.errors.lastName && (
@@ -85,7 +92,7 @@ const Checkout = ({ list, total }) => {
             <Row>
               {/* Email */}
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Email</Form.Label>
                 <InputGroup hasValidation>
                   <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -95,7 +102,8 @@ const Checkout = ({ list, total }) => {
                     name="email"
                     value={formik.values.email}
                     onChange={formik.handleChange}
-                    isInvalid={formik.touched.email && !formik.errors.email}
+                    onBlur={formik.handleBlur}
+                    isInvalid={formik.touched.email && !!formik.errors.email}
                   />
                   {formik.touched.email && formik.errors.email && (
                     <Form.Control.Feedback type="invalid">
@@ -107,16 +115,17 @@ const Checkout = ({ list, total }) => {
 
               {/* Моб ТЕЛЕФОН */}
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Моб. телефон</Form.Label>
                 <Form.Control
                   type="tel"
                   placeholder="+38(0ХХ)ХХХХХХХ"
-                  maxLength="10"
+                  maxLength="13"
                   name="phone"
                   value={formik.values.phone}
                   onChange={formik.handleChange}
-                  isInvalid={formik.touched.phone && !formik.errors.phone}
+                  onBlur={formik.handleBlur}
+                  isInvalid={formik.touched.phone && !!formik.errors.phone}
                 />
                 {formik.touched.phone && formik.errors.phone && (
                   <Form.Control.Feedback type="invalid">
@@ -135,14 +144,14 @@ const Checkout = ({ list, total }) => {
             {/* Область */}
 
             <Row className="mb-3">
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Область</Form.Label>
                 <NPregionsFilter ref={regionInput} formik={formik} />
               </Form.Group>
 
               {/* МІСТО */}
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>Місто</Form.Label>
 
                 <NPcityFilter ref={cityInput} formik={formik} />
@@ -152,7 +161,7 @@ const Checkout = ({ list, total }) => {
             {/* Відділення */}
 
             <Row className="mb-3">
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
                 <Form.Label>№ Відділення (Нова пошта)</Form.Label>
                 <NPterminalFilter ref={terminalInput} formik={formik} />
               </Form.Group>
@@ -164,13 +173,18 @@ const Checkout = ({ list, total }) => {
             <Row>
               <Form.Group>
                 <Form.Label>Коментар</Form.Label>
-                <Form.Control name="comment" as="textarea" rows={3} />
+                <Form.Control
+                  placeholder="Додайте деталі замовлення/доставки"
+                  name="comment"
+                  as="textarea"
+                  rows={3}
+                />
               </Form.Group>
             </Row>
           </Card.Body>
         </Card>
         <div className="text-end">
-          <Button variant="info" type="submit">
+          <Button variant="info" disabled={!isValid} type="button">
             Оформити замовлення
           </Button>
         </div>

@@ -3,20 +3,30 @@ import { Dropdown } from 'react-bootstrap';
 import CustomMenu from './CustomMenu';
 import CustomToggle from './CustomToggle';
 
-const CheckoutDropdown = ({ setOnShow, onShow, list, children, setInput }) => {
+const CheckoutDropdown = ({
+  setOnShow,
+  onShow,
+  list,
+  children,
+  formik,
+  inputName,
+  setInput,
+  value = '',
+}) => {
   return (
     <Dropdown>
       <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
         {children}
       </Dropdown.Toggle>
       {list?.length > 0 && (
-        <Dropdown.Menu as={CustomMenu} show={onShow}>
+        <Dropdown.Menu className={value} as={CustomMenu} show={onShow}>
           {list?.map(item => (
             <Dropdown.Item
               key={item.Ref}
               onClick={() => {
                 setOnShow(false);
                 setInput(item.Description);
+                formik.setFieldValue(inputName, item.Description);
               }}
               eventKey={item.Description}
             >

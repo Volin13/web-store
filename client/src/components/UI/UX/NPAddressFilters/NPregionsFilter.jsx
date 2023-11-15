@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { fetchNovaPoshtaRegions } from '../../../../http/npAPI';
 import updateDataOnceAMonth from '../../../../utils/updateDataOnceAMonth ';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
 
@@ -12,24 +11,25 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   useEffect(() => {
     const storageList = updateDataOnceAMonth();
     setNpData(storageList);
-    // fetchNovaPoshtaRegions('').then(data => setNpData(data));
   }, []);
 
   const hendleInputChange = value => {
     if (!value.trim()) {
       setRegionInput('');
     } else {
-      setRegionInput(`${value} обл.`);
+      setRegionInput(`${value}`);
     }
   };
-
   return (
     <>
       <CheckoutDropdown
+        value={regionInput}
         list={npData}
         setInput={setRegionInput}
         setOnShow={setOnShow}
         onShow={onShow}
+        inputName="region"
+        formik={formik}
       >
         <Form.Control
           ref={ref}
@@ -41,7 +41,8 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
             hendleInputChange(inputValue);
             formik.setFieldValue('region', inputValue);
           }}
-          isInvalid={formik.touched.region && !formik.errors.region}
+          onBlur={formik.handleBlur}
+          isInvalid={formik.touched.region && !!formik.errors.region}
         />
       </CheckoutDropdown>
       {formik.touched.region && formik.errors.region && (

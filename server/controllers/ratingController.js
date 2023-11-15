@@ -9,7 +9,7 @@ class RatingController {
       const voted = await Rating.findOne({ where: { userId } });
       const deviceRating = await Rating.findOne({ where: { deviceId } });
       if (voted && deviceRating) {
-        return next(ApiError.forbidden("Ви уже голосували за цей девайс"));
+        return next(ApiError.forbidden("Ви уже оцінили цей девайс"));
       }
       const rating = await Rating.create({ rate, userId, deviceId });
       const device = await Device.findByPk(deviceId);

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { fetchNovaPoshtaCities } from '../../../../http/npAPI';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
@@ -9,12 +9,10 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
   const [cityInput, setCityInput] = useState('');
   const [onShow, setOnShow] = useState(false);
 
-  useEffect(() => {
-    fetchNovaPoshtaCities('').then(data => setNpData(data));
-  }, []);
   const hendlePostDataChange = _debounce(async value => {
-    if (value.trim()) {
-      const data = await fetchNovaPoshtaCities(value);
+    const city = value.trim();
+    if (city) {
+      const data = await fetchNovaPoshtaCities(city);
       setNpData(data);
     } else {
       setNpData([]);
@@ -31,10 +29,13 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
   return (
     <>
       <CheckoutDropdown
+        value={cityInput}
         list={npData}
         setInput={setCityInput}
         setOnShow={setOnShow}
         onShow={onShow}
+        inputName="city"
+        formik={formik}
       >
         <Form.Control
           ref={ref}
@@ -50,8 +51,9 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
           }}
           onBlur={e => {
             hendleInputChange(e.target.value);
+            formik.handleBlur();
           }}
-          isInvalid={formik.touched.terminal && !formik.errors.terminal}
+          isInvalid={formik.touched.terminal && !!formik.errors.terminal}
         />
       </CheckoutDropdown>
       {formik.touched.city && formik.errors.city && (
