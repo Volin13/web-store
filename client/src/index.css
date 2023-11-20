@@ -131,3 +131,63 @@ table {
 hr {
   margin: 0;
 }
+/* DEVICE LIST */
+.deviceItem_imgThumb {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+}
+.deviceItem_img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.basket_btn {
+  border-radius: 50%;
+  background-color: white;
+  height: 38px;
+  width: 38px;
+  position: relative;
+  outline: 2px ridge #ffffff99;
+  transition: all 500ms;
+}
+.basket_btn:hover,
+.basket_btn:focus {
+  scale: 1.15;
+}
+
+/* NAV BAR */
+
+.basket_btn_count {
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: -5px;
+  border-radius: 50%;
+  background-color: #1cb4e3;
+}
+
+.navBar_mainLogo {
+  transition: all 500ms;
+  color: white;
+}
+
+.navBar_mainLogo_image {
+  animation: drag 3s linear infinite;
+}
+@keyframes drag {
+  0% {
+    transform: perspective(400px) rotateY(45deg);
+  }
+
+  100% {
+    transform: perspective(400px) rotateY(-45deg);
+  }
+}
+.navBar_mainLogo:hover,
+.navBar_mainLogo:focus {
+  scale: 1.15;
+}

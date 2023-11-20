@@ -3,10 +3,10 @@ import React, { useContext } from 'react';
 import { useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Context } from '../..';
-import BrandBar from '../../components/BrandBar';
+import BrandBar from '../../components/Bars/BrandBar';
 import DeviceList from '../../components/DeviceList';
 import Pages from '../../components/Pages';
-import TypeBar from '../../components/TypeBar';
+import TypeBar from '../../components/Bars/TypeBar';
 import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
 
 const Shop = observer(() => {
@@ -36,9 +36,9 @@ const Shop = observer(() => {
       <Row className="mt-2">
         <Col md={3}>
           <TypeBar />
+          <BrandBar />
         </Col>
         <Col md={9}>
-          <BrandBar />
           <DeviceList />
           <Pages />
         </Col>

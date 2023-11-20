@@ -19,15 +19,10 @@ const DeviceItem = ({ device }) => {
       onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
     >
       <Card style={{ width: 150, cursor: 'pointer' }} border={'light'}>
-        <div
-          className="d-flex justify-content-between align-items-center"
-          style={{ minHeight: '150px' }}
-        >
+        <div className="d-flex justify-content-center align-items-center deviceItem_imgThumb">
           <Image
-            width={150}
-            height={150}
+            className="deviceItem_img"
             src={process.env.REACT_APP_API_URL + device.img}
-            fluid
           />
         </div>
         <div className="text-black-50 d-flex justify-content-between align-items-center">

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observe } from 'mobx';
 
 export default class BasketStore {
   constructor() {
@@ -6,6 +6,11 @@ export default class BasketStore {
     this._order = {};
 
     makeAutoObservable(this);
+    observe(this._basket, change => {
+      if (change.type === 'splice' || change.type === 'update') {
+        console.log('Кошик змінився:', this._basket);
+      }
+    });
   }
 
   setBasket(devices) {

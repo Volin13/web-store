@@ -28,7 +28,6 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
       setOfficeInput(value);
     }
   };
-  console.log(officeInput);
   return (
     <>
       <CheckoutDropdown
@@ -51,10 +50,7 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
 
             formik.setFieldValue('terminal', inputValue);
           }}
-          onBlur={e => {
-            hendleInputChange(e.target.value);
-            formik.handleBlur();
-          }}
+          onBlur={formik.handleBlur}
           isInvalid={formik.touched.terminal && !!formik.errors.terminal}
         />
       </CheckoutDropdown>

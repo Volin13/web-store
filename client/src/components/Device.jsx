@@ -3,10 +3,10 @@ import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { fetchSingleDevice } from '../http/deviceApi';
 import CountUp from 'react-countup';
-import packageImg from '../assets/shopIcons/packageImg.svg';
 import Rating from './UI/UX/Rating/Rating';
 import { Context } from '..';
 import { toast } from 'react-toastify';
+import PackageIcon from './UI/UX/PackageImg/PackageIcon';
 
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
@@ -26,7 +26,7 @@ const Device = () => {
       img: device.img,
     });
 
-    toast.info(`${device.name} було додано до корзини`);
+    toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
 
@@ -72,7 +72,7 @@ const Device = () => {
               <CountUp start={0} end={+device.price} duration={2} />
               грн.
             </h3>
-            <Image width={100} height={100} src={packageImg} />
+            <PackageIcon />
             {user.isAuth ? (
               <Button
                 variant={clickedState ? 'info' : 'outline-dark'}

@@ -49,10 +49,7 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
             setOnShow(true);
             formik.setFieldValue('terminal', inputValue);
           }}
-          onBlur={e => {
-            hendleInputChange(e.target.value);
-            formik.handleBlur();
-          }}
+          onBlur={formik.handleBlur}
           isInvalid={formik.touched.terminal && !!formik.errors.terminal}
         />
       </CheckoutDropdown>

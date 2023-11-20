@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from '.';
 import AppRouter from './components/AppRouter';
-import NavBar from './components/NawBar';
+import NavBar from './components/Bars/NawBar';
 import Spiner from './components/UI/UX/Spinner/Spinner';
 import { check } from './http/userAPI';
 
