@@ -3,18 +3,16 @@ import BasketItem from './BasketItem';
 
 const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
   return (
-    <div
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: '20vh' }}
-    >
+    <div style={{ minHeight: '20vh' }}>
       {list?.length > 0 ? (
         <ul
-          className="d-flex align-items-center justify-content-center mb-2 "
+          className="d-flex flex-column align-items-center mb-2 "
           style={{
-            height: '50vh',
+            maxHeight: '50vh',
             overflow: 'auto',
             paddingTop: '10px',
             width: '100%',
+            margin: '0 auto',
           }}
         >
           {list.map((item, index) => (

@@ -33,7 +33,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     newCart.splice(index, 1);
     basket.setBasket(newCart);
     if (newCart) {
-      sessionStorage.setItem('basket', newCart);
+      sessionStorage.setItem('basket', JSON.stringify(newCart));
     } else {
       sessionStorage.removeItem('basket');
     }
@@ -46,7 +46,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     listItem.count += 1;
     recalculateTotal(list);
     recalculateAmount(list);
-    sessionStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', JSON.stringify(list));
   };
 
   const reduceItemCount = id => {
@@ -60,7 +60,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     }
     recalculateTotal(list);
     recalculateAmount(list);
-    sessionStorage.setItem('basket', list);
+    sessionStorage.setItem('basket', JSON.stringify(list));
   };
 
   const recalculateTotal = cartItems => {
@@ -89,12 +89,12 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
           removeCard={removeFromList}
         />
         {totalAmount !== 0 && (
-          <div className="d-flex align-items-end justify-content-end">
+          <div className="text-end">
             <Card
-              className="mb-2"
+              className="mb-2 text-center"
               bg="secondary"
               text="white"
-              style={{ width: '50%' }}
+              style={{ width: '50%', margin: '0 0 0 auto' }}
             >
               <Card.Body className="d-flex align-items-center justify-content-around">
                 <span>Кількість: {totalAmount} шт. </span>

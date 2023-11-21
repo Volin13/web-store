@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import { Button, Card, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { checkoutSchema } from '../../utils/checkoutSchema';
 import NPterminalFilter from '../UI/UX/NPAddressFilters/NPterminalFilter';
 import NPregionsFilter from '../UI/UX/NPAddressFilters/NPregionsFilter';
 import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
+import { createOrder } from '../../http/ordersApi';
 
-const Checkout = ({ list, total }) => {
+const Checkout = ({ list, total, user }) => {
   const terminalInput = useRef(null);
   const regionInput = useRef(null);
   const cityInput = useRef(null);
@@ -21,6 +22,7 @@ const Checkout = ({ list, total }) => {
       phone: '',
       terminal: '',
       comment: '',
+      total: '',
     },
     validationSchema: checkoutSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -29,15 +31,18 @@ const Checkout = ({ list, total }) => {
     },
   });
 
+  useEffect(() => {
+    formik.setFieldValue('total', total);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSubmit = () => {
-    const order = { list, total };
-    submitOrder(order);
+    createOrder(user, formik.values, JSON.stringify(list));
   };
-  const submitOrder = order => {
-    console.log('Замовлення відправлено:', order);
-  };
+
   const isValid = checkoutSchema.isValidSync(formik.values);
   console.log(formik.values);
+  console.log(formik.errors);
   return (
     <>
       <Form noValidate onSubmit={handleSubmit}>
@@ -47,7 +52,7 @@ const Checkout = ({ list, total }) => {
             <Row className="mb-3">
               {/* ІМ'Я */}
 
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Ім&#39;я</Form.Label>
                 <Form.Control
                   type="text"
@@ -69,7 +74,7 @@ const Checkout = ({ list, total }) => {
 
               {/* Прізвище */}
 
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Прізвище</Form.Label>
                 <Form.Control
                   type="text"
@@ -92,7 +97,7 @@ const Checkout = ({ list, total }) => {
             <Row>
               {/* Email */}
 
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Email</Form.Label>
                 <InputGroup hasValidation>
                   <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -115,7 +120,7 @@ const Checkout = ({ list, total }) => {
 
               {/* Моб ТЕЛЕФОН */}
 
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Моб. телефон</Form.Label>
                 <Form.Control
                   type="tel"
@@ -144,14 +149,14 @@ const Checkout = ({ list, total }) => {
             {/* Область */}
 
             <Row className="mb-3">
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Область</Form.Label>
                 <NPregionsFilter ref={regionInput} formik={formik} />
               </Form.Group>
 
               {/* МІСТО */}
 
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>Місто</Form.Label>
 
                 <NPcityFilter ref={cityInput} formik={formik} />
@@ -161,7 +166,7 @@ const Checkout = ({ list, total }) => {
             {/* Відділення */}
 
             <Row className="mb-3">
-              <Form.Group as={Col} md="6" style={{ minHeight: '100px' }}>
+              <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
                 <Form.Label>№ Відділення (Нова пошта)</Form.Label>
                 <NPterminalFilter ref={terminalInput} formik={formik} />
               </Form.Group>
@@ -176,6 +181,7 @@ const Checkout = ({ list, total }) => {
                 <Form.Control
                   placeholder="Додайте деталі замовлення/доставки"
                   name="comment"
+                  onChange={formik.handleChange}
                   as="textarea"
                   rows={3}
                 />

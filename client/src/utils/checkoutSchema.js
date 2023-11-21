@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 const myEmailRegex =
   /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const ukrainianRegex = /^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґЁё\d\s-]+$/;
+const ukrainianRegex = /^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґЁё\d\s'’-]+$/;
 const phoneRegex = /^\+?[\d-]{9,15}$/;
 
 export const checkoutSchema = yup.object().shape({
@@ -47,7 +47,7 @@ export const checkoutSchema = yup.object().shape({
     .required('Оберіть місто з випадаючого списку'),
   phone: yup
     .string()
-    .length(10, 'Ваш номер телефону занадто короткий')
+    .min(10, 'Ваш номер телефону занадто короткий')
     .matches(phoneRegex, {
       message: 'Номер не має включати спец. символи та літери',
       excludeEmptyString: true,
@@ -55,6 +55,6 @@ export const checkoutSchema = yup.object().shape({
     .test('startsWith+380', 'Номер телефону має починатися з +380', value => {
       return value && value.startsWith('+380');
     })
-    .required(),
+    .required('Введіть ваш номер телефону'),
   terminal: yup.string().required('Оберіть термінал з випадаючого списку'),
 });

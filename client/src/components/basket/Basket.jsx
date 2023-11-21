@@ -11,7 +11,7 @@ const Basket = observer(() => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const { basket } = useContext(Context);
+  const { user, basket } = useContext(Context);
   const localBasket = sessionStorage.getItem('basket');
   const basketData = JSON.parse(localBasket);
 
@@ -72,7 +72,7 @@ const Basket = observer(() => {
     const newTotal = cartItems.reduce((acc, item) => acc + item.count, 0);
     setTotalAmount(newTotal);
   };
-
+  console.log(totalPrice);
   return (
     <div className="pb-3">
       <Row>
@@ -98,7 +98,7 @@ const Basket = observer(() => {
       </Card>
       <Row></Row>
       <Row className="mt-3">
-        <Checkout />
+        <Checkout list={list} total={totalPrice} user={user.isAuth} />
       </Row>
     </div>
   );

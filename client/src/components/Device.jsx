@@ -11,8 +11,21 @@ import PackageIcon from './UI/UX/PackageImg/PackageIcon';
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
   const [clickedState, setClickedState] = useState(false);
+  const [basketLength, setBasketLength] = useState(0);
+
   const { id } = useParams();
   const { user, basket } = useContext(Context);
+
+  const localbasketData = sessionStorage.getItem('basket');
+  const localBasket = localbasketData
+    ? JSON.parse(localbasketData)
+    : basket.basket;
+
+  useEffect(() => {
+    setBasketLength(basket.basket.length || localBasket.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [basket.basket]);
+
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
   }, [id]);
@@ -72,13 +85,14 @@ const Device = () => {
               <CountUp start={0} end={+device.price} duration={2} />
               грн.
             </h3>
-            <PackageIcon />
+            <PackageIcon count={basket.basket.length || localBasket.length} />
             {user.isAuth ? (
               <Button
                 variant={clickedState ? 'info' : 'outline-dark'}
                 onClick={() => {
                   addOrder();
                   hendleOrderClick();
+                  setBasketLength(basketLength + 1);
                 }}
               >
                 Додати до корзини

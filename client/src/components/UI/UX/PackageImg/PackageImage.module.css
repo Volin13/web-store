@@ -7,3 +7,18 @@
   fill: #fd9808;
   fill: #54c9fd;
 }
+.packageIcon {
+  animation: flow 500ms ease-out;
+}
+
+@keyframes flow {
+  0% {
+    transform: translate(10px, -10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}

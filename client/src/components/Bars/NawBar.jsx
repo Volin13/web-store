@@ -22,7 +22,7 @@ import BasketModal from '../modals/BasketModal';
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
-  const { user, basket } = useContext(Context);
+  const { user, basket, device } = useContext(Context);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,6 +58,10 @@ const NavBar = observer(() => {
               src={storeLogo}
               width={25}
               height={25}
+              onClick={() => {
+                device.setSelectedBrand({});
+                device.setSelectedType({});
+              }}
             />
             Store
           </NavLink>

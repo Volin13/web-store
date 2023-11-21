@@ -6,7 +6,11 @@ import { Context } from '../..';
 const BrandBar = () => {
   const { device } = useContext(Context);
   return (
-    <ListGroup className="d-flex" style={{ position: 'sticky' }}>
+    <ListGroup
+      className="d-flex text-center"
+      style={{ position: 'sticky' }}
+      horizontal={true}
+    >
       {device.brands.map(brand => (
         <ListGroup.Item
           style={{ cursor: 'pointer' }}

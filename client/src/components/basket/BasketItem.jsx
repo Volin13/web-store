@@ -15,7 +15,7 @@ const BasketItem = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <Card className="mb-1" style={{ width: '80%' }}>
+    <Card className="mb-2" style={{ width: '80%' }}>
       <Card.Header>
         <button
           type="button"
@@ -43,7 +43,7 @@ const BasketItem = ({
             src={process.env.REACT_APP_API_URL + item.img}
           />
         </button>
-        <Card.Body style={{ width: '50%', flex: ' 0 1 auto' }}>
+        <Card.Body style={{ flex: ' 0 1 auto' }}>
           <Card.Title>
             {item.price * item.count} грн.{' '}
             {item.count > 1 && (

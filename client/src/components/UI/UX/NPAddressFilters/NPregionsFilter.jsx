@@ -17,7 +17,7 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
     if (!value.trim()) {
       setRegionInput('');
     } else {
-      setRegionInput(`${value}`);
+      setRegionInput(value.trim());
     }
   };
   return (

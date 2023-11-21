@@ -38,7 +38,7 @@ const DeviceItem = ({ device }) => {
           <span
             style={{
               display: 'inline-block',
-              height: '3em',
+              height: '3.1em',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
             }}

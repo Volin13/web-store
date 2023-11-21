@@ -13,7 +13,10 @@ const TypeBar = observer(() => {
           style={{ cursor: 'pointer' }}
           active={type.id === device.selectedType.id}
           key={type.id}
-          onClick={() => device.setSelectedType(type)}
+          onClick={() => {
+            device.setSelectedType(type);
+            device.setSelectedBrand({});
+          }}
           action
         >
           {type.name}
