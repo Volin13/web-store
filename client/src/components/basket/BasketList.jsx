@@ -3,7 +3,7 @@ import BasketItem from './BasketItem';
 
 const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
   return (
-    <div style={{ minHeight: '20vh' }}>
+    <>
       {list?.length > 0 ? (
         <ul
           className="d-flex flex-column align-items-center mb-2 "
@@ -28,9 +28,14 @@ const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
           ))}
         </ul>
       ) : (
-        <h2>Ваш кошик порожній</h2>
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ height: '20vh' }}
+        >
+          <h2>Ваш кошик порожній</h2>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -54,7 +54,7 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
         />
       </CheckoutDropdown>
       {formik.touched.city && formik.errors.city && (
-        <Form.Control.Feedback type="invalid">
+        <Form.Control.Feedback className="d-block" type="invalid">
           {formik.errors.city}
         </Form.Control.Feedback>
       )}

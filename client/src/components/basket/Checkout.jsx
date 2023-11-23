@@ -41,8 +41,7 @@ const Checkout = ({ list, total, user }) => {
   };
 
   const isValid = checkoutSchema.isValidSync(formik.values);
-  console.log(formik.values);
-  console.log(formik.errors);
+
   return (
     <>
       <Form noValidate onSubmit={handleSubmit}>

@@ -1,12 +1,10 @@
+const { Order } = require("../models/models");
+const ApiError = require("../error/ApiError");
+
 class OrderController {
-  async create(req, res, next) {
+  async createOrder(req, res, next) {
     try {
       const { userId, userData, userOrder } = req.body;
-
-      const userExists = await User.findByPk(userId);
-      if (!userExists) {
-        return next(ApiError.notFound("User not found"));
-      }
 
       const order = await Order.create({ userId, userData, userOrder });
       return res.json(order);
@@ -29,9 +27,57 @@ class OrderController {
     return res.json(order);
   }
 
-  async getAll(req, res) {
-    const orders = await Order.findAll();
-    return res.json(orders);
+  async getNewOrders(req, res, next) {
+    try {
+      // Знаходження всіх замовлень, де checked === true
+      const newOrders = await Order.findAll({
+        where: {
+          checked: true,
+        },
+      });
+
+      // Повернення результату
+      return res.json(checkedOrders);
+    } catch (error) {
+      console.error("Помилка при отриманні замовлень:", error);
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
+  }
+  async getOrdersHistory(req, res, next) {
+    try {
+      // Знаходження всіх замовлень, де checked === true
+      const checkedOrders = await Order.findAll({
+        where: {
+          checked: true,
+        },
+      });
+
+      // Повернення результату
+      return res.json(checkedOrders);
+    } catch (error) {
+      console.error("Помилка при отриманні замовлень:", error);
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
+  }
+
+  async updateOrder(req, res, next) {
+    try {
+      const orderId = req.params.id;
+      const order = await Order.findByPk(orderId);
+      if (!order) {
+        return next(ApiError.notFound("Замовлення з таким id не знайдено"));
+      }
+      await order.update({ checked: true });
+      return res.json(order);
+    } catch (error) {
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
   }
 }
 

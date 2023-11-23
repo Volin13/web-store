@@ -18,6 +18,8 @@ const Order = sequelize.define("orders", {
   userId: { type: DataTypes.INTEGER },
   userData: { type: DataTypes.ARRAY(DataTypes.STRING) },
   userOrder: { type: DataTypes.JSON },
+  checked: { type: DataTypes.BOOLEAN, defaultValue: false },
+  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 });
 
 const BasketDevice = sequelize.define("basketDevice", {

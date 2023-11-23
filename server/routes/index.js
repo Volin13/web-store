@@ -6,12 +6,13 @@ const typeRouter = require("./typeRoter.js");
 const brandRouter = require("./brandRouter.js");
 const ratingRouter = require("./ratingRouter.js");
 const ordersRouter = require("./ordersRouter.js");
+const deleteOldOrdersMiddleware = require("../middleware/deleteOldOrdersMiddleware");
 
 router.use("/user", userRouter);
 router.use("/type", typeRouter);
 router.use("/brand", brandRouter);
 router.use("/device", deviceRouter);
 router.use("/rating", ratingRouter);
-router.use("/orders", ordersRouter);
+router.use("/orders", deleteOldOrdersMiddleware, ordersRouter);
 
 module.exports = router;

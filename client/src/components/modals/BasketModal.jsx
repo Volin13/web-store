@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react-lite';
-import { Button, Card, Modal } from 'react-bootstrap';
-
-import { BASKET_ROUTE } from '../../utils/constants';
-import BasketList from '../basket/BasketList';
 import { useNavigate } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import { Button, Card, Image, Modal } from 'react-bootstrap';
+import { BASKET_ROUTE } from '../../utils/constants';
+import trashIcon from '../../assets/defultIcons/trash-bin-trash-svgrepo-com.svg';
+import BasketList from '../basket/BasketList';
 
 const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const [list, setList] = useState([]);
@@ -27,7 +27,13 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
   }, [localBasket, localBasket?.length, basket.basket.length]);
-
+  const clearList = () => {
+    setList([]);
+    recalculateTotal([]);
+    recalculateAmount([]);
+    basket.setBasket([]);
+    sessionStorage.removeItem('basket');
+  };
   const removeFromList = index => {
     const newCart = [...list];
     newCart.splice(index, 1);
@@ -38,7 +44,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       sessionStorage.removeItem('basket');
     }
     setList(newCart);
-
+    recalculateAmount(newCart);
     recalculateTotal(newCart);
   };
   const addItemCount = id => {
@@ -78,7 +84,27 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   return (
     <Modal size="lg" show={show} onHide={onHide} centered className="text-end">
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Кошик</Modal.Title>
+        <Modal.Title
+          className="d-flex align-items-center justify-content-between"
+          id="contained-modal-title-vcenter"
+          style={{ width: '100%' }}
+        >
+          <span>Кошик:</span>
+
+          {list.length !== 0 ? (
+            <button
+              onClick={() => clearList()}
+              type="button"
+              className="d-flex"
+              style={{ marginRight: '45px' }}
+            >
+              <span>Очистити </span>
+              <Image width={35} height={35} src={trashIcon} />
+            </button>
+          ) : (
+            <div></div>
+          )}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body className="pt-0 pb-0" style={{ textAlign: 'center' }}>
         <BasketList

@@ -47,15 +47,14 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
             const inputValue = e.target.value;
             hendleInputChange(inputValue);
             hendlePostDataChange(inputValue);
-
             formik.setFieldValue('terminal', inputValue);
           }}
           onBlur={formik.handleBlur}
-          isInvalid={formik.touched.terminal && !!formik.errors.terminal}
+          isInvalid={formik.touched.terminal && formik.errors.terminal}
         />
       </CheckoutDropdown>
       {formik.touched.terminal && formik.errors.terminal && (
-        <Form.Control.Feedback type="invalid">
+        <Form.Control.Feedback className="d-block" type="invalid">
           {formik.errors.terminal}
         </Form.Control.Feedback>
       )}

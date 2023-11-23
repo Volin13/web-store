@@ -46,7 +46,7 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
         />
       </CheckoutDropdown>
       {formik.touched.region && formik.errors.region && (
-        <Form.Control.Feedback type="invalid">
+        <Form.Control.Feedback className="d-block" type="invalid">
           {formik.errors.region}
         </Form.Control.Feedback>
       )}
