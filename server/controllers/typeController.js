@@ -1,7 +1,8 @@
-const { Type } = require('../models/models');
-const ApiError = require('../error/ApiError');
+const { Type } = require("../models/models");
+const ApiError = require("../error/ApiError");
 
 class TypeController {
+  // Створюю новий тип
   async create(req, res, next) {
     try {
       const { name } = req.body;
@@ -13,6 +14,7 @@ class TypeController {
   }
 
   async getAll(req, res) {
+    // Повертаю всі типи
     const types = await Type.findAll();
     return res.json(types);
   }

@@ -72,7 +72,6 @@ const Basket = observer(() => {
     const newTotal = cartItems.reduce((acc, item) => acc + item.count, 0);
     setTotalAmount(newTotal);
   };
-  console.log(totalPrice);
   return (
     <div className="pb-3">
       <Row>

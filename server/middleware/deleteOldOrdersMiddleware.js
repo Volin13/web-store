@@ -4,20 +4,28 @@ const ApiError = require("../error/ApiError");
 
 const deleteOldOrdersMiddleware = async (req, res, next) => {
   try {
-    const threeMonthsAgo = moment().subtract(3, "months").toDate();
+    const sixMonthsAgo = moment().subtract(6, "months").toDate();
 
-    // Видаляємо замовлення, час створення яких більше трьох місяців
-    const deletedOrdersCount = await Order.destroy({
+    const outdatedOrders = await Order.findAll({
       where: {
         createdAt: {
-          [Op.lt]: threeMonthsAgo,
+          [Op.lt]: sixMonthsAgo,
         },
       },
     });
 
+    // Видаляємо замовлення, час створення яких більше шести місяців
+    if (outdatedOrders) {
+      const deletedOrdersCount = await Order.destroy({
+        where: {
+          createdAt: {
+            [Op.lt]: sixMonthsAgo,
+          },
+        },
+      });
+    }
     console.log(`Видалено ${deletedOrdersCount} замовлень.`);
-
-    next();
+    await next();
   } catch (error) {
     next(ApiError.internal("При видаленні замовлень сталась помилка"));
   }

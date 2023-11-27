@@ -7,7 +7,10 @@ import { Context } from '../..';
 const TypeBar = observer(() => {
   const { device } = useContext(Context);
   return (
-    <ListGroup className="mb-3" style={{ position: 'sticky' }}>
+    <ListGroup
+      className="mb-3"
+      style={{ position: 'sticky', maxHeight: '500px', overflow: 'auto' }}
+    >
       {device.types.map(type => (
         <ListGroup.Item
           style={{ cursor: 'pointer' }}

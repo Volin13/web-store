@@ -24,13 +24,27 @@ export const createOrder = async (user, userData, orderList) => {
   return toast.error('Авторизуйтесь для оформлення замовлення');
 };
 
-export const fetchAllOrders = async () => {
-  const { data } = await $authHost.get('api/orders');
-  return data;
+export const fetchNewOrders = async () => {
+  try {
+    const { data } = await $authHost.get('api/orders/new-orders');
+    return data;
+  } catch (e) {
+    console.log(e.response.data.message);
+    return toast.error('Сталась помилка спробуйте пізніше');
+  }
+};
+export const fetchOrdersHistory = async () => {
+  try {
+    const { data } = await $authHost.get('api/orders/orders-history');
+    return data;
+  } catch (e) {
+    console.log(e.response.data.message);
+    return toast.error('Сталась помилка спробуйте пізніше');
+  }
 };
 export const fetchUserOrders = async userId => {
   try {
-    const { data } = await $authHost.get('api/orders/' + userId);
+    const { data } = await $authHost.get('api/orders/user-orders' + userId);
     return data;
   } catch (e) {
     return toast.error(e.response.data.message);
@@ -39,6 +53,14 @@ export const fetchUserOrders = async userId => {
 export const fetchOrderById = async id => {
   try {
     const { data } = await $authHost.get('api/orders/' + id);
+    return data;
+  } catch (e) {
+    return toast.error(e.response.data.message);
+  }
+};
+export const updateOrder = async id => {
+  try {
+    const { data } = await $authHost.get(`api/orders/${id}/update`);
     return data;
   } catch (e) {
     return toast.error(e.response.data.message);
