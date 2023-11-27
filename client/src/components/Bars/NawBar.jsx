@@ -29,6 +29,8 @@ const NavBar = observer(() => {
   const authLocation =
     location.pathname === LOGIN_ROUTE ||
     location.pathname === REGISTRATION_ROUTE;
+
+  // Кнопка кошика не має відображатись на сторінці кошика
   const basketLocation = location.pathname === BASKET_ROUTE;
 
   const logOut = () => {
@@ -43,6 +45,7 @@ const NavBar = observer(() => {
   let localBasket = null;
   localBasket = localbasketData ? JSON.parse(localbasketData) : basket.basket;
 
+  // Встановлюю кількість покупок в кошику залежно від записаного в sessionStorage або в store MobX
   useEffect(() => {
     setBasketLength(localBasket?.length || basket.basket.length);
   }, [basket.basket.length, localBasket.length]);

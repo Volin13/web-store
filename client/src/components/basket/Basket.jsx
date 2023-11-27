@@ -15,6 +15,8 @@ const Basket = observer(() => {
   const localBasket = sessionStorage.getItem('basket');
   const basketData = JSON.parse(localBasket);
 
+  // Обробка змін кількості девайсів у кошику разом з змінами підрахованої кількості і ціни
+
   useEffect(() => {
     const uniqueItems = [];
     basketData.forEach(item => {
@@ -32,6 +34,8 @@ const Basket = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [basket.basket.length, basketData?.length, list?.length]);
 
+  // Видалення 1 виду девайсу з кошику і оновлення заг. ціни і кількості
+
   const removeFromList = index => {
     const newCart = [...list];
     newCart.splice(index, 1);
@@ -41,12 +45,17 @@ const Basket = observer(() => {
 
     recalculateTotal(newCart);
   };
+
+  // Збільшення кількості 1 типу девайсу на 1 одиницю
+
   const addItemCount = id => {
     const listItem = list.find(item => item.id === id);
     listItem.count = +1;
     recalculateTotal(list);
     sessionStorage.setItem('basket', list);
   };
+
+  // Зменшення кількості 1 типу девайсу на 1 одиницю
 
   const reduceItemCount = id => {
     const listItem = list.find(item => item.id === id);
@@ -61,6 +70,8 @@ const Basket = observer(() => {
     sessionStorage.setItem('basket', list);
   };
 
+  // Оновлення заг. ціни
+
   const recalculateTotal = cartItems => {
     const newTotal = cartItems.reduce(
       (acc, item) => acc + item.price * item.count,
@@ -68,6 +79,9 @@ const Basket = observer(() => {
     );
     setTotalPrice(newTotal);
   };
+
+  // Оновлення заг. кількості
+
   const recalculateAmount = cartItems => {
     const newTotal = cartItems.reduce((acc, item) => acc + item.count, 0);
     setTotalAmount(newTotal);

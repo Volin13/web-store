@@ -17,24 +17,30 @@ import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
+
+  // При першому завантаженні записую в стор типи і бренди, шоб потім вибрати з існуючих
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Зберегти додані і додати нову статтю в характеристики девайсу
   const addInfo = () => {
     setInfo([...info, { title: '', description: '', number: Date.now() }]);
     formik.setFieldValue('info', JSON.stringify(info));
   };
+  // Видалити додану статтю характеристик девайсу
   const removeInfo = number => {
     setInfo(info.filter(i => i.number !== number));
     formik.setFieldValue('info', JSON.stringify(info));
   };
 
+  // Змінити додану статтю характеристик девайсу
   const changeInfo = (key, value, number) => {
     setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
+
   const selectFile = e => {
     const selectedFile = e.target.files[0];
 
@@ -55,6 +61,8 @@ const CreateDevice = observer(({ show, onHide }) => {
 
     createDevice(formData).then(data => onHide());
   };
+
+  // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
   let deviceNames = [];
   device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
 

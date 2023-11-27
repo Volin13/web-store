@@ -21,14 +21,19 @@ const Device = () => {
     ? JSON.parse(localbasketData)
     : basket.basket;
 
+  // Визначення величини кошика для зміни іконки при кліку на кнопку "купити"
   useEffect(() => {
     setBasketLength(basket.basket.length || localBasket.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [basket.basket]);
 
+  // Отримання інформації про девайс
   useEffect(() => {
     fetchSingleDevice(id).then(data => setDevice(data));
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Формування замовлення в кошик
   const hendleOrderClick = () => setClickedState(true);
   const addOrder = () => {
     basket.addToBasket({

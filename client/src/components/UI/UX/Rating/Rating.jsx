@@ -9,10 +9,13 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
   const ratingValue = useRef(null);
   const [rate, setRate] = useState(0);
   const ratingActiveWidth = apiRating / 0.1;
+
+  // Зміна ширини заливки в залежності від середнього рейтингу
   useEffect(() => {
     ratingActive.current.style.width = `${ratingActiveWidth}%`;
   }, [ratingActiveWidth]);
 
+  // Зміна ширини заливки в залежності від рейтингу, який користувач хоче поставити
   const hendleActiveStarChange = value => {
     ratingActive.current.style.width = `${value * 10}%`;
   };

@@ -8,7 +8,7 @@ import css from './PackageImage.module.css';
 
 const PackageIcon = ({ count }) => {
   const [img, setImg] = useState(null);
-
+  // Зміна іконки в залежності від кількості товарів у кошику
   useEffect(() => {
     setImg(chooseImage(count));
   }, [count]);

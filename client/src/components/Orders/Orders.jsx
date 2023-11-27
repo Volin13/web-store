@@ -7,9 +7,13 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [history, setHistory] = useState([]);
   const [historyMode, setHistoryMode] = useState(false);
+
+  // При першому завантаженню зтягую список замовлень
   useEffect(() => {
     fetchNewOrders().then(data => setOrders(data));
   }, []);
+
+  // Оновлення списку по зміні "мода"
   useEffect(() => {
     if (!historyMode) {
       fetchNewOrders().then(data => setOrders(data));

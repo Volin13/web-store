@@ -8,6 +8,9 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   const [regionInput, setRegionInput] = useState('');
   const [onShow, setOnShow] = useState(false);
 
+  // При першому завантаженюю сторінки виконується перевірка
+  // на оновлення списку міст НП, який зберігається в локал стореджі
+
   useEffect(() => {
     const storageList = updateDataOnceAMonth();
     setNpData(storageList);
