@@ -13,12 +13,13 @@ export const createOrder = async (user, userData, orderList) => {
         userData,
         orderList,
       });
-      toast.error(
+      toast.info(
         'Ваше замовлення оформлено, чекайте на дзвінок для уточнення інформації'
       );
       return data;
     } catch (e) {
-      return toast.error(e.response.data.message);
+      console.log(e.response.data.message);
+      return toast.error('Сталась помилка, спробуйте пізніше');
     }
   }
   return toast.error('Авторизуйтесь для оформлення замовлення');

@@ -4,9 +4,8 @@ class OrderController {
   async createOrder(req, res, next) {
     // Створюєм замовлення з id userId даними користувача та самим вмістом замовлення
     try {
-      const { userId, userData, userOrder } = req.body;
-
-      const order = await Order.create({ userId, userData, userOrder });
+      const { userId, userData, orderList } = req.body;
+      const order = await Order.create({ userId, userData, orderList });
       return res.json(order);
     } catch (e) {
       next(ApiError.badRequest(e.message));

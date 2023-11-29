@@ -16,8 +16,8 @@ const Basket = sequelize.define("basket", {
 const Order = sequelize.define("orders", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER },
-  userData: { type: DataTypes.ARRAY(DataTypes.STRING) },
-  userOrder: { type: DataTypes.JSON },
+  userData: { type: DataTypes.JSON, allowNull: false },
+  orderList: { type: DataTypes.JSONB, allowNull: false },
   checked: { type: DataTypes.BOOLEAN, defaultValue: false },
   createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 });
@@ -87,6 +87,7 @@ Brand.belongsToMany(Type, { through: TypeBrand });
 module.exports = {
   User,
   Basket,
+  Order,
   BasketDevice,
   Device,
   Type,

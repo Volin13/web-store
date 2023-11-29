@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, Card, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { checkoutSchema } from '../../utils/checkoutSchema';
@@ -8,6 +8,8 @@ import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
 import { createOrder } from '../../http/ordersApi';
 
 const Checkout = ({ list, total, user }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const terminalInput = useRef(null);
   const regionInput = useRef(null);
   const cityInput = useRef(null);
@@ -24,27 +26,26 @@ const Checkout = ({ list, total, user }) => {
       comment: '',
       total: '',
     },
+
     validationSchema: checkoutSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
+      console.log(list);
+      createOrder(user, values, list);
       setSubmitting(false);
       resetForm(false);
     },
   });
 
   useEffect(() => {
-    formik.setFieldValue('total', total);
+    formik.setFieldValue('total', `${total} грн`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleSubmit = () => {
-    createOrder(user, formik.values, JSON.stringify(list));
-  };
+  }, [total]);
 
   const isValid = checkoutSchema.isValidSync(formik.values);
 
   return (
     <>
-      <Form noValidate onSubmit={handleSubmit}>
+      <Form noValidate onSubmit={formik.handleSubmit}>
         <Card className="mb-3">
           <Card.Body>
             <h2 className="mb-3">Покупець</h2>
@@ -120,7 +121,7 @@ const Checkout = ({ list, total, user }) => {
               {/* Моб ТЕЛЕФОН */}
 
               <Form.Group as={Col} md="6" style={{ minHeight: '108px' }}>
-                <Form.Label>Моб. телефон</Form.Label>
+                <Form.Label>Моб. телефон (+380)</Form.Label>
                 <Form.Control
                   type="tel"
                   placeholder="+38(0ХХ)ХХХХХХХ"
@@ -142,8 +143,33 @@ const Checkout = ({ list, total, user }) => {
         </Card>
 
         <Card className="mb-3" bg="secondary" text="white">
-          <Card.Body>
-            <h2 className="mb-3">Адреса доставки</h2>
+          <Card.Body style={{ position: 'relative' }}>
+            <h2 className="mb-3">
+              Адреса доставки{' '}
+              <span
+                onMouseEnter={e => {
+                  setIsHovered(true);
+                  setCursorPosition({ x: e.clientX, y: e.clientY });
+                }}
+                onMouseLeave={() => {
+                  setIsHovered(false);
+                }}
+                className="text-danger"
+              >
+                *
+              </span>
+            </h2>
+            {isHovered && (
+              <span
+                style={{
+                  position: 'fixed',
+                  left: cursorPosition.x,
+                  top: cursorPosition.y,
+                }}
+              >
+                виберіть варіант з випадаючого списку
+              </span>
+            )}
 
             {/* Область */}
 
@@ -176,9 +202,9 @@ const Checkout = ({ list, total, user }) => {
           <Card.Body>
             <Row>
               <Form.Group>
-                <Form.Label>Коментар</Form.Label>
+                <Form.Label>Коментар </Form.Label>
                 <Form.Control
-                  placeholder="Додайте деталі замовлення/доставки"
+                  placeholder="Додайте деталі замовлення/доставки (за бажанням)"
                   name="comment"
                   onChange={formik.handleChange}
                   as="textarea"
@@ -189,8 +215,8 @@ const Checkout = ({ list, total, user }) => {
           </Card.Body>
         </Card>
         <div className="text-end">
-          <Button variant="info" disabled={!isValid} type="button">
-            Оформити замовлення
+          <Button variant="info" disabled={!isValid} type="submit">
+            {!isValid ? 'Заповніть ваші дані' : 'Оформити замовлення'}
           </Button>
         </div>
       </Form>

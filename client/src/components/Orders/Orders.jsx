@@ -23,7 +23,6 @@ const Orders = () => {
     setHistoryMode(!historyMode);
     fetchOrdersHistory().then(data => setHistory(data));
   };
-  console.log(orders);
   return (
     <>
       <h2 className="mb-2">Поточні замовлення</h2>

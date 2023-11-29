@@ -29,6 +29,9 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     recalculateTotal(uniqueItems);
     recalculateAmount(uniqueItems);
   }, [localBasket, localBasket?.length, basket.basket.length]);
+
+  // Очищення кошику і оновлення заг. ціни і кількості
+
   const clearList = () => {
     setList([]);
     recalculateTotal([]);
@@ -73,6 +76,8 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       const removeIndex = list.indexOf(listItem);
       list.splice(removeIndex, 1);
       setList(list);
+      basket.setBasket([]);
+      sessionStorage.removeItem('basket');
     }
     recalculateTotal(list);
     recalculateAmount(list);

@@ -11,7 +11,8 @@ export const registration = async (email, password) => {
     localStorage.setItem('token', data.token);
     return jwt_decode(data.token);
   } catch (e) {
-    return toast.error(e.response.data.message);
+    console.log(e.response.data.message);
+    return toast.error('Сталась помилка, спробуйте пізніше');
   }
 };
 
@@ -21,7 +22,8 @@ export const login = async (email, password) => {
     localStorage.setItem('token', data.token);
     return console.log(data.token);
   } catch (e) {
-    return toast.error(e.response.data.message);
+    console.log(e.response.data.message);
+    return toast.error('Сталась помилка, спробуйте пізніше');
   }
 };
 
