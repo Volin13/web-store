@@ -13,7 +13,7 @@ import {
   SHOP_ROUTE,
 } from '../../utils/constants';
 import { observer } from 'mobx-react-lite';
-import { Image } from 'react-bootstrap';
+import { Col, Image } from 'react-bootstrap';
 
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
@@ -54,57 +54,60 @@ const NavBar = observer(() => {
     <>
       <Navbar sticky="top" bg="dark" data-bs-theme="dark">
         <Container>
-          <NavLink className="navBar_mainLogo" to={SHOP_ROUTE}>
-            Online
-            <Image
-              className="navBar_mainLogo_image"
-              src={storeLogo}
-              width={25}
-              height={25}
-              onClick={() => {
-                device.setSelectedBrand({});
-                device.setSelectedType({});
-              }}
-            />
-            Store
-          </NavLink>
-
-          {user.isAuth ? (
-            <Nav className="ml-auto" style={{ color: 'white' }}>
-              {!basketLocation && (
-                <button
-                  className="d-flex align-items-center justify-content-center basket_btn"
-                  type="button"
-                  onClick={() => setBasketVisible(true)}
-                >
-                  <Image width={30} height={30} src={basketImg} />
-                  {basketLength > 0 && (
-                    <div className="basket_btn_count">{basketLength}</div>
-                  )}
-                </button>
-              )}
-              <NavLink to={ADMIN_ROUTE}>
-                <Button style={{ marginLeft: '1rem' }} variant="outline-light">
-                  Адміністратору
-                </Button>{' '}
-              </NavLink>
-              <Button
-                variant="outline-light"
-                style={{ marginLeft: '1rem' }}
-                onClick={() => logOut()}
+          <Col md="3">
+            <NavLink className="navBar_mainLogo" to={SHOP_ROUTE}>
+              Online
+              <Image
+                className="navBar_mainLogo_image"
+                src={storeLogo}
+                width={25}
+                height={25}
+                onClick={() => {
+                  device.setSelectedBrand({});
+                  device.setSelectedType({});
+                }}
+              />
+              Store
+            </NavLink>
+          </Col>
+          <Col md="6">
+            {user.isAuth ? (
+              <Nav
+                className="d-flex flex-sm-row flex-sm-wrap justify-content-end gap-2"
+                style={{ color: 'white' }}
               >
-                Вийти
-              </Button>{' '}
-            </Nav>
-          ) : (
-            <Nav className="ml-auto" style={{ color: 'white' }}>
-              <NavLink to={authLocation ? location.pathname : LOGIN_ROUTE}>
-                <Button variant="outline-light" disabled={authLocation}>
-                  Авторизація
+                {!basketLocation && (
+                  <button
+                    className="d-flex align-items-center justify-content-center basket_btn"
+                    type="button"
+                    onClick={() => setBasketVisible(true)}
+                  >
+                    <Image width={30} height={30} src={basketImg} />
+                    {basketLength > 0 && (
+                      <div className="basket_btn_count">{basketLength}</div>
+                    )}
+                  </button>
+                )}
+                <NavLink to={ADMIN_ROUTE}>
+                  <Button variant="outline-light">Адміністратору</Button>{' '}
+                </NavLink>
+                <Button variant="outline-light" onClick={() => logOut()}>
+                  Вийти
                 </Button>{' '}
-              </NavLink>
-            </Nav>
-          )}
+              </Nav>
+            ) : (
+              <Nav
+                className="ml-auto flex-md-column"
+                style={{ color: 'white' }}
+              >
+                <NavLink to={authLocation ? location.pathname : LOGIN_ROUTE}>
+                  <Button variant="outline-light" disabled={authLocation}>
+                    Авторизація
+                  </Button>{' '}
+                </NavLink>
+              </Nav>
+            )}
+          </Col>
         </Container>
       </Navbar>
       <BasketModal

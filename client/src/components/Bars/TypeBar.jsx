@@ -8,11 +8,11 @@ const TypeBar = observer(() => {
   const { device } = useContext(Context);
   return (
     <ListGroup
-      className="mb-3"
-      style={{ position: 'sticky', maxHeight: '500px', overflow: 'auto' }}
+      style={{ position: 'sticky', maxHeight: '300px', overflow: 'auto' }}
     >
       {device.types.map(type => (
         <ListGroup.Item
+          className="text-center text-sm-start"
           style={{ cursor: 'pointer' }}
           active={type.id === device.selectedType.id}
           key={type.id}

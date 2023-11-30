@@ -29,7 +29,6 @@ const Checkout = ({ list, total, user }) => {
 
     validationSchema: checkoutSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      console.log(list);
       createOrder(user, values, list);
       setSubmitting(false);
       resetForm(false);

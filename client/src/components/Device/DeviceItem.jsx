@@ -1,8 +1,10 @@
 import React from 'react';
 import { Card, Col, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { DEVICE_ROUTE } from '../utils/constants';
-import star from '../assets/shopIcons/smallStar.svg';
+import { DEVICE_ROUTE } from '../../utils/constants';
+import star from '../../assets/shopIcons/smallStar.svg';
+import css from './Device.module.css';
+
 const DeviceItem = ({ device }) => {
   const navigate = useNavigate();
 
@@ -15,7 +17,7 @@ const DeviceItem = ({ device }) => {
   return (
     <Col
       md={3}
-      className="mt-3"
+      className={css.deviceItemCol}
       onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
     >
       <Card style={{ width: 150, cursor: 'pointer' }} border={'light'}>

@@ -43,12 +43,13 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
           type="text"
           name="terminal"
           value={officeInput}
-          onChange={e => {
+          onInput={e => {
             const inputValue = e.target.value;
             hendleInputChange(inputValue);
             hendlePostDataChange(inputValue);
             formik.setFieldValue('terminal', inputValue);
           }}
+          onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isInvalid={formik.touched.terminal && formik.errors.terminal}
         />

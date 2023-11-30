@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { fetchSingleDevice } from '../http/deviceApi';
+import { fetchSingleDevice } from '../../http/deviceApi';
 import CountUp from 'react-countup';
-import Rating from './UI/UX/Rating/Rating';
-import { Context } from '..';
+import Rating from '../UI/UX/Rating/Rating';
+import { Context } from '../../';
 import { toast } from 'react-toastify';
-import PackageIcon from './UI/UX/PackageImg/PackageIcon';
+import PackageIcon from '../UI/UX/PackageImg/PackageIcon';
 
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });

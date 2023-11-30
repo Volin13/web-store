@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
 
-import Device from '../../components/Device';
+import Device from '../../components/Device/Device';
 const DevicePage = () => {
   return (
     <Container className="mt-3">

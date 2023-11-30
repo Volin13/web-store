@@ -39,11 +39,12 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
           type="text"
           name="region"
           value={regionInput}
-          onChange={e => {
+          onInput={e => {
             const inputValue = e.target.value;
             hendleInputChange(inputValue);
             formik.setFieldValue('region', inputValue);
           }}
+          onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isInvalid={formik.touched.region && !!formik.errors.region}
         />

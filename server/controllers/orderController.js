@@ -35,7 +35,7 @@ class OrderController {
           checked: false,
         },
       });
-      if (!getNewOrders) {
+      if (newOrders.length === 0) {
         return ApiError.internal("Нових замовлень немає");
       }
       return res.json(newOrders);

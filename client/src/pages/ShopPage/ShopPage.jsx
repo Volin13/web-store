@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Context } from '../..';
 import BrandBar from '../../components/Bars/BrandBar';
-import DeviceList from '../../components/DeviceList';
+import DeviceList from '../../components/Device/DeviceList';
 import Pages from '../../components/Pages';
 import TypeBar from '../../components/Bars/TypeBar';
 import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
@@ -34,7 +34,7 @@ const Shop = observer(() => {
   return (
     <Container>
       <Row className="mt-2">
-        <Col md={3}>
+        <Col md={3} className="mb-3">
           <TypeBar />
         </Col>
         <Col md={9}>

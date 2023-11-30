@@ -44,13 +44,14 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
           type="text"
           name="city"
           value={cityInput}
-          onChange={e => {
+          onInput={e => {
             const inputValue = e.target.value;
             hendleInputChange(inputValue);
             hendlePostDataChange(inputValue);
             setOnShow(true);
             formik.setFieldValue('city', inputValue);
           }}
+          onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isInvalid={formik.touched.city && !!formik.errors.city}
         />

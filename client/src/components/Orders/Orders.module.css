@@ -1,0 +1,6 @@
+.ordersItem {
+  transition: all 500ms;
+}
+.orderItemBtn {
+  width: 100%;
+}
