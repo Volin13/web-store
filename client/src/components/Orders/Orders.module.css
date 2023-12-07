@@ -47,14 +47,6 @@
   object-fit: contain;
 }
 
-.userDataTitle:not(:last-child) {
-  border-bottom: 1px solid white;
-}
-
-.userDataItem:not(:last-child) {
-  border-bottom: 1px solid #212529;
-}
-
 @media screen and (max-width: 767px) {
   .orderDataList {
     overflow: auto;
