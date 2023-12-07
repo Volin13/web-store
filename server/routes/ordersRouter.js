@@ -10,12 +10,9 @@ router.get(
   deleteOldOrdersMiddleware,
   orderController.getOrdersHistory
 );
-router.get(
-  "/user-orders/:userId",
-  deleteOldOrdersMiddleware,
-  orderController.getUserOrders
-);
+router.get("/user-orders/:userId", orderController.getUserOrders);
 router.get("/:id", orderController.getOrderById);
-router.patch("/:id/update", orderController.updateOrder);
+router.patch("/:id/check", orderController.checkOrder);
+router.patch("/:id/decline", orderController.declineOrder);
 
 module.exports = router;

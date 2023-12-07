@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { DEVICE_ROUTE } from '../../utils/constants';
+
+import { ORDERS_ROUTE, USER_ORDERS_ROUTE } from '../../utils/constants';
 import css from './Orders.module.css';
 
 const OrdersItem = ({ item, index }) => {
@@ -13,7 +14,9 @@ const OrdersItem = ({ item, index }) => {
 
   return (
     <li
-      className={css.ordersItem}
+      className={`${css.ordersItem} ${
+        isHidden ? css.expandEnter : css.expandExit
+      } mb-2`}
       onClick={() => setIsHidden(!isHidden)}
       style={{ cursor: 'pointer' }}
     >
@@ -26,49 +29,61 @@ const OrdersItem = ({ item, index }) => {
         <Col md="1">
           <span className={css.ordersItemData}>{index}</span>
         </Col>
-        <Col md="1" onClick={() => navigate(DEVICE_ROUTE + '/' + item.userId)}>
-          <span className={css.ordersItemData}>{item.userId}</span>
-        </Col>
         <Col md="2">
           <span className={css.ordersItemData}>{item.userData.firstName}</span>
         </Col>
-        <Col md="2">
+        <Col md="3">
           <span className={css.ordersItemData}>{item.userData.lastName}</span>
         </Col>
         <Col md="3">
           <span className={css.ordersItemData}>{item.userData.city}</span>
         </Col>{' '}
-        <Col md="3">
+        <Col md="3" style={{ overflow: 'hidden' }}>
           <span className={css.ordersItemData}>{formattedDate}</span>
         </Col>
       </div>
-      {!isHidden && (
-        <div className="d-flex gap-1 justify-content-around align-items-center p-2">
-          <Col md="3">
-            <Button className={css.orderItemBtn} variant="outline-dark">
-              Переглянути замовлення
-            </Button>
-          </Col>
-          <Col md="3">
-            <Button
-              className={css.orderItemBtn}
-              onClick={() => setIsHidden(true)}
-              variant="outline-primary"
-            >
-              Переглянути всі замовлення користувача
-            </Button>
-          </Col>
-          <Col md="3">
-            <Button
-              className={css.orderItemBtn}
-              onClick={() => setIsHidden(true)}
-              variant="outline-danger"
-            >
-              Закрити
-            </Button>
-          </Col>
-        </div>
-      )}
+      <div
+        className={`d-flex gap-1  justify-content-around align-items-center p-2 ${
+          isHidden ? css.expandExitActive : css.expandEenterActive
+        }`}
+      >
+        {!isHidden && (
+          <>
+            <Col md="3">
+              <Button
+                className={css.orderItemBtn}
+                variant="outline-dark"
+                onClick={() => navigate(ORDERS_ROUTE + '/' + item.id)}
+              >
+                Переглянути замовлення
+              </Button>
+            </Col>
+            <Col md="3">
+              <Button
+                className={css.orderItemBtn}
+                onClick={() => {
+                  navigate(USER_ORDERS_ROUTE + '/' + item.userId);
+                  setIsHidden(true);
+                }}
+                variant="outline-primary"
+              >
+                Переглянути всі замовлення користувача
+              </Button>
+            </Col>
+            <Col md="3">
+              <Button
+                className={css.orderItemBtn}
+                onClick={() => {
+                  setIsHidden(true);
+                }}
+                variant="outline-danger"
+              >
+                Закрити
+              </Button>
+            </Col>
+          </>
+        )}
+      </div>
     </li>
   );
 };

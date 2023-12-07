@@ -59,9 +59,17 @@ export const fetchOrderById = async id => {
     return toast.error(e.response.data.message);
   }
 };
-export const updateOrder = async id => {
+export const checkOrder = async id => {
   try {
-    const { data } = await $authHost.get(`api/orders/${id}/update`);
+    const { data } = await $authHost.get(`api/orders/${id}/check`);
+    return data;
+  } catch (e) {
+    return toast.error(e.response.data.message);
+  }
+};
+export const declineOrder = async id => {
+  try {
+    const { data } = await $authHost.get(`api/orders/${id}/decline`);
     return data;
   } catch (e) {
     return toast.error(e.response.data.message);

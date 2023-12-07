@@ -73,7 +73,7 @@ const NavBar = observer(() => {
           <Col md="6">
             {user.isAuth ? (
               <Nav
-                className="d-flex flex-sm-row flex-sm-wrap justify-content-end gap-2"
+                className="d-flex flex-sm-row flex-wrap justify-content-end gap-2"
                 style={{ color: 'white' }}
               >
                 {!basketLocation && (

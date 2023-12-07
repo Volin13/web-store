@@ -19,6 +19,7 @@ const Order = sequelize.define("orders", {
   userData: { type: DataTypes.JSON, allowNull: false },
   orderList: { type: DataTypes.JSONB, allowNull: false },
   checked: { type: DataTypes.BOOLEAN, defaultValue: false },
+  declined: { type: DataTypes.BOOLEAN, defaultValue: false },
   createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 });
 

@@ -22,35 +22,38 @@ const Orders = () => {
   }, [historyMode]);
   const hendleHistoryModeBtnClick = () => {
     setHistoryMode(!historyMode);
-    fetchOrdersHistory().then(data => setHistory(data));
+    fetchOrdersHistory().then(data => {
+      if (data) {
+        setHistory(data);
+      } else {
+        setHistory([]);
+      }
+    });
   };
 
-  // console.log(orders);
   return (
     <>
-      <h2 className="mb-2">Поточні замовлення</h2>
+      <div className="d-flex justify-content-center justify-content-md-between align-items-center flex-wrap gap-sm-2 gap-md-auto mb-2">
+        <h2>Поточні замовлення</h2>
+        <Button variant="outline-dark" onClick={hendleHistoryModeBtnClick}>
+          {!history
+            ? 'Повернутись до поточних замовлень'
+            : 'Переглянути історію замовленнь'}
+        </Button>
+      </div>
 
-      <Card className="mb-3" style={{ height: '50vh', overflow: 'auto' }}>
+      <Card className="mb-3" style={{ height: '70vh', overflow: 'auto' }}>
         <Card.Title>
           <div
-            className="d-flex justify-content-between gap-1 text-center"
-            variant="outline-dark"
-            style={{
-              padding: '16px',
-              background: '#212529',
-              color: 'white',
-            }}
+            className={`d-flex justify-content-between align-items-center gap-1 text-center ${css.ordersMainThumb}`}
           >
             <Col md="1">
               <span className={css.ordersItemTitle}>№</span>
             </Col>
-            <Col md="1">
-              <span className={css.ordersItemTitle}>Юзер</span>
-            </Col>
             <Col md="2">
               <span className={css.ordersItemTitle}>Ім'я</span>
             </Col>
-            <Col md="2">
+            <Col md="3">
               <span className={css.ordersItemTitle}>Прізвище</span>
             </Col>
             <Col md="3">
@@ -67,23 +70,10 @@ const Orders = () => {
           </Card.Body>
         ) : (
           <Card.Body>
-            {!historyMode ? (
-              <OrdersList list={orders} />
-            ) : (
-              <OrdersList list={history} />
-            )}
+            <OrdersList list={historyMode ? history : orders} />
           </Card.Body>
         )}
       </Card>
-      <Button
-        className="ml-auto"
-        variant="outline-dark"
-        onClick={hendleHistoryModeBtnClick}
-      >
-        {!history
-          ? 'Повернутись до поточних замовлень'
-          : 'Переглянути історію замовленнь'}
-      </Button>
     </>
   );
 };

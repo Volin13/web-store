@@ -12,19 +12,32 @@ class OrderController {
     }
   }
 
-  async getUserOrders(req, res) {
+  async getUserOrders(req, res, next) {
     // Знаходимо всі замовлення конкретного юзера
-    const { userId } = req.params.userId;
-    const userOrders = await Order.findAll({ where: { userId } });
+    try {
+      const { userId } = req.params.userId;
+      const userOrders = await Order.findAll({ where: { userId } });
 
-    return res.json(userOrders);
+      return res.json(userOrders);
+    } catch (error) {
+      console.log(error);
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
   }
 
-  async getOrderById(req, res) {
-    const { id } = req.params;
-    const order = await Order.findByPk(id);
-
-    return res.json(order);
+  async getOrderById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const order = await Order.findByPk(id);
+      return res.json(order);
+    } catch (error) {
+      console.log(error);
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
   }
 
   async getNewOrders(req, res, next) {
@@ -54,7 +67,11 @@ class OrderController {
           checked: true,
         },
       });
-      return res.json(checkedOrders);
+      if (checkedOrders) {
+        return res.json(checkedOrders);
+      } else {
+        return next(ApiError.internal("Історія замовлень відсутня"));
+      }
     } catch (error) {
       console.error("Помилка при отриманні історії замовлень:", error);
       return next(
@@ -63,7 +80,7 @@ class OrderController {
     }
   }
 
-  async updateOrder(req, res, next) {
+  async checkOrder(req, res, next) {
     // Змінюємо  checked на true
 
     try {
@@ -73,6 +90,23 @@ class OrderController {
         return next(ApiError.notFound("Замовлення з таким id не знайдено"));
       }
       await order.update({ checked: true });
+      return res.json(order);
+    } catch (error) {
+      return next(
+        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+      );
+    }
+  }
+  async declineOrder(req, res, next) {
+    // Змінюємо  decline на true
+
+    try {
+      const orderId = req.params.id;
+      const order = await Order.findByPk(orderId);
+      if (!order) {
+        return next(ApiError.notFound("Замовлення з таким id не знайдено"));
+      }
+      await order.update({ decline: !order.declined });
       return res.json(order);
     } catch (error) {
       return next(

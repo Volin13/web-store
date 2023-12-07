@@ -1,6 +1,62 @@
+.ordersMainThumb {
+  padding: 16px;
+  background-color: #212529;
+  color: white;
+}
+
+/* ordersItem */
+
 .ordersItem {
   transition: all 500ms;
 }
 .orderItemBtn {
   width: 100%;
+}
+.expandEnter {
+  height: 31px;
+}
+.expandExitActive {
+  height: 0;
+  opacity: 0;
+  transition: height 500ms ease-out, opacity 500ms ease-out;
+}
+.expandEnterActive {
+  height: 78px;
+  opacity: 1;
+  transition: height 500ms ease-in, opacity 500ms ease-in;
+}
+
+.expandExit {
+  height: auto;
+  overflow: visible;
+}
+
+/* singleOrder */
+.orderDataList {
+  max-height: 40vh;
+}
+.orderData {
+  text-align: center;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px;
+}
+.orderDataImg {
+  object-fit: contain;
+}
+
+.userDataTitle:not(:last-child) {
+  border-bottom: 1px solid white;
+}
+
+.userDataItem:not(:last-child) {
+  border-bottom: 1px solid #212529;
+}
+
+@media screen and (max-width: 767px) {
+  .orderDataList {
+    overflow: auto;
+  }
 }

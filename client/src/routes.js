@@ -8,6 +8,7 @@ import {
   ORDERS_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
+  USER_ORDERS_ROUTE,
 } from './utils/constants';
 
 const AdminPage = lazy(() => import('./pages/AdminPage/AdminPage'));
@@ -15,6 +16,12 @@ const AuthPage = lazy(() => import('./pages/AuthPage/AuthPage'));
 const BasketPage = lazy(() => import('./pages/BasketPage/BasketPage'));
 const DevicePage = lazy(() => import('./pages/DevicePage/DevicePage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage/OrdersPage'));
+const SingleOrderPage = lazy(() =>
+  import('./pages/SingleOrderPage/SingleOrderPage')
+);
+const UserOrdersPage = lazy(() =>
+  import('./pages/UserOrdersPage/UserOrdersPage.jsx')
+);
 const ShopPage = lazy(() => import('./pages/ShopPage/ShopPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage/NotFound'));
 
@@ -34,6 +41,14 @@ export const authRoutes = [
   {
     path: ORDERS_ROUTE,
     Component: OrdersPage,
+  },
+  {
+    path: ORDERS_ROUTE + '/:id',
+    Component: SingleOrderPage,
+  },
+  {
+    path: USER_ORDERS_ROUTE + '/:id',
+    Component: UserOrdersPage,
   },
   {
     path: DEVICE_ROUTE + '/:id',
