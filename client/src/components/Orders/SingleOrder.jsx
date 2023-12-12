@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { checkOrder, declineOrder, fetchOrderById } from '../../http/ordersApi';
+import Invoice from './Invoice';
 import css from './Orders.module.css';
+
 const SingleOrder = () => {
   const [order, setOrder] = useState({});
   const [checked, setChecked] = useState(true);
   const [declined, setDeclined] = useState(true);
+  const [showInvoice, setShowInvoice] = useState(false);
 
   const { id } = useParams();
 
@@ -19,7 +22,6 @@ const SingleOrder = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(order);
   return (
     <>
       <Card className="mx-auto my-3">
@@ -80,7 +82,7 @@ const SingleOrder = () => {
             </Col>
             <Col
               md="9"
-              className="d-flex flex-column justify-content-center align-items-center gap-1 text-center p-2"
+              className={`d-flex flex-column justify-content-center align-items-center gap-1 text-center p-2 ${css.userDataThumb}`}
             >
               <div className={css.userDataItem}>{order.userData?.email}</div>
               <div className={css.userDataItem}>{order.userData?.phone}</div>
@@ -100,7 +102,7 @@ const SingleOrder = () => {
         </Card>
       )}
 
-      <div className="d-flex justify-content-around align-items-center gap-3 gap-sm-unset flex-wrap">
+      <div className="d-flex justify-content-around align-items-center gap-3 gap-sm-unset flex-wrap mb-3">
         <Button
           type="button"
           variant="outline-danger"
@@ -115,6 +117,15 @@ const SingleOrder = () => {
           type="button"
           variant="outline-primary"
           onClick={() => {
+            setShowInvoice(!showInvoice);
+          }}
+        >
+          {!checked ? 'Переглянути накладну' : 'Закрити накладну'}
+        </Button>
+        <Button
+          type="button"
+          variant="outline-primary"
+          onClick={() => {
             setChecked(!checked);
             checkOrder(id);
           }}
@@ -122,6 +133,11 @@ const SingleOrder = () => {
           {!checked ? 'Відправити' : 'Відмінити відправлення'}
         </Button>
       </div>
+      {showInvoice && (
+        <div className={css.invoiceThumb}>
+          <Invoice order={order} />
+        </div>
+      )}
     </>
   );
 };

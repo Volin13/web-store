@@ -35,6 +35,11 @@
 .orderDataList {
   max-height: 40vh;
 }
+
+.userDataThumb {
+  border-top: 1px solid #212529;
+}
+
 .orderData {
   text-align: center;
   display: flex;
@@ -45,6 +50,9 @@
 }
 .orderDataImg {
   object-fit: contain;
+}
+.invoiceThumb {
+  border: 1px solid #212529;
 }
 
 @media screen and (max-width: 767px) {

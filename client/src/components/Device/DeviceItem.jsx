@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Col, Image } from 'react-bootstrap';
+import { Card, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { DEVICE_ROUTE } from '../../utils/constants';
 import star from '../../assets/shopIcons/smallStar.svg';
@@ -8,19 +8,12 @@ import css from './Device.module.css';
 const DeviceItem = ({ device }) => {
   const navigate = useNavigate();
 
-  const styledContainer = {
-    width: 150,
-    overflow: 'hidden',
-    cursor: 'pointer',
-  };
-
   return (
-    <Col
-      md={3}
+    <div
       className={css.deviceItemCol}
       onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
     >
-      <Card style={{ width: 150, cursor: 'pointer' }} border={'light'}>
+      <Card style={{ cursor: 'pointer' }} border={'light'}>
         <div
           className={`d-flex justify-content-center align-items-center ${css.deviceItem_imgThumb}`}
         >
@@ -38,20 +31,11 @@ const DeviceItem = ({ device }) => {
             <Image src={star} width={18} height={18} />
           </div>
         </div>
-        <div style={styledContainer}>
-          <span
-            style={{
-              display: 'inline-block',
-              height: '3.1em',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-            }}
-          >
-            {device.name}
-          </span>
+        <div className={css.deviceItemTextContainer}>
+          <span className={css.deviceItemText}>{device.name}</span>
         </div>
       </Card>
-    </Col>
+    </div>
   );
 };
 
