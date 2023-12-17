@@ -53,6 +53,21 @@
 }
 .invoiceThumb {
   border: 1px solid #212529;
+  position: relative;
+}
+
+.printButton {
+  display: block;
+  position: absolute;
+  bottom: 20px;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+@media print {
+  .printButton {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 767px) {

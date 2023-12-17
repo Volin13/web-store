@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { checkOrder, declineOrder, fetchOrderById } from '../../http/ordersApi';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { useReactToPrint } from 'react-to-print';
 import Invoice from './Invoice';
 import css from './Orders.module.css';
+// @ts-ignore
+var numberToString = require('number-to-cyrillic');
 
 const SingleOrder = () => {
+  const { id } = useParams();
+  let totalCount = useRef(0);
+  const pdfToPrint = useRef(null);
+
   const [order, setOrder] = useState({});
   const [checked, setChecked] = useState(true);
   const [declined, setDeclined] = useState(true);
   const [showInvoice, setShowInvoice] = useState(false);
-
-  const { id } = useParams();
 
   useEffect(() => {
     fetchOrderById(id).then(data => {
@@ -19,8 +25,22 @@ const SingleOrder = () => {
       setDeclined(data.decline);
       setOrder(data);
     });
+    order?.orderList?.forEach(item => (totalCount.current += item.count));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Дані для накладної
+
+  const totalPriceNumb = Number(order?.userData?.total) || 0;
+
+  const totalPriceStr = numberToString.convert(totalPriceNumb);
+  const totalPricePDV = numberToString.convert(totalPriceNumb * 0.2);
+  const convertedPrice = `${totalPriceStr.convertedInteger} ${totalPriceStr.integerCurrency} ${totalPriceStr.fractional} ${totalPriceStr.fractionalCurrency}`;
+  const convertedPDV = `${totalPricePDV.convertedInteger} ${totalPricePDV.integerCurrency} ${totalPricePDV.fractional} ${totalPricePDV.fractionalCurrency}`;
+
+  const handlePrint = useReactToPrint({
+    content: () => pdfToPrint.current,
+  });
 
   return (
     <>
@@ -120,22 +140,59 @@ const SingleOrder = () => {
             setShowInvoice(!showInvoice);
           }}
         >
-          {!checked ? 'Переглянути накладну' : 'Закрити накладну'}
+          {showInvoice ? 'Закрити накладну' : 'Переглянути накладну'}
         </Button>
         <Button
           type="button"
+          disabled={checked}
           variant="outline-primary"
           onClick={() => {
             setChecked(!checked);
             checkOrder(id);
           }}
         >
-          {!checked ? 'Відправити' : 'Відмінити відправлення'}
+          {!checked ? 'Відправити' : 'Відправлено'}
         </Button>
+        {showInvoice && (
+          <PDFDownloadLink
+            document={
+              <Invoice
+                order={order}
+                convertedPrice={convertedPrice}
+                convertedPDV={convertedPDV}
+                totalPriceNumb={totalPriceNumb}
+                totalCount={totalCount}
+              />
+            }
+            fileName={`Invoice_${order.id}_${order.userData?.firstName} ${order.userData?.lastName}.pdf`}
+          >
+            {({ blob, url, loading, error }) => (
+              <Button type="button" variant="outline-primary">
+                {loading ? 'Йде завантаження...' : 'Завантажити інвойс'}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        )}
       </div>
       {showInvoice && (
-        <div className={css.invoiceThumb}>
-          <Invoice order={order} />
+        <div ref={pdfToPrint} className={`${css.invoiceThumb} mb-3`}>
+          <Invoice
+            order={order}
+            convertedPrice={convertedPrice}
+            convertedPDV={convertedPDV}
+            totalPriceNumb={totalPriceNumb}
+            totalCount={totalCount}
+          />
+          <Button
+            type="button"
+            variant="outline-primary"
+            onClick={() => {
+              handlePrint();
+            }}
+            className={css.printButton}
+          >
+            Роздрукувати інвойс
+          </Button>
         </div>
       )}
     </>

@@ -15,7 +15,7 @@ class OrderController {
   async getUserOrders(req, res, next) {
     // Знаходимо всі замовлення конкретного юзера
     try {
-      const { userId } = req.params.userId;
+      const userId = req.params.userId;
       const userOrders = await Order.findAll({ where: { userId } });
 
       return res.json(userOrders);

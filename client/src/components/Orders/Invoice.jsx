@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import numberToString from 'number-to-cyrillic';
+import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
 const currentDate = new Date();
@@ -14,13 +13,12 @@ const formattedDate = `${day < 10 ? '0' + day : day}.${
   month < 10 ? '0' + month : month
 }.${year}`;
 
-// Create styles
 const styles = StyleSheet.create({
   page: {
     display: 'block',
     textAlign: 'center',
 
-    padding: '35px 65px',
+    padding: '35px 65px 135px 65px',
   },
   section: {
     display: 'flex',
@@ -104,29 +102,19 @@ const styles = StyleSheet.create({
   },
 });
 
-// Create Document Component
-const Invoice = ({ order }) => {
-  let totalCount = useRef(0);
-  useEffect(() => {
-    order?.orderList.forEach(item => (totalCount.current += item.count));
-  }, []);
-
-  console.log(numberToString.convert(Number(order.userData.total)));
-  const totalPriceStr = numberToString.convert(Number(order.userData.total));
-  const totalPricePDV = numberToString.convert(
-    Number(order.userData.total * 0.2)
-  );
-  const convertedPrice = `${totalPriceStr.convertedInteger} ${totalPriceStr.integerCurrency} ${totalPriceStr.fractional} ${totalPriceStr.fractionalCurrency}`;
-  const convertedPDV = `${totalPricePDV.convertedInteger} ${totalPricePDV.integerCurrency} ${totalPricePDV.fractional} ${totalPricePDV.fractionalCurrency}`;
-
-  console.log(totalCount.current);
-
+const Invoice = ({
+  order,
+  convertedPrice,
+  convertedPDV,
+  totalPriceNumb,
+  totalCount,
+}) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.mainTitle}>
           <Text>
-            Видаткова накладна № {order.id} від {formattedDate}{' '}
+            Видаткова накладна № {order.id} від {formattedDate}
           </Text>
         </View>
 
@@ -137,7 +125,7 @@ const Invoice = ({ order }) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Одержувач:</Text>
           <Text style={styles.sectionText}>
-            {order?.userData.firstName} {order?.userData.lastName}{' '}
+            {order?.userData.firstName} {order?.userData.lastName}
           </Text>
         </View>
         <View style={styles.section}>
@@ -148,7 +136,6 @@ const Invoice = ({ order }) => {
         <View style={styles.mainTable}>
           <View style={styles.secndaryTable}>
             <View style={styles.brecket}>
-              {' '}
               <Text>№</Text>
             </View>
             <View style={styles.titleBrecket}>
@@ -166,9 +153,8 @@ const Invoice = ({ order }) => {
           </View>
 
           {order?.orderList.map((item, index) => (
-            <View style={styles.secndaryTable}>
+            <View key={index} style={styles.secndaryTable}>
               <View style={styles.brecket}>
-                {' '}
                 <Text>{index + 1}</Text>
               </View>
               <View style={styles.titleBrecket}>
@@ -199,8 +185,8 @@ const Invoice = ({ order }) => {
           </View>
 
           <View style={styles.totalPrice}>
-            <Text>{Number(order.userData?.total) * 0.8}</Text>
-            <Text>{Number(order.userData?.total) * 0.2}</Text>
+            <Text>{totalPriceNumb * 0.8}</Text>
+            <Text>{totalPriceNumb * 0.2}</Text>
             <Text>{order.userData?.total}</Text>
           </View>
         </View>
@@ -213,9 +199,11 @@ const Invoice = ({ order }) => {
           <Text style={styles.signInUnderline}>Кухаришин</Text>
           <Text style={styles.signIn}>Кухаришин О.</Text>
           <Text style={styles.signIn}>Отримав(ла)</Text>
-          <Text style={styles.signInUnderline}>{order?.userData.lastName}</Text>
+          <Text style={styles.signInUnderline}>
+            {order?.userData?.lastName}
+          </Text>
           <Text style={styles.signIn}>
-            {order?.userData.lastName} {order?.userData.firstName.charAt(0)}.
+            {order?.userData?.lastName} {order?.userData?.firstName.charAt(0)}.
           </Text>
         </View>
       </Page>

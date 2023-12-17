@@ -45,7 +45,7 @@ export const fetchOrdersHistory = async () => {
 };
 export const fetchUserOrders = async userId => {
   try {
-    const { data } = await $authHost.get('api/orders/user-orders' + userId);
+    const { data } = await $authHost.get('api/orders/user-orders/' + userId);
     return data;
   } catch (e) {
     return toast.error(e.response.data.message);
