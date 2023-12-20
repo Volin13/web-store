@@ -20,15 +20,19 @@ const Orders = () => {
       fetchNewOrders().then(data => setOrders(data));
     }
   }, [historyMode]);
+
   const hendleHistoryModeBtnClick = () => {
     setHistoryMode(!historyMode);
-    fetchOrdersHistory().then(data => {
-      if (data) {
-        setHistory(data);
-      } else {
-        setHistory([]);
-      }
-    });
+    if (historyMode) {
+      fetchOrdersHistory().then(data => {
+        console.log(data);
+        if (data) {
+          setHistory(data);
+        } else {
+          setHistory([]);
+        }
+      });
+    }
   };
 
   return (
@@ -36,7 +40,7 @@ const Orders = () => {
       <div className="d-flex justify-content-center justify-content-md-between align-items-center flex-wrap gap-sm-2 gap-md-auto mb-2">
         <h2>Поточні замовлення</h2>
         <Button variant="outline-dark" onClick={hendleHistoryModeBtnClick}>
-          {!history
+          {historyMode
             ? 'Повернутись до поточних замовлень'
             : 'Переглянути історію замовленнь'}
         </Button>
@@ -64,7 +68,7 @@ const Orders = () => {
             </Col>
           </div>
         </Card.Title>
-        {!history && !orders ? (
+        {!orders ? (
           <Card.Body className="d-flex align-items-center justify-content-center">
             <h3>Замовлень поки що немає</h3>
           </Card.Body>

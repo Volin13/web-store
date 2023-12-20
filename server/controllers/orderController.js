@@ -67,6 +67,8 @@ class OrderController {
           checked: true,
         },
       });
+
+      console.log("poof", checkedOrders);
       if (checkedOrders) {
         return res.json(checkedOrders);
       } else {

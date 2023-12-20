@@ -1,17 +1,18 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
-const currentDate = new Date();
-
-// Отримання дня, місяця та року
-const day = currentDate.getDate();
-const month = currentDate.getMonth() + 1;
-const year = currentDate.getFullYear();
-
 // Форматування дати
-const formattedDate = `${day < 10 ? '0' + day : day}.${
-  month < 10 ? '0' + month : month
-}.${year}`;
+
+const setFormatDate = date => {
+  const dateObject = new Date(date);
+  const year = dateObject.getFullYear();
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+
+  const formattedDate = `${day}.${month}.${year}`;
+
+  return formattedDate;
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -109,12 +110,15 @@ const Invoice = ({
   totalPriceNumb,
   totalCount,
 }) => {
+  console.log(order);
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.mainTitle}>
           <Text>
-            Видаткова накладна № {order.id} від {formattedDate}
+            Видаткова накладна № {order.id} від{' '}
+            {setFormatDate(order?.createdAt)}
           </Text>
         </View>
 

@@ -1,10 +1,10 @@
+const { Order } = require("../models/models");
 const { Op } = require("sequelize");
-const moment = require("moment");
-const ApiError = require("../error/ApiError");
 
 const deleteOldOrdersMiddleware = async (req, res, next) => {
   try {
-    const sixMonthsAgo = moment().subtract(6, "months").toDate();
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
     const outdatedOrders = await Order.findAll({
       where: {
@@ -13,9 +13,8 @@ const deleteOldOrdersMiddleware = async (req, res, next) => {
         },
       },
     });
-
     // Видаляємо замовлення, час створення яких більше шести місяців
-    if (outdatedOrders) {
+    if (outdatedOrders.length > 0) {
       const deletedOrdersCount = await Order.destroy({
         where: {
           createdAt: {
@@ -24,10 +23,12 @@ const deleteOldOrdersMiddleware = async (req, res, next) => {
         },
       });
     }
+
     console.log(`Видалено ${deletedOrdersCount} замовлень.`);
     await next();
   } catch (error) {
-    next(ApiError.internal("При видаленні замовлень сталась помилка"));
+    console.log("При видаленні замовлень сталась помилка");
+    await next();
   }
 };
 

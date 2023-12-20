@@ -75,3 +75,27 @@
     overflow: auto;
   }
 }
+
+/* userOrder */
+.runningThumb {
+  position: relative;
+  overflow: hidden;
+}
+
+.runningString {
+  position: absolute;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.runningString:hover,
+.runningString:focus {
+  animation: running-text 5s linear infinite;
+}
+
+@keyframes running-text {
+  to {
+    transform: translateX(-100%);
+  }
+}

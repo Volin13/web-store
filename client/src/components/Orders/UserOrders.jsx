@@ -34,11 +34,9 @@ const UserOrders = () => {
     const day = dateObject.getDate().toString().padStart(2, '0');
     const hours = dateObject.getHours().toString().padStart(2, '0');
     const minutes = dateObject.getMinutes().toString().padStart(2, '0');
-    const formattedDate = `${year}.${month}.${day} / ${hours}:${minutes}`;
+    const formattedDate = `${day}.${month}.${year} / ${hours}:${minutes}`;
     return formattedDate;
   };
-
-  console.log(userName);
 
   return (
     <>
@@ -54,7 +52,7 @@ const UserOrders = () => {
               <span className={css.ordersItemTitle}>№</span>
             </Col>
             <Col md="2">
-              <span className={css.ordersItemTitle}>Сума</span>
+              <span className={css.ordersItemTitle}>Сума, грн</span>
             </Col>
             <Col md="3">
               <span className={css.ordersItemTitle}>Місто</span>
@@ -93,8 +91,12 @@ const UserOrders = () => {
                       {item?.userData?.city}
                     </span>
                   </Col>
-                  <Col md="3">
-                    <span className={css.ordersItemTitle}>
+                  <Col md="3" className={css.runningThumb}>
+                    <span
+                      className={`${css.ordersItemTitle} ${
+                        isHidden && css.runningString
+                      }`}
+                    >
                       {item?.userData?.terminal}
                     </span>
                   </Col>{' '}
@@ -104,36 +106,35 @@ const UserOrders = () => {
                     </span>
                   </Col>
                 </div>
-                <div
-                  className={`d-flex gap-1  justify-content-around align-items-center p-2 ${
-                    isHidden ? css.expandExitActive : css.expandEenterActive
-                  }`}
-                >
-                  {!isHidden && (
-                    <>
-                      <Col md="3">
-                        <Button
-                          className={css.orderItemBtn}
-                          variant="outline-dark"
-                          onClick={() => navigate(ORDERS_ROUTE + '/' + item.id)}
-                        >
-                          Переглянути замовлення
-                        </Button>
-                      </Col>
-                      <Col md="3">
-                        <Button
-                          className={css.orderItemBtn}
-                          onClick={() => {
-                            setIsHidden(true);
-                          }}
-                          variant="outline-danger"
-                        >
-                          Закрити
-                        </Button>
-                      </Col>
-                    </>
-                  )}
-                </div>
+
+                {!isHidden && (
+                  <div
+                    className={`d-flex gap-1  justify-content-around align-items-center p-2 ${
+                      isHidden ? css.expandExitActive : css.expandEenterActive
+                    }`}
+                  >
+                    <Col md="3">
+                      <Button
+                        className={css.orderItemBtn}
+                        variant="outline-dark"
+                        onClick={() => navigate(ORDERS_ROUTE + '/' + item.id)}
+                      >
+                        Переглянути замовлення
+                      </Button>
+                    </Col>
+                    <Col md="3">
+                      <Button
+                        className={css.orderItemBtn}
+                        onClick={() => {
+                          setIsHidden(true);
+                        }}
+                        variant="outline-danger"
+                      >
+                        Закрити
+                      </Button>
+                    </Col>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

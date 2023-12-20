@@ -23,7 +23,7 @@ const OrdersItem = ({ item, index }) => {
       <div
         className="d-flex justify-content-between gap-1 text-center mb-2"
         style={{
-          background: index % 2 === 0 ? 'lightgrey' : 'transparent',
+          background: item?.declined ? 'transparent' : '#ffc2c2',
         }}
       >
         <Col md="1">
