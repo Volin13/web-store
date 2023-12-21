@@ -25,7 +25,6 @@ const Orders = () => {
     setHistoryMode(!historyMode);
     if (historyMode) {
       fetchOrdersHistory().then(data => {
-        console.log(data);
         if (data) {
           setHistory(data);
         } else {

@@ -1,0 +1,14 @@
+.searchInput {
+  transition: all 1000ms;
+  overflow: hidden;
+  height: 44px;
+}
+.searchLable {
+  transition: all 1000ms;
+}
+.searchLableRound {
+  border-radius: 50px;
+}
+.searchLableInitial {
+  border-radius: initial;
+}

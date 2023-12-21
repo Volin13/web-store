@@ -1,0 +1,38 @@
+.menuThumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50px;
+  background-color: white;
+  outline: 2px ridge #ffffff99;
+}
+
+.rotateAnimationFirst {
+  animation: spin1 1s infinite;
+}
+
+.rotateAnimationSecond {
+  animation: spin2 1s infinite;
+}
+
+@keyframes spin1 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes spin2 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

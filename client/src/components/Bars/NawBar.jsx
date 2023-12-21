@@ -1,9 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../..';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
-import Navbar from 'react-bootstrap/Navbar';
+import {
+  Navbar,
+  Button,
+  Nav,
+  Container,
+  OverlayTrigger,
+  Tooltip,
+  Col,
+  Image,
+  Collapse,
+  Card,
+} from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   ADMIN_ROUTE,
@@ -13,15 +21,17 @@ import {
   SHOP_ROUTE,
 } from '../../utils/constants';
 import { observer } from 'mobx-react-lite';
-import { Col, Image } from 'react-bootstrap';
-
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
 import BasketModal from '../modals/BasketModal';
+import MenuIcon from '../UI/UX/MenuIcon/MenuIcon';
+import MainFilter from '../UI/UX/MainFilter/MainFilter';
 
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
+  const [open, setOpen] = useState(false);
+
   const { user, basket, device } = useContext(Context);
 
   const navigate = useNavigate();
@@ -54,6 +64,7 @@ const NavBar = observer(() => {
     <>
       <Navbar sticky="top" bg="dark" data-bs-theme="dark">
         <Container>
+          {/* logo */}
           <Col md="3">
             <NavLink className="navBar_mainLogo" to={SHOP_ROUTE}>
               Online
@@ -70,43 +81,77 @@ const NavBar = observer(() => {
               Store
             </NavLink>
           </Col>
-          <Col md="6">
-            {user.isAuth ? (
-              <Nav
-                className="d-flex flex-sm-row flex-wrap justify-content-end gap-2"
-                style={{ color: 'white' }}
+
+          {/* search */}
+
+          <Col md="7">
+            <MainFilter />
+          </Col>
+          <Col md="3" className="d-flex align-items-center ">
+            {/* basket*/}
+            {!basketLocation && (
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="tooltip-bottom">Кошик</Tooltip>}
               >
-                {!basketLocation && (
-                  <button
-                    className="d-flex align-items-center justify-content-center basket_btn"
-                    type="button"
-                    onClick={() => setBasketVisible(true)}
-                  >
-                    <Image width={30} height={30} src={basketImg} />
-                    {basketLength > 0 && (
-                      <div className="basket_btn_count">{basketLength}</div>
-                    )}
-                  </button>
-                )}
-                <NavLink to={ADMIN_ROUTE}>
-                  <Button variant="outline-light">Адміністратору</Button>{' '}
-                </NavLink>
-                <Button variant="outline-light" onClick={() => logOut()}>
-                  Вийти
-                </Button>{' '}
-              </Nav>
-            ) : (
-              <Nav
-                className="ml-auto flex-md-column"
-                style={{ color: 'white' }}
-              >
-                <NavLink to={authLocation ? location.pathname : LOGIN_ROUTE}>
-                  <Button variant="outline-light" disabled={authLocation}>
-                    Авторизація
-                  </Button>{' '}
-                </NavLink>
-              </Nav>
+                <button
+                  className="d-flex align-items-center justify-content-center basket_btn"
+                  type="button"
+                  onClick={() => setBasketVisible(true)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  <Image width={30} height={30} src={basketImg} />
+                  {basketLength > 0 && (
+                    <div className="basket_btn_count">{basketLength}</div>
+                  )}
+                </button>
+              </OverlayTrigger>
             )}
+
+            {/* menu */}
+
+            <button
+              onClick={() => setOpen(!open)}
+              aria-controls="collapse"
+              aria-expanded={open}
+              style={{ marginLeft: '10px' }}
+            >
+              <MenuIcon />
+            </button>
+            <div className="position-relative">
+              <Collapse in={open} className="position-absolute menuThumb">
+                {user.isAuth ? (
+                  <Nav
+                    className="d-flex flex-sm-row flex-wrap justify-content-end"
+                    id="collapse"
+                    style={{
+                      gap: '20px',
+                      color: 'white',
+                    }}
+                  >
+                    <NavLink to={ADMIN_ROUTE}>
+                      <Button variant="outline-light">Адміністратору</Button>{' '}
+                    </NavLink>
+                    <Button variant="outline-light" onClick={() => logOut()}>
+                      Вийти
+                    </Button>{' '}
+                  </Nav>
+                ) : (
+                  <Nav
+                    className="ml-auto flex-md-column"
+                    style={{ color: 'white' }}
+                  >
+                    <NavLink
+                      to={authLocation ? location.pathname : LOGIN_ROUTE}
+                    >
+                      <Button variant="outline-light" disabled={authLocation}>
+                        Авторизація
+                      </Button>{' '}
+                    </NavLink>
+                  </Nav>
+                )}
+              </Collapse>
+            </div>
           </Col>
         </Container>
       </Navbar>

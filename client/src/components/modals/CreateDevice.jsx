@@ -211,7 +211,6 @@ const CreateDevice = observer(({ show, onHide }) => {
               style={{ height: '38px' }}
               type="file"
               isInvalid={formik.values.img && formik.errors.img}
-              placeholder="Завантажте зображення пристрою"
               onChange={e => {
                 selectFile(e);
               }}
@@ -221,7 +220,7 @@ const CreateDevice = observer(({ show, onHide }) => {
             </Form.Control.Feedback>
           </InputGroup>
 
-          <hr />
+          <hr className="mb-2" />
           <Button variant="outline-dark" onClick={addInfo}>
             Додати нову властивість
           </Button>

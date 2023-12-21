@@ -110,8 +110,6 @@ const Invoice = ({
   totalPriceNumb,
   totalCount,
 }) => {
-  console.log(order);
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
