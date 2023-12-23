@@ -153,7 +153,7 @@ hr {
 }
 .basket_btn:hover,
 .basket_btn:focus {
-  scale: 1.15;
+  transform: scale(1.15);
 }
 
 /* NAV BAR */
@@ -170,11 +170,6 @@ hr {
   background-color: #1cb4e3;
 }
 
-.navBar_mainLogo {
-  transition: all 500ms;
-  color: white;
-}
-
 .navBar_mainLogo_image {
   animation: drag 3s linear infinite;
 }
@@ -187,9 +182,27 @@ hr {
     transform: perspective(400px) rotateY(-45deg);
   }
 }
-.navBar_mainLogo:hover,
-.navBar_mainLogo:focus {
-  scale: 1.15;
+
+.navBar_mainLogo {
+  transition: all 500ms;
+  color: white;
+  display: inline-block;
+  position: relative;
+}
+.navBar_mainLogo::after {
+  position: absolute;
+  content: '';
+  height: 2px;
+  background-color: #1cb4e3;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  transition: all 0.3s;
+}
+
+.navBar_mainLogo:hover::after,
+.navBar_mainLogo:focus::after {
+  width: 100%;
 }
 
 .menuThumb {

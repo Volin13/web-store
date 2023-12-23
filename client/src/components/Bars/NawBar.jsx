@@ -9,8 +9,7 @@ import {
   Tooltip,
   Col,
   Image,
-  Collapse,
-  Card,
+  Offcanvas,
 } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -30,7 +29,7 @@ import MainFilter from '../UI/UX/MainFilter/MainFilter';
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   const { user, basket, device } = useContext(Context);
 
@@ -87,7 +86,7 @@ const NavBar = observer(() => {
           <Col md="7">
             <MainFilter />
           </Col>
-          <Col md="3" className="d-flex align-items-center ">
+          <Col md="2" className="d-flex align-items-center ">
             {/* basket*/}
             {!basketLocation && (
               <OverlayTrigger
@@ -109,50 +108,69 @@ const NavBar = observer(() => {
             )}
 
             {/* menu */}
-
-            <button
-              onClick={() => setOpen(!open)}
-              aria-controls="collapse"
-              aria-expanded={open}
-              style={{ marginLeft: '10px' }}
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-bottom">Меню</Tooltip>}
             >
-              <MenuIcon />
-            </button>
-            <div className="position-relative">
-              <Collapse in={open} className="position-absolute menuThumb">
-                {user.isAuth ? (
-                  <Nav
-                    className="d-flex flex-sm-row flex-wrap justify-content-end"
-                    id="collapse"
-                    style={{
-                      gap: '20px',
-                      color: 'white',
+              <button
+                onClick={() => setShow(true)}
+                style={{ marginLeft: '10px' }}
+              >
+                <MenuIcon />
+              </button>
+            </OverlayTrigger>
+          </Col>
+
+          <Offcanvas
+            show={show}
+            scroll={true}
+            placement="end"
+            onHide={() => {
+              setShow(false);
+            }}
+            style={{ width: '250px' }}
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Меню</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              {user.isAuth ? (
+                <Nav
+                  className="d-flex flex-column align-items-start"
+                  id="collapse"
+                  style={{
+                    gap: '20px',
+                  }}
+                >
+                  <NavLink to={ADMIN_ROUTE}>
+                    <Button
+                      variant="outline-dark"
+                      onClick={() => setShow(false)}
+                    >
+                      Адміністратору
+                    </Button>{' '}
+                  </NavLink>
+                  <Button
+                    variant="outline-dark"
+                    onClick={() => {
+                      setShow(false);
+                      logOut();
                     }}
                   >
-                    <NavLink to={ADMIN_ROUTE}>
-                      <Button variant="outline-light">Адміністратору</Button>{' '}
-                    </NavLink>
-                    <Button variant="outline-light" onClick={() => logOut()}>
-                      Вийти
+                    Вийти
+                  </Button>{' '}
+                </Nav>
+              ) : (
+                <Nav className="ml-auto flex-md-column">
+                  <NavLink to={authLocation ? location.pathname : LOGIN_ROUTE}>
+                    <Button variant="outline-dark" disabled={authLocation}>
+                      Авторизація
                     </Button>{' '}
-                  </Nav>
-                ) : (
-                  <Nav
-                    className="ml-auto flex-md-column"
-                    style={{ color: 'white' }}
-                  >
-                    <NavLink
-                      to={authLocation ? location.pathname : LOGIN_ROUTE}
-                    >
-                      <Button variant="outline-light" disabled={authLocation}>
-                        Авторизація
-                      </Button>{' '}
-                    </NavLink>
-                  </Nav>
-                )}
-              </Collapse>
-            </div>
-          </Col>
+                  </NavLink>
+                </Nav>
+              )}
+            </Offcanvas.Body>
+          </Offcanvas>
         </Container>
       </Navbar>
       <BasketModal

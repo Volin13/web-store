@@ -7,8 +7,12 @@
   border-radius: 50px;
   background-color: white;
   outline: 2px ridge #ffffff99;
+  transition: transform 500ms;
 }
-
+.menuThumb:hover,
+.menuThumb:focus {
+  transform: scale(1.15);
+}
 .rotateAnimationFirst {
   animation: spin1 1s infinite;
 }

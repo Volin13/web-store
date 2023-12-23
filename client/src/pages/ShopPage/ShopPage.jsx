@@ -11,10 +11,13 @@ import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
 
 const Shop = observer(() => {
   const { device } = useContext(Context);
+
+  console.log(device);
+
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
-    fetchDevices(null, null, 1, 3).then(data => {
+    fetchDevices(null, null, '', 1, 3).then(data => {
       device.setDevices(data.rows);
       device.setTotalCount(data.count);
     });
@@ -24,13 +27,20 @@ const Shop = observer(() => {
     fetchDevices(
       device.selectedType.id,
       device.selectedBrand.id,
+      device.query,
       device.page,
       2
     ).then(data => {
       device.setDevices(data.rows);
       device.setTotalCount(data.count);
     });
-  }, [device.page, device.selectedType, device.selectedBrand, device]);
+  }, [
+    device.page,
+    device.selectedType,
+    device.selectedBrand,
+    device.query,
+    device,
+  ]);
   return (
     <Container>
       <Row className="mt-2">

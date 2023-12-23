@@ -50,11 +50,12 @@ export const createRating = async (deviceId, rate, user) => {
   return;
 };
 
-export const fetchDevices = async (typeId, brandId, page, limit = 5) => {
+export const fetchDevices = async (typeId, brandId, query, page, limit = 5) => {
   const { data } = await $host.get('api/device', {
     params: {
       typeId,
       brandId,
+      query,
       page,
       limit,
     },

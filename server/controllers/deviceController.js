@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
+const { Op } = require("sequelize");
 const ApiError = require("../error/ApiError");
 const { Device, DeviceInfo } = require("../models/models");
 class DeviceController {
@@ -36,43 +37,38 @@ class DeviceController {
     }
   }
 
-  async getAll(req, res) {
-    let devices;
-    let { brandId, typeId, limit, page } = req.query;
-    page = page || 1;
-    limit = limit || 9;
-    let offset = page * limit - limit;
-    if (!brandId && !typeId) {
-      // Отримуємо всі девайси
-      devices = await Device.findAndCountAll({ limit, offset });
-    }
-    if (brandId && !typeId) {
-      // Отримуємо девайси зазначеного бренду
-      devices = await Device.findAndCountAll({
-        where: { brandId },
-        limit,
-        offset,
-      });
-    }
-    if (!brandId && typeId) {
-      // Отримуємо девайси зазначеного типу
+  async getAll(req, res, next) {
+    try {
+      let { brandId, typeId, query, limit, page } = req.query;
+      page = page || 1;
+      limit = limit || 12;
+      const offset = page * limit - limit;
 
-      devices = await Device.findAndCountAll({
-        where: { typeId },
-        limit,
-        offset,
-      });
-    }
-    if (brandId && typeId) {
-      // Отримуємо девайси зазначеного бренду і типу
+      const whereCondition = {};
 
-      devices = await Device.findAndCountAll({
-        where: { typeId, brandId },
+      if (brandId) {
+        whereCondition.brandId = brandId;
+      }
+      if (typeId) {
+        whereCondition.typeId = typeId;
+      }
+      if (query) {
+        whereCondition.name = {
+          [Op.iLike]: `%${query}%`,
+        };
+      }
+
+      const devices = await Device.findAndCountAll({
+        where: whereCondition,
         limit,
         offset,
       });
+
+      console.log(devices);
+      return res.json(devices);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
     }
-    return res.json(devices);
   }
 
   async getOne(req, res) {

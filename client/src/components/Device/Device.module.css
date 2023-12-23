@@ -1,6 +1,7 @@
 .deviceItemCol {
   width: 150px;
   height: 250px;
+  transition: transform 500ms;
 }
 .deviceItem_img {
   object-fit: contain;
@@ -24,6 +25,10 @@
 }
 .deviceItemCol:not(:nth-child(2n)) {
   margin-right: 16px;
+}
+.deviceItemCol:hover,
+.deviceItemCol:focus {
+  transform: scale(1.05);
 }
 
 @media screen and (min-width: 480px) {

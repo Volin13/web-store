@@ -7,9 +7,10 @@ import DeviceItem from './DeviceItem';
 
 const DeviceList = observer(() => {
   const { device } = useContext(Context);
+
   return (
     <Col md="12" className="d-flex mt-3">
-      {device.devices.map(device => (
+      {device?.devices?.map(device => (
         <DeviceItem key={device.id} device={device}></DeviceItem>
       ))}
     </Col>

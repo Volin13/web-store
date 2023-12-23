@@ -1,43 +1,31 @@
-import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Image, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
-import * as yup from 'yup';
+import { Context } from '../../../..';
 import searchIcon from '../../../../assets/defultIcons/search-svgrepo-com.svg';
 import css from './MainFilter.module.css';
 
-const myEmailRegex =
-  /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-
-export let searchSchema = yup.object().shape({
-  search: yup
-    .string()
-    .matches(myEmailRegex, {
-      message: 'Ваш імеіл має бути валідним',
-      name: 'email',
-      excludeEmptyString: true,
-    })
-    .min(5, 'Запит короткий')
-    .max(254, 'Запит занадто довгий')
-    .lowercase()
-    .required('Введіть ваш імеіл'),
-});
-
 const MainFilter = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const { device } = useContext(Context);
 
-  const formik = useFormik({
-    initialValues: {
-      search: '',
-    },
-    validationSchema: searchSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      setSubmitting(false);
-      resetForm(false);
-    },
-  });
+  const handleChange = event => {
+    setInputValue(event.target.value);
+  };
 
-  console.log(isHovered);
+  const handleClick = () => {
+    device.setQuery(inputValue);
+    device.setSelectedType({});
+    device.setSelectedBrand({});
+  };
+
+  const handleKeyPress = event => {
+    if (event.key === 'Enter') {
+      handleClick();
+    }
+  };
+
   return (
     <div className="d-flex justify-content-end">
       <InputGroup
@@ -61,6 +49,7 @@ const MainFilter = () => {
               onMouseEnter={() => {
                 setIsHovered(true);
               }}
+              onClick={handleClick}
             >
               <Image width={18} height={18} src={searchIcon} />
             </InputGroup.Text>
@@ -70,19 +59,21 @@ const MainFilter = () => {
         <Form.Control
           className={css.searchInput}
           style={{
-            flex: isHovered ? '1 1 auto' : ' unset',
+            flex: isHovered ? '1 1 auto' : 'unset',
             opacity: isHovered ? '1' : '0',
             width: isHovered ? '' : '0px',
             padding: isHovered ? '' : '0px',
           }}
           type="text"
           name="search"
-          value={formik.values.search}
+          value={inputValue}
           onBlur={() => {
-            setIsHovered(false);
+            if (!inputValue) {
+              setIsHovered(false);
+            }
           }}
-          onChange={formik.handleChange}
-          isInvalid={formik.values.search && formik.errors.search}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
           placeholder="Пошук по девайсам"
         />
       </InputGroup>
