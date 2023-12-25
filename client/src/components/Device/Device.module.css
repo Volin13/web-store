@@ -31,20 +31,27 @@
   transform: scale(1.05);
 }
 
-@media screen and (min-width: 480px) {
+/* Для ширини екрану більше 480px, наприклад, на планшетах 3 в ряд */
+@media screen and (min-width: 480px) and (max-width: 991px) {
+  /* Кожен третій елемент, крім останнього в ряду */
   .deviceItemCol:not(:nth-child(3n)) {
     margin-right: calc((100% - 450px) / 3);
   }
 
+  /* Крім останнього в кожному ряду */
   .deviceItemCol:not(:nth-last-child(3)) {
     margin-bottom: 32px;
   }
 }
+
+/* Для ширини екрану більше 992px, наприклад, на більших екранах 4 в ряд */
 @media screen and (min-width: 992px) {
+  /* Кожен четвертий елемент, крім останнього в ряду */
   .deviceItemCol:not(:nth-child(4n)) {
     margin-right: calc((100% - 600px) / 4);
   }
 
+  /* Крім останнього в кожному ряду */
   .deviceItemCol:not(:nth-last-child(4)) {
     margin-bottom: 32px;
   }

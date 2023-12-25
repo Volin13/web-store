@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useContext } from 'react';
-import { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Context } from '../..';
 import BrandBar from '../../components/Bars/BrandBar';
@@ -11,36 +10,42 @@ import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
 
 const Shop = observer(() => {
   const { device } = useContext(Context);
+  const [loading, setLoading] = useState(false);
 
-  console.log(device);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const types = await fetchTypes();
+      const brands = await fetchBrands();
+      const devicesData = await fetchDevices(
+        device.selectedType.id,
+        device.selectedBrand.id,
+        device.query,
+        device.page,
+        device.limit
+      );
+
+      device.setTypes(types);
+      device.setBrands(brands);
+      device.setDevices(devicesData.rows);
+      device.setTotalCount(devicesData.count);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetchTypes().then(data => device.setTypes(data));
-    fetchBrands().then(data => device.setBrands(data));
-    fetchDevices(null, null, '', 1, 3).then(data => {
-      device.setDevices(data.rows);
-      device.setTotalCount(data.count);
-    });
-  }, [device]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    fetchDevices(
-      device.selectedType.id,
-      device.selectedBrand.id,
-      device.query,
-      device.page,
-      2
-    ).then(data => {
-      device.setDevices(data.rows);
-      device.setTotalCount(data.count);
-    });
-  }, [
-    device.page,
-    device.selectedType,
-    device.selectedBrand,
-    device.query,
-    device,
-  ]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [device.page, device.selectedType, device.selectedBrand, device.query]);
+
   return (
     <Container>
       <Row className="mt-2">
@@ -49,7 +54,7 @@ const Shop = observer(() => {
         </Col>
         <Col md={9}>
           <BrandBar />
-          <DeviceList />
+          <DeviceList loading={loading} />
           <Pages />
         </Col>
       </Row>
