@@ -1,30 +1,101 @@
 import { observer } from 'mobx-react-lite';
-import React from 'react';
-import { useContext } from 'react';
-import { ListGroup } from 'react-bootstrap';
+import React, { useState, useRef } from 'react';
+import { useContext, useEffect } from 'react';
+import { Image, ListGroup } from 'react-bootstrap';
+import Arrow from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import { Context } from '../..';
 
 const BrandBar = observer(() => {
   const { device } = useContext(Context);
+  const [hidden, setHidden] = useState(true);
+  const [showBtn, setShowBtn] = useState(true);
+  const listRef = useRef(null);
+  const timerRef = useRef(null);
+
+  // кнопка пропадає в кінці списку
+  useEffect(() => {
+    const list = listRef.current;
+    const isEndOfList =
+      list?.scrollWidth - list?.scrollLeft === list?.clientWidth;
+    console.log(isEndOfList && timerRef.current);
+    if (isEndOfList && timerRef.current) {
+      setShowBtn(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listRef, timerRef.current]);
+
+  const handleScroll = () => {
+    clearTimeout(timerRef.current);
+    // кнопка пропадає на час скролінгу
+    setShowBtn(false);
+    // Час для визначення завершення скролінгу
+    timerRef.current = setTimeout(() => {
+      // кнопка з'являється під кінець склолінгу
+      setShowBtn(true);
+    }, 300);
+  };
+  const handleBrandBarClick = brand => {
+    // якщо натиснутий бренд співпадає з обраним раніше то відміняємо фільтрацію
+    if (brand.id === device.selectedBrand.id) {
+      device.setSelectedBrand({});
+    } else {
+      device.setSelectedBrand(brand);
+    }
+  };
 
   return (
-    <ListGroup
-      className="d-flex text-center"
-      style={{ position: 'sticky' }}
-      horizontal={true}
+    <div
+      className="position-relative"
+      style={{ marginBottom: !hidden && '55px' }}
     >
-      {device?.brands?.map(brand => (
-        <ListGroup.Item
-          style={{ cursor: 'pointer' }}
-          active={brand.id === device.selectedBrand.id}
-          key={brand.id}
-          onClick={() => device.setSelectedBrand(brand)}
-          action
+      <ListGroup
+        onScroll={handleScroll}
+        ref={listRef}
+        className={`d-flex ${
+          hidden ? 'brandList' : 'flex-wrap'
+        } justify-content-center justify-content-sm-start text-center`}
+        style={{
+          width: hidden ? '95%' : '100%',
+        }}
+        horizontal={true}
+      >
+        {device?.brands?.map(brand => (
+          <ListGroup.Item
+            style={{
+              cursor: 'pointer',
+              width: '110px',
+              minWidth: '110px',
+              border: '1px solid #e6e9ec',
+            }}
+            active={brand.id === device.selectedBrand.id}
+            key={brand.id}
+            onClick={() => handleBrandBarClick(brand)}
+            action
+          >
+            {brand.name}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+      {showBtn && (
+        <button
+          onClick={() => {
+            setHidden(!hidden);
+          }}
+          className={`d-flex align-items-center justify-content-center ${
+            hidden ? 'showMoreBtn' : 'showLessBtn'
+          }`}
         >
-          {brand.name}
-        </ListGroup.Item>
-      ))}
-    </ListGroup>
+          <Image
+            width={25}
+            height={25}
+            src={Arrow}
+            className={`${
+              hidden ? 'brandBarBtnOpenImg' : 'brandBarBtnCloseImg'
+            }`}
+          />
+        </button>
+      )}
+    </div>
   );
 });
 

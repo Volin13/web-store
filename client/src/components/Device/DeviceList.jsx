@@ -10,13 +10,13 @@ const DeviceList = observer(({ loading }) => {
 
   return (
     <Col md="12" className=" mt-3">
-      {/* Генеруємо 8 плейсхолдерів поки у нас завантажуються дані */}
+      {/* Генеруємо 4 плейсхолдерів поки у нас завантажуються дані */}
       {loading ? (
         <ul
           className="d-flex flex-raw flex-wrap justify-content-around"
           style={{ marginTop: '56px' }}
         >
-          {Array.from({ length: 8 }, (_, index) => (
+          {Array.from({ length: 4 }, (_, index) => (
             <DeviceItem loading={loading} key={index}></DeviceItem>
           ))}
         </ul>

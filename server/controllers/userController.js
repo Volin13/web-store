@@ -2,9 +2,10 @@ const ApiError = require("../error/ApiError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User, Basket } = require("../models/models");
+let SECRET_KEY = process.env.SECRET_KEY || "random_secret_key1234";
 
 const generateJwt = (id, email, role) => {
-  return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
+  return jwt.sign({ id, email, role }, SECRET_KEY, {
     expiresIn: "24h",
   });
 };

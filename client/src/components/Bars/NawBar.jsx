@@ -65,17 +65,20 @@ const NavBar = observer(() => {
         <Container>
           {/* logo */}
           <Col md="3">
-            <NavLink className="navBar_mainLogo" to={SHOP_ROUTE}>
+            <NavLink
+              className="navBar_mainLogo"
+              to={SHOP_ROUTE}
+              onClick={() => {
+                device.setSelectedBrand({});
+                device.setSelectedType({});
+              }}
+            >
               Online
               <Image
                 className="navBar_mainLogo_image"
                 src={storeLogo}
                 width={25}
                 height={25}
-                onClick={() => {
-                  device.setSelectedBrand({});
-                  device.setSelectedType({});
-                }}
               />
               Store
             </NavLink>

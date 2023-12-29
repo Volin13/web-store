@@ -12,3 +12,12 @@
 .searchLableInitial {
   border-radius: initial;
 }
+
+.mobileSearchInput {
+  position: absolute;
+  height: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 53px;
+  z-index: 3;
+}

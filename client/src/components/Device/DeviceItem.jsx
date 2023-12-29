@@ -28,21 +28,24 @@ const DeviceItem = ({ device, loading }) => {
               animation="glow"
               className="d-flex align-items-center justify-content-between"
             >
-              <Placeholder xs={8} /> <Placeholder xs={2} />
+              <Placeholder xs={8} bg="primary" />{' '}
+              <Placeholder xs={2} bg="primary" />
             </Placeholder>
             <Placeholder
               as={Card.Text}
               animation="glow"
               className="d-flex flex-wrap align-items-center justify-content-between"
             >
-              <Placeholder xs={7} /> <Placeholder xs={4} />
+              <Placeholder xs={7} bg="primary" />{' '}
+              <Placeholder xs={4} bg="primary" />
             </Placeholder>
             <Placeholder
               as={Card.Text}
               animation="glow"
               className="d-flex flex-wrap align-items-center justify-content-between mt-2"
             >
-              <Placeholder xs={5} /> <Placeholder xs={6} />
+              <Placeholder xs={5} bg="primary" />{' '}
+              <Placeholder xs={6} bg="primary" />
             </Placeholder>
           </Card.Body>
         </Card>

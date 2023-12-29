@@ -10,6 +10,18 @@ const TypeBar = observer(() => {
   const { device } = useContext(Context);
   const [showBar, setShowBar] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
+  const [selectedType, setSelectedType] = useState(false);
+
+  const handleTypeBarClick = Type => {
+    if (!selectedType) {
+      setSelectedType(true);
+      device.setSelectedType(Type);
+      device.setSelectedBrand({});
+    } else {
+      setSelectedType(false);
+      device.setSelectedType({});
+    }
+  };
 
   return (
     <div
@@ -35,8 +47,7 @@ const TypeBar = observer(() => {
             active={type.id === device.selectedType.id}
             key={type.id}
             onClick={() => {
-              device.setSelectedType(type);
-              device.setSelectedBrand({});
+              handleTypeBarClick(type);
             }}
             action
           >

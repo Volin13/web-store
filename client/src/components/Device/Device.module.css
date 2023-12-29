@@ -1,6 +1,7 @@
 .deviceItemCol {
   width: 150px;
   height: 250px;
+
   transition: transform 500ms;
 }
 .deviceItem_img {
@@ -19,16 +20,21 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
-.deviceItemCol:not(:nth-last-child(2)) {
-  margin-bottom: 16px;
-}
-.deviceItemCol:not(:nth-child(2n)) {
-  margin-right: 16px;
-}
 .deviceItemCol:hover,
 .deviceItemCol:focus {
   transform: scale(1.05);
+}
+.deviceItemCol:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+@media screen and (min-width: 340px) and (max-width: 479px) {
+  .deviceItemCol:not(:nth-last-child(2)) {
+    margin-bottom: 16px;
+  }
+  .deviceItemCol:not(:nth-child(2n)) {
+    margin-right: 16px;
+  }
 }
 
 /* Для ширини екрану більше 480px, наприклад, на планшетах 3 в ряд */

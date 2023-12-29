@@ -212,3 +212,36 @@ hr {
   right: 10%;
   top: 40px;
 }
+
+/* BRAND BAR  */
+
+.showMoreBtn {
+  position: absolute;
+  height: 100%;
+  top: 50%;
+  right: -7px;
+  transform: translateY(-50%);
+}
+.showLessBtn {
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  bottom: -32px;
+  border: 1px solid #e6e9ec;
+}
+.brandList {
+  overflow-x: auto;
+  max-height: 300px;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent; /* Firefox */
+}
+.brandList::-webkit-scrollbar {
+  height: 2px;
+}
+
+.brandBarBtnOpenImg {
+  transform: rotate(270deg);
+}
+.brandBarBtnCloseImg {
+  transform: rotate(180deg);
+}

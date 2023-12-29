@@ -22,7 +22,7 @@ const CreateBrand = ({ show, onHide }) => {
     brand: yup
       .string()
       .trim()
-      .min(3, 'Назва занадто коротка')
+      .min(2, 'Назва занадто коротка')
       .max(60, 'Назва занадто довга')
       .lowercase()
       .notOneOf(brandNames, 'Такий бренд вже існує')
@@ -34,20 +34,21 @@ const CreateBrand = ({ show, onHide }) => {
     },
     validationSchema: brandSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      setSubmitting(false);
+      addBrand(values.brand);
+      setSubmitting(true);
       resetForm(true);
     },
   });
   const isValid = brandSchema.isValidSync(formik.values);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Додати новий бренд
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
+      <Form onSubmit={formik.handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Додати новий бренд
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <InputGroup
             hasValidation
             className="mt-3"
@@ -70,20 +71,16 @@ const CreateBrand = ({ show, onHide }) => {
               {formik.errors.brand}
             </Form.Control.Feedback>
           </InputGroup>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="outline-danger" onClick={onHide}>
-          Вийти
-        </Button>
-        <Button
-          variant="outline-success"
-          disabled={!isValid}
-          onClick={() => addBrand(formik.values.brand)}
-        >
-          Додати
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-danger" onClick={onHide}>
+            Вийти
+          </Button>
+          <Button variant="outline-success" type="submit" disabled={!isValid}>
+            Додати
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };

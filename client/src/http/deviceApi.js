@@ -60,7 +60,6 @@ export const fetchDevices = async (typeId, brandId, query, page, limit = 5) => {
       limit,
     },
   });
-  console.log(data);
   return data;
 };
 export const fetchSingleDevice = async id => {
