@@ -229,13 +229,17 @@ hr {
   bottom: -32px;
   border: 1px solid #e6e9ec;
 }
-.brandList {
+.brandListHidden {
   overflow-x: auto;
-  max-height: 300px;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: transparent transparent; /* Firefox */
 }
-.brandList::-webkit-scrollbar {
+.brandListOpen {
+  flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: 200px;
+}
+.brandListHidden::-webkit-scrollbar {
   height: 2px;
 }
 

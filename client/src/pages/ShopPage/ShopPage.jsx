@@ -50,10 +50,10 @@ const Shop = observer(() => {
     <Container>
       <Row className="mt-2">
         <Col md={3} className="mb-3">
-          <TypeBar />
+          <TypeBar loading={loading} />
         </Col>
         <Col md={9}>
-          <BrandBar />
+          <BrandBar loading={loading} />
           <DeviceList loading={loading} />
           <Pages />
         </Col>

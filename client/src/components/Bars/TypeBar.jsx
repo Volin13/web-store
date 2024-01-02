@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
-import { Image, ListGroup } from 'react-bootstrap';
+import { Image, ListGroup, Placeholder } from 'react-bootstrap';
 import { Context } from '../..';
 import showMoreIcon from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import hideMoreIcon from '../../assets/defultIcons/up-arrow-arrows-svgrepo-com.svg';
 
-const TypeBar = observer(() => {
+const TypeBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [showBar, setShowBar] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
@@ -40,20 +40,34 @@ const TypeBar = observer(() => {
           overflow: 'auto',
         }}
       >
-        {device?.types?.map(type => (
-          <ListGroup.Item
-            className="text-center text-sm-start"
-            style={{ cursor: 'pointer' }}
-            active={type.id === device.selectedType.id}
-            key={type.id}
-            onClick={() => {
-              handleTypeBarClick(type);
-            }}
-            action
-          >
-            {type.name}
-          </ListGroup.Item>
-        ))}
+        {loading ? (
+          <>
+            {Array.from({ length: 4 }, (_, index) => (
+              <ListGroup.Item className="text-center text-sm-start">
+                <Placeholder as="p" animation="glow">
+                  <Placeholder xs={12} />
+                </Placeholder>
+              </ListGroup.Item>
+            ))}
+          </>
+        ) : (
+          <>
+            {device?.types?.map(type => (
+              <ListGroup.Item
+                className="text-center text-sm-start"
+                style={{ cursor: 'pointer' }}
+                active={type.id === device.selectedType.id}
+                key={type.id}
+                onClick={() => {
+                  handleTypeBarClick(type);
+                }}
+                action
+              >
+                {type.name}
+              </ListGroup.Item>
+            ))}
+          </>
+        )}
       </ListGroup>
       {showBtn && (
         <button

@@ -41,7 +41,7 @@
 @media screen and (min-width: 480px) and (max-width: 991px) {
   /* Кожен третій елемент, крім останнього в ряду */
   .deviceItemCol:not(:nth-child(3n)) {
-    margin-right: calc((100% - 450px) / 3);
+    margin-right: calc((100% - 450px) / 2);
   }
 
   /* Крім останнього в кожному ряду */
@@ -54,7 +54,7 @@
 @media screen and (min-width: 992px) {
   /* Кожен четвертий елемент, крім останнього в ряду */
   .deviceItemCol:not(:nth-child(4n)) {
-    margin-right: calc((100% - 600px) / 4);
+    margin-right: calc((100% - 600px) / 3);
   }
 
   /* Крім останнього в кожному ряду */

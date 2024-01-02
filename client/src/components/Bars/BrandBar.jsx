@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react-lite';
 import React, { useState, useRef } from 'react';
 import { useContext, useEffect } from 'react';
-import { Image, ListGroup } from 'react-bootstrap';
+import { Image, ListGroup, Placeholder } from 'react-bootstrap';
 import Arrow from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import { Context } from '../..';
 
-const BrandBar = observer(() => {
+const BrandBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [hidden, setHidden] = useState(true);
   const [showBtn, setShowBtn] = useState(true);
@@ -44,37 +44,55 @@ const BrandBar = observer(() => {
   };
 
   return (
-    <div
-      className="position-relative"
-      style={{ marginBottom: !hidden && '55px' }}
-    >
+    <div className="position-relative">
       <ListGroup
         onScroll={handleScroll}
         ref={listRef}
         className={`d-flex ${
-          hidden ? 'brandList' : 'flex-wrap'
-        } justify-content-center justify-content-sm-start text-center`}
+          hidden ? 'brandListHidden' : 'brandListOpen'
+        } justify-content-start  text-center`}
         style={{
           width: hidden ? '95%' : '100%',
         }}
         horizontal={true}
       >
-        {device?.brands?.map(brand => (
-          <ListGroup.Item
-            style={{
-              cursor: 'pointer',
-              width: '110px',
-              minWidth: '110px',
-              border: '1px solid #e6e9ec',
-            }}
-            active={brand.id === device.selectedBrand.id}
-            key={brand.id}
-            onClick={() => handleBrandBarClick(brand)}
-            action
-          >
-            {brand.name}
-          </ListGroup.Item>
-        ))}
+        {loading ? (
+          <>
+            {Array.from({ length: 7 }, (_, index) => (
+              <ListGroup.Item
+                style={{
+                  cursor: 'pointer',
+                  width: hidden ? '110px' : '50%',
+                  minWidth: '110px',
+                  border: '1px solid #e6e9ec',
+                }}
+              >
+                <Placeholder as="p" animation="glow">
+                  <Placeholder xs={12} />
+                </Placeholder>
+              </ListGroup.Item>
+            ))}
+          </>
+        ) : (
+          <>
+            {device?.brands?.map(brand => (
+              <ListGroup.Item
+                style={{
+                  cursor: 'pointer',
+                  width: hidden ? '110px' : '50%',
+                  minWidth: '110px',
+                  border: '1px solid #e6e9ec',
+                }}
+                active={brand.id === device.selectedBrand.id}
+                key={brand.id}
+                onClick={() => handleBrandBarClick(brand)}
+                action
+              >
+                {brand.name}
+              </ListGroup.Item>
+            ))}
+          </>
+        )}
       </ListGroup>
       {showBtn && (
         <button
