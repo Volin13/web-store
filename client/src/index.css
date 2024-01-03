@@ -131,7 +131,9 @@ table {
 hr {
   margin: 0;
 }
+
 /* DEVICE LIST */
+
 .deviceItem_imgThumb {
   width: 150px;
   height: 150px;
@@ -142,6 +144,9 @@ hr {
   height: 100%;
   object-fit: contain;
 }
+
+/* NAV BAR */
+
 .basket_btn {
   border-radius: 50%;
   background-color: white;
@@ -155,8 +160,6 @@ hr {
 .basket_btn:focus {
   transform: scale(1.15);
 }
-
-/* NAV BAR */
 
 .basket_btn_count {
   width: 15px;

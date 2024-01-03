@@ -2,6 +2,11 @@
   transition: all 1000ms;
   overflow: hidden;
   height: 44px;
+  position: relative;
+}
+
+.searchInput input {
+  padding-right: 50px;
 }
 .searchLable {
   transition: all 1000ms;
@@ -13,11 +18,40 @@
   border-radius: initial;
 }
 
+.searchBtnMobile {
+  position: absolute;
+  top: 5px;
+}
+
 .mobileSearchInput {
   position: absolute;
-  height: 46px;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 53px;
-  z-index: 3;
+  top: 0;
+  left: 10px;
+  width: 60%;
+  height: 54px;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+}
+.clearBtn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  z-index: 9999;
+  right: 20px;
+  top: 50%;
+
+  transform: translateY(-50%);
+  transition: all 500ms;
+}
+.clearBtn:active {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 20px 1px #1db4e4;
+  transform: rotate(180deg);
+}
+.clearBtn:hover,
+.clearBtn:focus {
+  box-shadow: 0 0 20px 1px #1db4e4;
+
+  transform: translate(0, -50%) scale(1.1) rotate(180deg);
 }

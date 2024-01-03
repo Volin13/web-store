@@ -44,7 +44,10 @@ const BrandBar = observer(({ loading }) => {
   };
 
   return (
-    <div className="position-relative">
+    <div
+      className="position-relative"
+      style={{ marginBottom: hidden ? '' : '45px' }}
+    >
       <ListGroup
         onScroll={handleScroll}
         ref={listRef}
@@ -60,6 +63,7 @@ const BrandBar = observer(({ loading }) => {
           <>
             {Array.from({ length: 7 }, (_, index) => (
               <ListGroup.Item
+                key={index}
                 style={{
                   cursor: 'pointer',
                   width: hidden ? '110px' : '50%',

@@ -43,7 +43,7 @@ const TypeBar = observer(({ loading }) => {
         {loading ? (
           <>
             {Array.from({ length: 4 }, (_, index) => (
-              <ListGroup.Item className="text-center text-sm-start">
+              <ListGroup.Item key={index} className="text-center text-sm-start">
                 <Placeholder as="p" animation="glow">
                   <Placeholder xs={12} />
                 </Placeholder>

@@ -86,7 +86,7 @@ const NavBar = observer(() => {
 
           {/* search */}
 
-          <Col md="7">
+          <Col md="7" style={{ margin: '0 0 0 auto', overflow: 'hidden' }}>
             <MainFilter />
           </Col>
           <Col md="2" className="d-flex align-items-center ">

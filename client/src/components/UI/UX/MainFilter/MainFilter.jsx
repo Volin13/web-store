@@ -1,16 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Image, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
 import { Context } from '../../../..';
 import searchIcon from '../../../../assets/defultIcons/search-svgrepo-com.svg';
+import clearIcon from '../../../../assets/defultIcons/clear-circle-svgrepo-com.svg';
 import css from './MainFilter.module.css';
 
 const MainFilter = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const { device } = useContext(Context);
+  const [visibility, setVisibility] = useState(false);
 
+  const mainFilter = useRef(null);
+
+  const { device } = useContext(Context);
+  // Відслідковую ширину невеликих екранів для застосування стилів пошукового інпута
+  const smallSizeScreen = window.innerWidth < 560;
   const handleChange = event => {
+    if (!visibility) {
+      setVisibility(true);
+    }
     setInputValue(event.target.value);
   };
 
@@ -20,17 +29,30 @@ const MainFilter = () => {
     device.setSelectedBrand({});
   };
 
+  const hendleClearClick = ref => {
+    setInputValue('');
+    setVisibility(false);
+    if (ref) return ref.current.focus(ref);
+    else return;
+  };
   const handleKeyPress = event => {
     if (event.key === 'Enter') {
       handleClick();
     }
   };
-
   return (
-    <div className="d-flex justify-content-end">
+    <div
+      className={`${
+        smallSizeScreen && isHovered
+          ? css.mobileSearchInput
+          : 'd-flex justify-content-end'
+      }`}
+    >
       <InputGroup
         hasValidation
-        className={css.searchInput}
+        className={`${css.searchInput} ${
+          smallSizeScreen && isHovered && css.searchBtnMobile
+        }`}
         style={{
           width: isHovered ? '' : '45px',
         }}
@@ -57,6 +79,7 @@ const MainFilter = () => {
         </OverlayTrigger>
 
         <Form.Control
+          ref={mainFilter}
           className={css.searchInput}
           style={{
             flex: isHovered ? '1 1 auto' : 'unset',
@@ -74,8 +97,21 @@ const MainFilter = () => {
           }}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          placeholder="Пошук по девайсам"
+          placeholder={smallSizeScreen ? 'Пошук' : 'Пошук по девайсам'}
         />
+        {inputValue && (
+          <button
+            className={css.clearBtn}
+            type="button"
+            onClick={e => {
+              hendleClearClick(mainFilter);
+              setVisibility(false);
+            }}
+            style={{ opacity: visibility ? '1' : '0', borderRadius: '50%' }}
+          >
+            <Image width={18} height={18} src={clearIcon} />
+          </button>
+        )}
       </InputGroup>
     </div>
   );
