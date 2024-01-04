@@ -1,3 +1,29 @@
+/* Device  */
+.deviceInfoThumb {
+  overflow-y: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent; /* Firefox */
+  transition: max-height 1000ms;
+}
+
+.deviceInfoThumb::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.showBtn {
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  width: 100%;
+  border: 1px solid #e6e9ec;
+  border-radius: 6px;
+}
+.showMoreBtn {
+  top: 210px;
+}
+.showLessBtn {
+  bottom: -10px;
+}
+/* Device item  */
 .deviceItemCol {
   width: 150px;
   height: 250px;

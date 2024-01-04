@@ -132,6 +132,50 @@ hr {
   margin: 0;
 }
 
+/* SCROLL BAR  */
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #8ae9ff;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #3795a6;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #daf8ff;
+}
+
+/* Для Firefox */
+::-moz-scrollbar {
+  width: 2px;
+}
+
+::-moz-scrollbar-track {
+  background-color: transparent;
+}
+
+::-moz-scrollbar-thumb {
+  background-color: #8ae9ff;
+  border-radius: 6px;
+}
+
+::-moz-scrollbar-thumb:hover {
+  background-color: #3795a6;
+}
+
+::-moz-scrollbar-thumb:active {
+  background-color: #daf8ff;
+}
+
 /* DEVICE LIST */
 
 .deviceItem_imgThumb {
@@ -233,17 +277,19 @@ hr {
   border: 1px solid #e6e9ec;
 }
 .brandListHidden {
-  overflow-x: auto;
+  overflow: auto;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: transparent transparent; /* Firefox */
 }
+
+.brandListHidden::-webkit-scrollbar {
+  height: 2px;
+}
+
 .brandListOpen {
   flex-wrap: wrap;
   overflow-y: auto;
   max-height: 200px;
-}
-.brandListHidden::-webkit-scrollbar {
-  height: 2px;
 }
 
 .brandBarBtnOpenImg {
@@ -251,4 +297,7 @@ hr {
 }
 .brandBarBtnCloseImg {
   transform: rotate(180deg);
+}
+.scrollToStartBtnImg {
+  transform: rotate(90deg);
 }

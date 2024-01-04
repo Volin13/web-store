@@ -232,7 +232,7 @@ const CreateDevice = observer(({ show, onHide }) => {
                   type="text"
                   value={i.title}
                   onChange={e => changeInfo('title', e.target.value, i.number)}
-                  placeholder="Введіть введіть назву "
+                  placeholder="Введіть назву "
                 />
               </Col>
               <Col md={4}>
@@ -243,7 +243,7 @@ const CreateDevice = observer(({ show, onHide }) => {
                   onChange={e =>
                     changeInfo('description', e.target.value, i.number)
                   }
-                  placeholder="Введіть введіть опис "
+                  placeholder="Введіть опис "
                 />
               </Col>
               <Col md={4}>

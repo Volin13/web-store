@@ -18,7 +18,11 @@ const DeviceItem = ({ device, loading }) => {
         <Card style={{ width: '150px', textAlign: 'center' }} border={'light'}>
           <div
             className="d-flex align-items-center justify-content-center"
-            style={{ minHeight: '150px' }}
+            style={{
+              minHeight: '150px',
+              border: '1px solid #13B7E6',
+              borderRadius: '15px',
+            }}
           >
             <Card.Img variant="top" src={storeLogo} width={100} height={100} />
           </div>

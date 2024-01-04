@@ -1,5 +1,5 @@
-const { Order } = require("../models/models");
-const ApiError = require("../error/ApiError");
+const { Order } = require('../models/models');
+const ApiError = require('../error/ApiError');
 class OrderController {
   async createOrder(req, res, next) {
     // Створюєм замовлення з id userId даними користувача та самим вмістом замовлення
@@ -22,7 +22,7 @@ class OrderController {
     } catch (error) {
       console.log(error);
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }
@@ -35,7 +35,7 @@ class OrderController {
     } catch (error) {
       console.log(error);
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }
@@ -49,13 +49,13 @@ class OrderController {
         },
       });
       if (newOrders.length === 0) {
-        return ApiError.internal("Нових замовлень немає");
+        return ApiError.internal('Нових замовлень немає');
       }
       return res.json(newOrders);
     } catch (error) {
-      console.error("Помилка при отриманні замовлень:", error);
+      console.error('Помилка при отриманні замовлень:', error);
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }
@@ -68,16 +68,15 @@ class OrderController {
         },
       });
 
-      console.log("poof", checkedOrders);
       if (checkedOrders) {
         return res.json(checkedOrders);
       } else {
-        return next(ApiError.internal("Історія замовлень відсутня"));
+        return next(ApiError.internal('Історія замовлень відсутня'));
       }
     } catch (error) {
-      console.error("Помилка при отриманні історії замовлень:", error);
+      console.error('Помилка при отриманні історії замовлень:', error);
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }
@@ -89,13 +88,13 @@ class OrderController {
       const orderId = req.params.id;
       const order = await Order.findByPk(orderId);
       if (!order) {
-        return next(ApiError.notFound("Замовлення з таким id не знайдено"));
+        return next(ApiError.notFound('Замовлення з таким id не знайдено'));
       }
       await order.update({ checked: true });
       return res.json(order);
     } catch (error) {
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }
@@ -106,13 +105,13 @@ class OrderController {
       const orderId = req.params.id;
       const order = await Order.findByPk(orderId);
       if (!order) {
-        return next(ApiError.notFound("Замовлення з таким id не знайдено"));
+        return next(ApiError.notFound('Замовлення з таким id не знайдено'));
       }
       await order.update({ decline: !order.declined });
       return res.json(order);
     } catch (error) {
       return next(
-        ApiError.internal("Виникла помилка, повторіть спробу пізніше")
+        ApiError.internal('Виникла помилка, повторіть спробу пізніше'),
       );
     }
   }

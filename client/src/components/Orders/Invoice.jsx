@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   page: {
     display: 'block',
     textAlign: 'center',
-
+    fontFamily: 'Times-Roman',
     padding: '35px 65px 135px 65px',
   },
   section: {
@@ -111,7 +111,7 @@ const Invoice = ({
   totalCount,
 }) => {
   return (
-    <Document>
+    <Document language="uk">
       <Page size="A4" style={styles.page}>
         <View style={styles.mainTitle}>
           <Text>

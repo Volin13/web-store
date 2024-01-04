@@ -4,36 +4,42 @@ import { useContext, useEffect } from 'react';
 import { Image, ListGroup, Placeholder } from 'react-bootstrap';
 import Arrow from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import { Context } from '../..';
+import _debounce from 'lodash/debounce';
 
 const BrandBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [hidden, setHidden] = useState(true);
-  const [showBtn, setShowBtn] = useState(true);
+  const [showMoreBtn, setShowMoreBtn] = useState(true);
+  const [showScrollToBtn, setShowScrollToBtn] = useState(false);
   const listRef = useRef(null);
   const timerRef = useRef(null);
 
   // кнопка пропадає в кінці списку
+  const list = listRef.current;
+  const isEndOfList =
+    list?.scrollWidth - list?.scrollLeft === list?.clientWidth;
   useEffect(() => {
-    const list = listRef.current;
-    const isEndOfList =
-      list?.scrollWidth - list?.scrollLeft === list?.clientWidth;
-    console.log(isEndOfList && timerRef.current);
     if (isEndOfList && timerRef.current) {
-      setShowBtn(false);
+      setShowMoreBtn(false);
+      setShowScrollToBtn(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listRef, timerRef.current]);
 
   const handleScroll = () => {
+    setShowScrollToBtn(false);
     clearTimeout(timerRef.current);
     // кнопка пропадає на час скролінгу
-    setShowBtn(false);
+    setShowMoreBtn(false);
     // Час для визначення завершення скролінгу
     timerRef.current = setTimeout(() => {
       // кнопка з'являється під кінець склолінгу
-      setShowBtn(true);
+      if (!isEndOfList) {
+        setShowMoreBtn(true);
+      }
     }, 300);
   };
+
   const handleBrandBarClick = brand => {
     // якщо натиснутий бренд співпадає з обраним раніше то відміняємо фільтрацію
     if (brand.id === device.selectedBrand.id) {
@@ -43,6 +49,22 @@ const BrandBar = observer(({ loading }) => {
     }
   };
 
+  const scrollToStart = () => {
+    if (list) {
+      listRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleWheel = e => {
+    const list = listRef.current;
+    if (list) {
+      list.scrollLeft += e.deltaY;
+    }
+    _debounce(() => {
+      handleScroll();
+    }, 300);
+  };
+
   return (
     <div
       className="position-relative"
@@ -50,6 +72,7 @@ const BrandBar = observer(({ loading }) => {
     >
       <ListGroup
         onScroll={handleScroll}
+        onWheel={e => handleWheel(e)}
         ref={listRef}
         className={`d-flex ${
           hidden ? 'brandListHidden' : 'brandListOpen'
@@ -98,7 +121,7 @@ const BrandBar = observer(({ loading }) => {
           </>
         )}
       </ListGroup>
-      {showBtn && (
+      {showMoreBtn && (
         <button
           onClick={() => {
             setHidden(!hidden);
@@ -114,6 +137,22 @@ const BrandBar = observer(({ loading }) => {
             className={`${
               hidden ? 'brandBarBtnOpenImg' : 'brandBarBtnCloseImg'
             }`}
+          />
+        </button>
+      )}
+      {showScrollToBtn && hidden && !showMoreBtn && (
+        <button
+          onClick={() => {
+            scrollToStart();
+          }}
+          className={`d-flex align-items-center justify-content-center showMoreBtn
+          `}
+        >
+          <Image
+            width={25}
+            height={25}
+            src={Arrow}
+            className="scrollToStartBtnImg"
           />
         </button>
       )}

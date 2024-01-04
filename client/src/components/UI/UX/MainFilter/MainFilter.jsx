@@ -24,9 +24,11 @@ const MainFilter = () => {
   };
 
   const handleClick = () => {
-    device.setQuery(inputValue);
-    device.setSelectedType({});
-    device.setSelectedBrand({});
+    if (inputValue) {
+      device.setQuery(inputValue);
+      device.setSelectedType({});
+      device.setSelectedBrand({});
+    }
   };
 
   const hendleClearClick = ref => {
@@ -51,7 +53,7 @@ const MainFilter = () => {
       <InputGroup
         hasValidation
         className={`${css.searchInput} ${
-          smallSizeScreen && isHovered && css.searchBtnMobile
+          smallSizeScreen && !isHovered && css.searchBtnMobile
         }`}
         style={{
           width: isHovered ? '' : '45px',

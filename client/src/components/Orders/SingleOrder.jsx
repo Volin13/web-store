@@ -135,15 +135,6 @@ const SingleOrder = () => {
         </Button>
         <Button
           type="button"
-          variant="outline-primary"
-          onClick={() => {
-            setShowInvoice(!showInvoice);
-          }}
-        >
-          {showInvoice ? 'Закрити накладну' : 'Переглянути накладну'}
-        </Button>
-        <Button
-          type="button"
           disabled={checked}
           variant="outline-primary"
           onClick={() => {
@@ -151,7 +142,16 @@ const SingleOrder = () => {
             checkOrder(id);
           }}
         >
-          {!checked ? 'Відправити' : 'Відправлено'}
+          {!checked ? 'Відправити замовлення' : 'Відправлено'}
+        </Button>
+        <Button
+          type="button"
+          variant="outline-primary"
+          onClick={() => {
+            setShowInvoice(!showInvoice);
+          }}
+        >
+          {showInvoice ? 'Закрити накладну' : 'Переглянути накладну'}
         </Button>
         {showInvoice && (
           <PDFDownloadLink

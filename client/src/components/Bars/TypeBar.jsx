@@ -39,6 +39,7 @@ const TypeBar = observer(({ loading }) => {
           borderBottom: '1px solid #e6e9ec',
           overflow: 'auto',
         }}
+        className="typeBarList"
       >
         {loading ? (
           <>
@@ -83,9 +84,9 @@ const TypeBar = observer(({ loading }) => {
           }}
         >
           {!showBar ? (
-            <Image width={30} height={30} src={showMoreIcon} />
+            <Image width={25} height={25} src={showMoreIcon} />
           ) : (
-            <Image width={30} height={30} src={hideMoreIcon} />
+            <Image width={25} height={25} src={hideMoreIcon} />
           )}
         </button>
       )}
