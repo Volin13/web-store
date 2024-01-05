@@ -41,6 +41,7 @@ export const createRating = async (deviceId, rate, user) => {
         userId: userId,
         rate,
       });
+      toast.success('Дякую за вашу оцінку');
       return data;
     } catch (e) {
       return toast.info(e.response.data.message);

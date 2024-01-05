@@ -110,10 +110,10 @@ const BrandBar = observer(({ loading }) => {
                   minWidth: '110px',
                   border: '1px solid #e6e9ec',
                 }}
+                action
                 active={brand.id === device.selectedBrand.id}
                 key={brand.id}
                 onClick={() => handleBrandBarClick(brand)}
-                action
               >
                 {brand.name}
               </ListGroup.Item>

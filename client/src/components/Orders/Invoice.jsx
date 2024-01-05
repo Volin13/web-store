@@ -111,7 +111,7 @@ const Invoice = ({
   totalCount,
 }) => {
   return (
-    <Document language="uk">
+    <Document language="ua">
       <Page size="A4" style={styles.page}>
         <View style={styles.mainTitle}>
           <Text>

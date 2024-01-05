@@ -12,8 +12,11 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   // на оновлення списку міст НП, який зберігається в локал стореджі
 
   useEffect(() => {
-    const storageList = updateDataOnceAMonth();
-    setNpData(storageList);
+    const fetchData = async () => {
+      const storageList = await updateDataOnceAMonth();
+      return setNpData(storageList);
+    };
+    fetchData();
   }, []);
 
   const hendleInputChange = value => {

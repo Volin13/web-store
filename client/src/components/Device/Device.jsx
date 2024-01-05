@@ -50,8 +50,11 @@ const Device = () => {
       // Перевірка, чи вміст більший за висоту
       setIsOverflowed(isContentOverflowed);
     }
-  }, [container]);
+  }, [container, device]);
+
+  console.log(container);
   console.log(isOverflowed);
+
   // Формування замовлення в кошик
   const hendleOrderClick = () => setClickedState(true);
   const addOrder = () => {

@@ -12,13 +12,25 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
 
   // Зміна ширини заливки в залежності від середнього рейтингу
   useEffect(() => {
-    ratingActive.current.style.width = `${ratingActiveWidth}%`;
-  }, [ratingActiveWidth]);
+    if (rate) {
+      ratingActive.current.style.width = `${rate}%`;
+    } else {
+      ratingActive.current.style.width = `${ratingActiveWidth}%`;
+    }
+  }, [rate, ratingActiveWidth]);
 
   // Зміна ширини заливки в залежності від рейтингу, який користувач хоче поставити
   const hendleActiveStarChange = value => {
     ratingActive.current.style.width = `${value * 10}%`;
   };
+
+  const handleRatingBarClick = e => {
+    setRate(Number(e.target.value));
+    console.log(Number(e.target.value));
+    createRating(deviceId, rate, isAuth);
+    getDeviceRating(deviceId).then(data => setRate(data));
+  };
+
   return (
     <div ref={rating} className={css.rating}>
       <div className={css.rating_body}>
@@ -38,9 +50,7 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
               value={item}
               name="rating"
               onClick={e => {
-                setRate(Number(e.target.value));
-                createRating(deviceId, rate, isAuth);
-                getDeviceRating(deviceId);
+                handleRatingBarClick(e);
               }}
             />
           ))}

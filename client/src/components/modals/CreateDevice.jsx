@@ -103,26 +103,33 @@ const CreateDevice = observer(({ show, onHide }) => {
     },
     validationSchema: deviceSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
+      addDevice(values);
+      console.log('poof');
       setSubmitting(false);
-      resetForm(true);
+      resetForm();
     },
   });
   const isValid = deviceSchema.isValidSync(formik.values);
 
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Додати новий пристрій
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
+      <Form
+        onSubmit={e => {
+          e.preventDefault();
+          formik.handleSubmit(e);
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Додати новий пристрій
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
               {device.selectedType.name || 'Виберіть тип'}
             </Dropdown.Toggle>
-            <Dropdown.Menu>
+            <Dropdown.Menu style={{ maxHeight: '190px', overflow: 'auto' }}>
               {device.types.map(type => (
                 <Dropdown.Item
                   key={type.id}
@@ -140,7 +147,7 @@ const CreateDevice = observer(({ show, onHide }) => {
             <Dropdown.Toggle>
               {device.selectedBrand.name || 'Виберіть бренд'}
             </Dropdown.Toggle>
-            <Dropdown.Menu>
+            <Dropdown.Menu style={{ maxHeight: '190px', overflow: 'auto' }}>
               {device.brands.map(brand => (
                 <Dropdown.Item
                   key={brand.id}
@@ -257,20 +264,16 @@ const CreateDevice = observer(({ show, onHide }) => {
               </Col>
             </Row>
           ))}
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="outline-danger" onClick={onHide}>
-          Вийти
-        </Button>
-        <Button
-          disabled={!isValid}
-          variant="outline-success"
-          onClick={() => addDevice(formik.values)}
-        >
-          Додати
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-danger" onClick={onHide}>
+            Вийти
+          </Button>
+          <Button disabled={!isValid} type="submit" variant="outline-success">
+            Додати
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 });

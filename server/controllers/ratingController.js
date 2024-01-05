@@ -1,6 +1,6 @@
-const { Device, Rating } = require("../models/models");
-const ApiError = require("../error/ApiError");
-const calculateAverageRating = require("../middleware/CalculateAverageRating");
+const { Device, Rating } = require('../models/models');
+const ApiError = require('../error/ApiError');
+const calculateAverageRating = require('../middleware/CalculateAverageRating');
 
 class RatingController {
   async create(req, res, next) {
@@ -12,18 +12,19 @@ class RatingController {
 
       const deviceRating = await Rating.findOne({ where: { deviceId } });
       if (voted && deviceRating) {
-        return next(ApiError.forbidden("Ви уже оцінили цей девайс"));
+        return next(ApiError.forbidden('Ви уже оцінили цей девайс'));
       }
-
       // Створюю рейтинг який зазначив користувач
       const rating = await Rating.create({ rate, userId, deviceId });
       const device = await Device.findByPk(deviceId);
-
       if (!device) {
-        return next(ApiError.badRequest("Девайс не знайдено"));
+        return next(ApiError.badRequest('Девайс не знайдено'));
       }
+      // Додаю цей рейтинг в девайс
       await device.addRating(rating);
+      // обчислюю і встановлюю середній рейтинг девайсу
       device.rating = await calculateAverageRating(device);
+      console.log(device.rating);
       await device.save();
 
       return res.json(rating);
@@ -44,10 +45,10 @@ class RatingController {
       const { id } = req.params;
       const device = await Device.findByPk(id);
       if (!device) {
-        return next(ApiError.badRequest("Девайс не знайдено"));
+        return next(ApiError.badRequest('Девайс не знайдено'));
       }
-      const rating = await calculateAverageRating(device);
-      return res.json({ rating });
+      const rating = device.rating;
+      return res.json(rating);
     } catch (e) {
       next(ApiError.internal(e.message));
     }

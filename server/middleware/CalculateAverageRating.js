@@ -5,5 +5,10 @@ module.exports = async function calculateAverageRating(device) {
     return 0;
   }
   const sum = ratings.reduce((acc, rating) => acc + rating.rate, 0);
-  return sum / totalRatings;
+  const average = sum / totalRatings;
+
+  // Округлення до десятих за допомогою toFixed та parseFloat
+  const roundedAverage = parseFloat(average.toFixed(1));
+
+  return roundedAverage;
 };
