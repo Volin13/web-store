@@ -33,6 +33,9 @@ const Device = sequelize.define('device', {
   price: { type: DataTypes.INTEGER, allowNull: false },
   rating: { type: DataTypes.FLOAT, defaultValue: 9 },
   img: { type: DataTypes.STRING, allowNull: false },
+  inStock: { type: DataTypes.BOOLEAN, defaultValue: true },
+  discount: { type: DataTypes.BOOLEAN, defaultValue: false },
+  newPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
 });
 
 const Type = sequelize.define('type', {

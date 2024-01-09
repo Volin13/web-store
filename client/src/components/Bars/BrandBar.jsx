@@ -4,7 +4,6 @@ import { useContext, useEffect } from 'react';
 import { Image, ListGroup, Placeholder } from 'react-bootstrap';
 import Arrow from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import { Context } from '../..';
-import _debounce from 'lodash/debounce';
 
 const BrandBar = observer(({ loading }) => {
   const { device } = useContext(Context);
@@ -18,8 +17,10 @@ const BrandBar = observer(({ loading }) => {
   const list = listRef.current;
   const isEndOfList =
     list?.scrollWidth - list?.scrollLeft === list?.clientWidth;
+  const hiddenList = listRef?.current?.clientHeight === 49;
+
   useEffect(() => {
-    if (isEndOfList && timerRef.current) {
+    if (isEndOfList && timerRef.current && hiddenList) {
       setShowMoreBtn(false);
       setShowScrollToBtn(true);
     }
@@ -30,7 +31,9 @@ const BrandBar = observer(({ loading }) => {
     setShowScrollToBtn(false);
     clearTimeout(timerRef.current);
     // кнопка пропадає на час скролінгу
-    setShowMoreBtn(false);
+    if (hiddenList) {
+      setShowMoreBtn(false);
+    }
     // Час для визначення завершення скролінгу
     timerRef.current = setTimeout(() => {
       // кнопка з'являється під кінець склолінгу
@@ -56,13 +59,9 @@ const BrandBar = observer(({ loading }) => {
   };
 
   const handleWheel = e => {
-    const list = listRef.current;
     if (list) {
       list.scrollLeft += e.deltaY;
     }
-    _debounce(() => {
-      handleScroll();
-    }, 300);
   };
 
   return (

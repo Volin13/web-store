@@ -1,0 +1,12 @@
+.discountImgThumb {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.notInStockImgThumb {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+}

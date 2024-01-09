@@ -52,16 +52,13 @@ const Device = () => {
     }
   }, [container, device]);
 
-  console.log(container);
-  console.log(isOverflowed);
-
   // Формування замовлення в кошик
   const hendleOrderClick = () => setClickedState(true);
   const addOrder = () => {
     basket.addToBasket({
       id: device.id,
       title: device.name,
-      price: device.price,
+      price: device.newPrice || device.price,
       added: Date.now(),
       img: device.img,
     });
@@ -69,7 +66,6 @@ const Device = () => {
     toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
-
   return (
     <Container className="mt-3">
       <Row className="d-flex align-items-center text-center">
@@ -99,7 +95,7 @@ const Device = () => {
         </Col>
         <Col md={4}>
           <Card
-            className="d-flex flex-column align-items-center justify-content-around"
+            className="d-flex flex-column align-items-center justify-content-around position-relative"
             style={{
               width: '100%',
               height: 300,
@@ -107,11 +103,30 @@ const Device = () => {
               border: '5px solid lightgray',
             }}
           >
-            <h3>
-              Від:
-              <CountUp start={0} end={+device.price} duration={2} />
-              грн.
-            </h3>
+            {!device?.inStock && device?.discount ? (
+              <>
+                <h3
+                  className={css.initialPrice}
+                  style={{
+                    top: '-3px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}
+                >
+                  {device.price}
+                </h3>
+                <h3 className={css.newPrice}>
+                  <CountUp start={0} end={+device.newPrice} duration={2} />
+                  {' грн'}
+                </h3>{' '}
+              </>
+            ) : (
+              <h3>
+                {' Від:'} <CountUp start={0} end={+device.price} duration={2} />
+                {' грн.'}
+              </h3>
+            )}
+
             <PackageIcon count={basket.basket.length || localBasket.length} />
             {user.isAuth ? (
               <Button
@@ -121,8 +136,9 @@ const Device = () => {
                   hendleOrderClick();
                   setBasketLength(basketLength + 1);
                 }}
+                disabled={!device?.inStock}
               >
-                Додати до корзини
+                {device?.inStock ? 'Додати до корзини' : 'Немає в наявності'}
               </Button>
             ) : (
               <Button variant="outline-light">
@@ -195,6 +211,7 @@ const Device = () => {
             onClick={() => {
               setShowList(!showList);
             }}
+            style={{ backgroundColor: 'white' }}
           >
             {!showList ? (
               <Image width={25} height={25} src={showMoreIcon} />

@@ -24,6 +24,7 @@
   bottom: -10px;
 }
 /* Device item  */
+
 .deviceItemCol {
   width: 150px;
   height: 250px;
@@ -35,6 +36,17 @@
   height: 150px;
   width: 100%;
 }
+
+.newPrice {
+  color: #1cb1de;
+}
+
+.initialPrice {
+  text-decoration: line-through;
+  text-decoration-color: #2293ab;
+  position: absolute;
+}
+
 .deviceItemTextContainer {
   width: 150;
   overflow: hidden;

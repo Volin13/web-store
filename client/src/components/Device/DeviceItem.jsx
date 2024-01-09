@@ -5,10 +5,10 @@ import { DEVICE_ROUTE } from '../../utils/constants';
 import star from '../../assets/shopIcons/smallStar.svg';
 import css from './Device.module.css';
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
+import Stateofgoods from '../UI/UX/Stateofgoods/Stateofgoods';
 
 const DeviceItem = ({ device, loading }) => {
   const navigate = useNavigate();
-
   return (
     <li
       className={css.deviceItemCol}
@@ -56,16 +56,33 @@ const DeviceItem = ({ device, loading }) => {
       ) : (
         <Card style={{ cursor: 'pointer' }} border={'light'}>
           <div
-            className={`d-flex justify-content-center align-items-center ${css.deviceItem_imgThumb}`}
+            className={`d-flex justify-content-center align-items-center position-relative`}
           >
             <Image
               className={css.deviceItem_img}
               src={process.env.REACT_APP_API_URL + device.img}
             />
+            <Stateofgoods device={device} />
           </div>
           <div className="text-black-50 d-flex justify-content-between align-items-center">
-            <div className="mt-1 d-flex justify-content-between align-items-center">
-              {device.price + ' грн'}
+            <div className="mt-1 d-flex justify-content-between align-items-center position-relative">
+              {!device?.inStock && device?.discount ? (
+                <>
+                  <span
+                    className={css.initialPrice}
+                    style={{
+                      top: '-13px',
+                      right: '33px',
+                    }}
+                  >
+                    {device.price}
+                  </span>
+                  <span className={css.newPrice}>{device.newPrice}</span>{' '}
+                  {'грн'}
+                </>
+              ) : (
+                <span> {device.price + ' грн'}</span>
+              )}
             </div>
             <div className="d-flex justify-content-between align-items-center">
               <div>{device.rating}</div>
