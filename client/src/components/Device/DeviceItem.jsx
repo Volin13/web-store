@@ -56,23 +56,25 @@ const DeviceItem = ({ device, loading }) => {
       ) : (
         <Card style={{ cursor: 'pointer' }} border={'light'}>
           <div
-            className={`d-flex justify-content-center align-items-center position-relative`}
+            className={`d-flex justify-content-center align-items-center position-relative mb-2`}
           >
             <Image
-              className={css.deviceItem_img}
+              className={`${css.deviceItem_img} ${
+                !device?.inStock ? css.greyColors : ''
+              }`}
               src={process.env.REACT_APP_API_URL + device.img}
             />
             <Stateofgoods device={device} />
           </div>
           <div className="text-black-50 d-flex justify-content-between align-items-center">
             <div className="mt-1 d-flex justify-content-between align-items-center position-relative">
-              {!device?.inStock && device?.discount ? (
+              {device?.inStock && device?.discount ? (
                 <>
                   <span
                     className={css.initialPrice}
                     style={{
                       top: '-13px',
-                      right: '33px',
+                      fontSize: '15px',
                     }}
                   >
                     {device.price}

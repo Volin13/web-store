@@ -63,6 +63,14 @@ const BrandBar = observer(({ loading }) => {
       list.scrollLeft += e.deltaY;
     }
   };
+  const handleMouseWheel = action => {
+    if (action === 'enter') {
+      document.body.style.overflow = 'hidden';
+    }
+    if (action === 'leave') {
+      document.body.style.overflow = 'auto';
+    }
+  };
 
   return (
     <div
@@ -72,6 +80,8 @@ const BrandBar = observer(({ loading }) => {
       <ListGroup
         onScroll={handleScroll}
         onWheel={e => handleWheel(e)}
+        onMouseEnter={() => handleMouseWheel('enter')}
+        onMouseLeave={() => handleMouseWheel('leave')}
         ref={listRef}
         className={`d-flex ${
           hidden ? 'brandListHidden' : 'brandListOpen'

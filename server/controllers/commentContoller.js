@@ -202,6 +202,29 @@ class CommentController {
       );
     }
   }
+  async getDeviceComments(req, res, next) {
+    try {
+      const { deviceId, limit, page } = req.body;
+      page = page || 1;
+      limit = limit || 12;
+      const offset = page * limit - limit;
+
+      const device = await Comment.findAndCountAll({
+        where: { deviceId },
+        include: [{ model: Reply, as: 'reply' }],
+        limit,
+        offset,
+      });
+      return res.json(device);
+    } catch (error) {
+      return next(
+        ApiError.internal(
+          error.message,
+          'При завантажені коментарів девайсу сталась помилка',
+        ),
+      );
+    }
+  }
 }
 
 module.exports = new CommentController();

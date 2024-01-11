@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import imageIcon from '../../assets/adminIcons/imageIcon.svg';
 import nameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
+import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
@@ -55,11 +56,12 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('name', formik.values.name);
     formData.append('price', `${formik.values.price}`);
     formData.append('img', formik.values.img);
+    formData.append('rating', formik.values.rating);
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
 
-    createDevice(formData).then(data => onHide());
+    createDevice(formData).then(() => onHide());
   };
 
   // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
@@ -76,10 +78,10 @@ const CreateDevice = observer(({ show, onHide }) => {
       .notOneOf(deviceNames, 'Такий девайс вже існує')
       .required('Введіть девайс'),
     price: yup
-      .number('ціна повинна бути числом')
-      .positive('ціна повинна бути додатнім числом')
-      .integer('ціна повинна бути цілим числом')
-      .required('введіть ціну'),
+      .number('Ціна повинна бути числом')
+      .positive('Ціна повинна бути додатнім числом')
+      .integer('Ціна повинна бути цілим числом')
+      .required('Введіть ціну'),
     img: yup
       .mixed()
       .test('type', 'Only image files are allowed', value => {
@@ -91,12 +93,18 @@ const CreateDevice = observer(({ show, onHide }) => {
         return !value || (value && value.size <= 5000000);
       })
       .required('Додайте зображення'),
+    rating: yup
+      .number('Рейтинг повинна бути числом')
+      .min(1, 'Мінімальний рейтинг 1')
+      .max(10, 'Максимальний рейтинг 10')
+      .required('Введіть рейтинг'),
   });
   const formik = useFormik({
     initialValues: {
       name: '',
       price: 0,
       img: null,
+      rating: 0,
       brandId: '',
       typeId: '',
       info: [],
@@ -104,7 +112,6 @@ const CreateDevice = observer(({ show, onHide }) => {
     validationSchema: deviceSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
       addDevice(values);
-      console.log('poof');
       setSubmitting(false);
       resetForm();
     },
@@ -125,6 +132,7 @@ const CreateDevice = observer(({ show, onHide }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {/* ТИП  */}
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
               {device.selectedType.name || 'Виберіть тип'}
@@ -143,6 +151,8 @@ const CreateDevice = observer(({ show, onHide }) => {
               ))}
             </Dropdown.Menu>
           </Dropdown>
+
+          {/* БРЕНД           */}
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
               {device.selectedBrand.name || 'Виберіть бренд'}
@@ -161,6 +171,7 @@ const CreateDevice = observer(({ show, onHide }) => {
               ))}
             </Dropdown.Menu>
           </Dropdown>
+          {/* НАЗВА  */}
           <InputGroup
             hasValidation
             className="mt-3"
@@ -187,6 +198,7 @@ const CreateDevice = observer(({ show, onHide }) => {
             className="mt-3"
             style={{ minHeight: '63px' }}
           >
+            {/* КАРТИНКА  */}
             <InputGroup.Text style={{ height: '38px' }}>
               <Image width={30} height={30} src={priceIcon} />
             </InputGroup.Text>
@@ -224,6 +236,32 @@ const CreateDevice = observer(({ show, onHide }) => {
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.img}
+            </Form.Control.Feedback>
+          </InputGroup>
+
+          {/* РЕЙТИНГ  */}
+          <InputGroup
+            hasValidation
+            className="mt-3"
+            style={{ minHeight: '63px' }}
+          >
+            <InputGroup.Text style={{ height: '38px' }}>
+              <Image width={30} height={30} src={ratingIcon} />
+            </InputGroup.Text>
+            <Form.Control
+              style={{ height: '38px' }}
+              type="text"
+              name="rating"
+              isInvalid={formik.values.rating && formik.errors.rating}
+              value={formik.values.rating}
+              onChange={e => {
+                const newValue = parseFloat(e.target.value);
+                formik.setFieldValue('rating', newValue);
+              }}
+              placeholder="Введіть рейтинг пристрою Х.Х"
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.rating}
             </Form.Control.Feedback>
           </InputGroup>
 

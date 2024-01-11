@@ -76,6 +76,7 @@ const Device = () => {
           >
             <Image
               width={'100%'}
+              className={`${!device?.inStock ? css.greyColors : ''}`}
               src={process.env.REACT_APP_API_URL + device.img}
               fluid
             />
@@ -103,14 +104,15 @@ const Device = () => {
               border: '5px solid lightgray',
             }}
           >
-            {!device?.inStock && device?.discount ? (
+            {device?.inStock && device?.discount ? (
               <>
                 <h3
                   className={css.initialPrice}
                   style={{
-                    top: '-3px',
+                    top: 0,
                     left: '50%',
                     transform: 'translateX(-50%)',
+                    fontSize: '20px',
                   }}
                 >
                   {device.price}

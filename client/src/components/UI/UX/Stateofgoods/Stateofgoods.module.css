@@ -10,3 +10,21 @@
   right: 25px;
   transform: translateY(-50%);
 }
+
+.discountImg {
+  animation: fade 2s ease-in-out infinite;
+}
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -15,7 +15,7 @@ const Basket = sequelize.define('basket', {
 
 const Order = sequelize.define('orders', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  userId: { type: DataTypes.INTEGER },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
   userData: { type: DataTypes.JSON, allowNull: false },
   orderList: { type: DataTypes.JSONB, allowNull: false },
   checked: { type: DataTypes.BOOLEAN, defaultValue: false },
@@ -54,6 +54,9 @@ const Rating = sequelize.define('rating', {
 
 const Comment = sequelize.define('comment', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+  deviceId: { type: DataTypes.INTEGER, allowNull: false },
+  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   text: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -66,6 +69,8 @@ const Comment = sequelize.define('comment', {
 
 const Reply = sequelize.define('reply', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  commentId: { type: DataTypes.INTEGER, allowNull: false },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
   text: {
     type: DataTypes.TEXT,
     allowNull: false,

@@ -3,7 +3,7 @@
   overflow-y: auto;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: transparent transparent; /* Firefox */
-  transition: max-height 1000ms;
+  transition: max-height 500ms;
 }
 
 .deviceInfoThumb::-webkit-scrollbar-thumb {
@@ -36,7 +36,9 @@
   height: 150px;
   width: 100%;
 }
-
+.greyColors {
+  filter: grayscale(100%);
+}
 .newPrice {
   color: #1cb1de;
 }
