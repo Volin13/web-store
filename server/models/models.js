@@ -32,10 +32,15 @@ const Device = sequelize.define('device', {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
   rating: { type: DataTypes.FLOAT, defaultValue: 9 },
-  img: { type: DataTypes.STRING, allowNull: false },
+  mainImg: { type: DataTypes.STRING, allowNull: false },
   inStock: { type: DataTypes.BOOLEAN, defaultValue: true },
   discount: { type: DataTypes.BOOLEAN, defaultValue: false },
   newPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
+});
+
+const DeviceImage = sequelize.define('deviceImage', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  fileName: { type: DataTypes.STRING, allowNull: false },
 });
 
 const Type = sequelize.define('type', {
@@ -102,6 +107,9 @@ Order.belongsTo(User);
 Device.hasMany(Rating);
 Rating.belongsTo(Device);
 
+Device.hasMany(DeviceImage);
+DeviceImage.belongsTo(Device);
+
 Device.hasMany(Comment);
 Comment.belongsTo(Device);
 
@@ -148,4 +156,5 @@ module.exports = {
   Reply,
   TypeBrand,
   DeviceInfo,
+  DeviceImage,
 };

@@ -39,8 +39,11 @@ const NavBar = observer(() => {
     location.pathname === LOGIN_ROUTE ||
     location.pathname === REGISTRATION_ROUTE;
 
-  // Кнопка кошика не має відображатись на сторінці кошика
-  const basketLocation = location.pathname === BASKET_ROUTE;
+  // Кнопка кошика не має відображатись на сторінці кошика та аутентифікації
+  const basketVisivility =
+    location.pathname === BASKET_ROUTE ||
+    location.pathname === LOGIN_ROUTE ||
+    location.pathname === REGISTRATION_ROUTE;
 
   const logOut = () => {
     user.setUser({});
@@ -91,7 +94,7 @@ const NavBar = observer(() => {
           </Col>
           <Col md="2" className="d-flex align-items-center ">
             {/* basket*/}
-            {!basketLocation && (
+            {!basketVisivility && (
               <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id="tooltip-bottom">Кошик</Tooltip>}

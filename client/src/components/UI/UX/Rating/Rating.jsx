@@ -26,7 +26,6 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
 
   const handleRatingBarClick = e => {
     setRate(Number(e.target.value));
-    console.log(Number(e.target.value));
     createRating(deviceId, rate, isAuth);
     getDeviceRating(deviceId).then(data => setRate(data));
   };

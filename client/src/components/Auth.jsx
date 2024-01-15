@@ -1,19 +1,18 @@
 import React, { useContext, useRef, useState } from 'react';
-import Card from 'react-bootstrap/Card';
 import { observer } from 'mobx-react-lite';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import { useFormik } from 'formik';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Image, InputGroup, Row, Card, Form, Button } from 'react-bootstrap';
 import {
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
 } from '../utils/constants';
-import { Image, InputGroup, Row } from 'react-bootstrap';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { login, registration } from '../http/userAPI';
 import { Context } from '../index';
 import { authSchema } from '../utils/authSchema';
+import { toast } from 'react-toastify';
+
 import emailIcon from '../assets/authIcons/emailIcon.svg';
 import passwordIcon from '../assets/authIcons/passwordIcon.svg';
 import { ReactComponent as VisibleIcon } from '../assets/authIcons/visible-svgrepo-com.svg';
@@ -22,27 +21,12 @@ import { ReactComponent as NotVisible } from '../assets/authIcons/not-visible-sv
 const Auth = observer(() => {
   const passwordInput = useRef(null);
   const [visiblePassword, setVisiblePassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
   const navigate = useNavigate();
-  const hendleBtnClick = async (email, password) => {
-    try {
-      let userData;
-      if (isLogin) {
-        userData = await login(email, password);
-      } else {
-        userData = await registration(email, password);
-      }
-      user.setUser(userData);
-      user.setIsAuth(true);
-      navigate(SHOP_ROUTE);
-    } catch (e) {
-      alert(e.response?.data?.message) ||
-        console.error('An error occurred:', e);
-    }
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -50,9 +34,33 @@ const Auth = observer(() => {
       password: '',
     },
     validationSchema: authSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      setSubmitting(false);
-      resetForm(false);
+    onSubmit: async (values, { setSubmitting }) => {
+      const { email, password } = values;
+      try {
+        setSubmitting(true);
+        setLoading(true);
+        let userData;
+        if (isLogin) {
+          userData = await login(email, password);
+          if (userData) {
+            console.log('poof');
+            user.setUser(userData);
+            user.setIsAuth(true);
+            navigate(SHOP_ROUTE);
+          }
+        } else {
+          userData = await registration(email, password);
+          if (userData) {
+            toast.info('Увійдіть у свій аккаунт');
+            navigate(LOGIN_ROUTE);
+          }
+        }
+      } catch (e) {
+        toast.error('Сталась помилка, спробуйте пізніше');
+      } finally {
+        setLoading(false);
+        setSubmitting(false);
+      }
     },
   });
   const isValid = authSchema.isValidSync(formik.values);
@@ -69,11 +77,17 @@ const Auth = observer(() => {
     <>
       <Card style={{ width: 600 }} className="p-5">
         <h2 className="m-auto">{isLogin ? 'Авторизація' : 'Регістрація'}</h2>
-        <Form className="d-flex flex-column">
+        <Form
+          className="d-flex flex-column"
+          onSubmit={e => {
+            e.preventDefault();
+            formik.handleSubmit(e);
+          }}
+        >
           <InputGroup
             hasValidation
             className="mt-3"
-            style={{ minHeight: '63px' }}
+            style={{ minHeight: '67px' }}
           >
             <InputGroup.Text style={{ height: '38px' }}>
               <Image width={18} height={18} src={emailIcon} />
@@ -96,7 +110,7 @@ const Auth = observer(() => {
           <InputGroup
             hasValidation
             className="mt-1"
-            style={{ minHeight: '63px' }}
+            style={{ minHeight: '67px' }}
           >
             <InputGroup.Text style={{ height: '38px' }}>
               <Image width={18} height={18} src={passwordIcon} />
@@ -120,6 +134,7 @@ const Auth = observer(() => {
                 style={{
                   height: '38px',
                   border: 'none',
+                  marginLeft: '5px',
                   backgroundColor: 'transparent',
                 }}
                 onClick={() => {
@@ -149,13 +164,10 @@ const Auth = observer(() => {
             )}
             <Button
               variant={'outline-success'}
-              disabled={!isValid}
-              type="button"
+              disabled={!isValid || loading}
+              type="submit"
               className="ml-auto"
               style={{ maxWidth: '30%' }}
-              onClick={() =>
-                hendleBtnClick(formik.values.email, formik.values.password)
-              }
             >
               {isLogin ? 'Увійти' : 'Регістрація'}
             </Button>

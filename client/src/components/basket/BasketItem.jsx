@@ -14,6 +14,7 @@ const BasketItem = ({
   closeModal,
 }) => {
   const navigate = useNavigate();
+
   return (
     <Card className="mb-2" style={{ width: '80%' }}>
       <Card.Header>
@@ -40,7 +41,7 @@ const BasketItem = ({
             style={{ width: 'auto' }}
             height="130px"
             variant="top"
-            src={process.env.REACT_APP_API_URL + item.img}
+            src={process.env.REACT_APP_API_URL + item.mainImg}
           />
         </button>
         <Card.Body style={{ flex: ' 0 1 auto' }}>

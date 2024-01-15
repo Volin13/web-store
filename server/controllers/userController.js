@@ -1,12 +1,12 @@
-const ApiError = require("../error/ApiError");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User, Basket } = require("../models/models");
-let SECRET_KEY = process.env.SECRET_KEY || "random_secret_key1234";
+const ApiError = require('../error/ApiError');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { User, Basket } = require('../models/models');
+let SECRET_KEY = process.env.SECRET_KEY || 'random_secret_key1234';
 
 const generateJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, SECRET_KEY, {
-    expiresIn: "24h",
+    expiresIn: '24h',
   });
 };
 
@@ -14,11 +14,11 @@ class UserController {
   async registration(req, res, next) {
     const { email, password, role } = req.body;
     if (!email || !password) {
-      return next(ApiError.badRequest("Email or password is incorrect"));
+      return next(ApiError.badRequest('Ваш email або пароль невірний'));
     }
     const candidate = await User.findOne({ where: { email } });
     if (candidate) {
-      return next(ApiError.badRequest("User with this email already exists"));
+      return next(ApiError.badRequest('Користувач з таким email уже існує'));
     }
     const hashPassword = await bcrypt.hash(password, 5);
     // Створення користувача і його кошика
@@ -35,11 +35,14 @@ class UserController {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return next(ApiError.internal("There is no user with such name"));
+      return next(ApiError.internal('Користувача з таким email не існує'));
+    }
+    if (user.password === undefined) {
+      return next(ApiError.internal('Невірний email або пароль'));
     }
     let comparePassword = bcrypt.compareSync(password, user.password);
     if (!comparePassword) {
-      return next(ApiError.internal("Email or password is incorrect"));
+      return next(ApiError.internal('Ваш email або пароль невірний'));
     }
     const token = generateJwt(user.id, user.email, user.role);
     return res.json({ token });

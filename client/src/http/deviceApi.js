@@ -30,6 +30,12 @@ export const createDevice = async device => {
   const { data } = await $authHost.post('api/device', device);
   return data;
 };
+
+export const editDevice = async id => {
+  const { data } = await $authHost.get('api/device/' + id);
+  return data;
+};
+
 export const createRating = async (deviceId, rate, user) => {
   if (user) {
     const token = localStorage.getItem('token');

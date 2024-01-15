@@ -1,17 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { Context } from '../../index';
-import {
-  Col,
-  Image,
-  InputGroup,
-  Row,
-  Form,
-  Button,
-  Modal,
-  Dropdown,
-} from 'react-bootstrap';
-import { createDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
+import { Col, Image, InputGroup, Row } from 'react-bootstrap';
+import { editDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
 
@@ -20,7 +15,7 @@ import nameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
 
-const CreateDevice = observer(({ show, onHide }) => {
+const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
   const [deviseImages, setDeviceImages] = useState([]);
@@ -67,7 +62,7 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
 
-    createDevice(formData).then(() => onHide());
+    editDevice(formData).then(() => onHide());
   };
 
   // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
@@ -82,7 +77,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       .max(80, 'Назва девайсу занадто довга')
       .lowercase()
       .notOneOf(deviceNames, 'Такий девайс вже існує')
-      .required('Введіть девайс'),
+      .required('Введіть назву девайсу'),
     price: yup
       .number('Ціна повинна бути числом')
       .positive('Ціна повинна бути додатнім числом')
@@ -107,13 +102,13 @@ const CreateDevice = observer(({ show, onHide }) => {
   });
   const formik = useFormik({
     initialValues: {
-      name: '',
-      price: 0,
-      mainImg: null,
-      rating: 0,
-      brandId: '',
-      typeId: '',
-      info: [],
+      name: deviceToEdit?.name || '',
+      price: deviceToEdit?.price || 0,
+      mainImg: deviceToEdit?.mainImg || null,
+      rating: deviceToEdit?.rating || 0,
+      brandId: deviceToEdit?.brandId || '',
+      typeId: deviceToEdit?.typeId || '',
+      info: deviceToEdit?.info || [],
     },
     validationSchema: deviceSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -123,7 +118,8 @@ const CreateDevice = observer(({ show, onHide }) => {
     },
   });
   const isValid = deviceSchema.isValidSync(formik.values);
-
+  console.log(deviceToEdit);
+  console.log(formik.values);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
       <Form
@@ -190,7 +186,7 @@ const CreateDevice = observer(({ show, onHide }) => {
               style={{ height: '38px' }}
               type="text"
               name="name"
-              value={formik.name}
+              value={formik.values.name}
               isInvalid={formik.values.name && formik.errors.name}
               onChange={formik.handleChange}
               placeholder="Введіть назву пристрою"
@@ -213,7 +209,7 @@ const CreateDevice = observer(({ show, onHide }) => {
               type="number"
               name="price"
               isInvalid={formik.values.price && formik.errors.price}
-              value={formik.price}
+              value={formik.values.price}
               onChange={e => {
                 const newValue = Number(e.target.value);
                 formik.setFieldValue('price', newValue);
@@ -322,4 +318,4 @@ const CreateDevice = observer(({ show, onHide }) => {
   );
 });
 
-export default CreateDevice;
+export default EditDeviceModal;

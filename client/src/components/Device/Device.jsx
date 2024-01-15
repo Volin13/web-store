@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchSingleDevice } from '../../http/deviceApi';
 import CountUp from 'react-countup';
 import Rating from '../UI/UX/Rating/Rating';
+import CommentSection from '../UI/UX/CommentSection/CommentSection';
+import { LOGIN_ROUTE } from '../../utils/constants';
 import { Context } from '../../';
 import { toast } from 'react-toastify';
 import css from './Device.module.css';
 import PackageIcon from '../UI/UX/PackageImg/PackageIcon';
 import showMoreIcon from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import hideMoreIcon from '../../assets/defultIcons/up-arrow-arrows-svgrepo-com.svg';
-import CommentSection from '../UI/UX/CommentSection/CommentSection';
+import editDeviceImg from '../../assets/shopIcons/editDevice.svg';
+import EditDeviceModal from '../modals/EditDevice';
 
 const Device = () => {
   const [device, setDevice] = useState({ info: [] });
@@ -18,6 +21,10 @@ const Device = () => {
   const [basketLength, setBasketLength] = useState(0);
   const [showList, setShowList] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
+  const [showEditDeviceModal, setShowEditDeviceModal] = useState(false);
+
+  const navigate = useNavigate();
+
   const containerRef = useRef(null);
 
   const { id } = useParams();
@@ -60,24 +67,39 @@ const Device = () => {
       title: device.name,
       price: device.newPrice || device.price,
       added: Date.now(),
-      img: device.img,
+      mainImg: device.mainImg,
     });
 
     toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
   return (
-    <Container className="mt-3">
+    <Container className="mt-3 ">
+      <button
+        type="button"
+        className={css.editDeviceBtn}
+        onClick={() => {
+          setShowEditDeviceModal(true);
+        }}
+      >
+        <span>Edit device</span>
+        <Image width={30} height={30} src={editDeviceImg} />{' '}
+      </button>
+      <EditDeviceModal
+        show={showEditDeviceModal}
+        deviceToEdit={device}
+        onHide={() => setShowEditDeviceModal(false)}
+      />
       <Row className="d-flex align-items-center text-center">
         <Col md={4}>
           <div
-            className="d-flex justify-content-between align-items-center"
+            className="d-flex justify-content-between align-items-center "
             style={{ minHeight: '300px' }}
           >
             <Image
               width={'100%'}
               className={`${!device?.inStock ? css.greyColors : ''}`}
-              src={process.env.REACT_APP_API_URL + device.img}
+              src={process.env.REACT_APP_API_URL + device.mainImg}
               fluid
             />
           </div>
@@ -143,8 +165,13 @@ const Device = () => {
                 {device?.inStock ? 'Додати до корзини' : 'Немає в наявності'}
               </Button>
             ) : (
-              <Button variant="outline-light">
-                Увійдіть щоб зробити покупку
+              <Button
+                variant="outline-dark"
+                onClick={() => {
+                  navigate(LOGIN_ROUTE);
+                }}
+              >
+                Увійдіть щоб купити
               </Button>
             )}
           </Card>
