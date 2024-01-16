@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { createType } from '../../http/deviceApi';
-import * as yup from 'yup';
-import { Image, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
-import typeIcon from '../../assets/adminIcons/typeIcon.svg';
 import { Context } from '../..';
+import * as yup from 'yup';
+import { Image, InputGroup, Form, Button, Modal } from 'react-bootstrap';
+import { createType } from '../../http/deviceApi';
+import typeIcon from '../../assets/adminIcons/typeIcon.svg';
 
 const CreateType = ({ show, onHide }) => {
   const { device } = useContext(Context);

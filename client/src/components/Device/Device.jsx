@@ -16,7 +16,7 @@ import editDeviceImg from '../../assets/shopIcons/editDevice.svg';
 import EditDeviceModal from '../modals/EditDevice';
 
 const Device = () => {
-  const [device, setDevice] = useState({ info: [] });
+  const [device, setDevice] = useState({ info: [], deviceImages: [] });
   const [clickedState, setClickedState] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
   const [showList, setShowList] = useState(false);
@@ -37,8 +37,17 @@ const Device = () => {
 
   // Отримання інформації про девайс
   useEffect(() => {
-    fetchSingleDevice(id).then(data => setDevice(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let isMounted = true;
+
+    fetchSingleDevice(id).then(data => {
+      if (isMounted) {
+        setDevice(data);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Визначення величини кошика для зміни іконки при кліку на кнопку "купити"
@@ -73,6 +82,7 @@ const Device = () => {
     toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
+
   return (
     <Container className="mt-3 ">
       <button
@@ -85,11 +95,6 @@ const Device = () => {
         <span>Edit device</span>
         <Image width={30} height={30} src={editDeviceImg} />{' '}
       </button>
-      <EditDeviceModal
-        show={showEditDeviceModal}
-        deviceToEdit={device}
-        onHide={() => setShowEditDeviceModal(false)}
-      />
       <Row className="d-flex align-items-center text-center">
         <Col md={4}>
           <div
@@ -198,39 +203,40 @@ const Device = () => {
         </Row>
 
         {/* Девайс інфо  */}
-
-        <div
-          className={css.deviceInfoThumb}
-          ref={containerRef}
-          style={{
-            maxHeight: showList ? '10000px' : '155px',
-          }}
-        >
-          {device.info.map((info, index) => (
-            <Row
-              key={info.id}
-              className="d-flex justify-content-between align-items-center"
-              style={{
-                background: index % 2 === 0 ? 'lightgrey' : 'transparent',
-                padding: '10px 0 ',
-              }}
-            >
-              <span style={{ display: 'inline-block', width: '40%' }}>
-                {info.title}:
-              </span>
-              <span
+        {device?.info.length > 0 && (
+          <ul
+            className={css.deviceInfoThumb}
+            ref={containerRef}
+            style={{
+              maxHeight: showList ? '10000px' : '155px',
+            }}
+          >
+            {device?.info.map((info, index) => (
+              <li
+                key={info.id}
+                className="d-flex justify-content-between align-items-center"
                 style={{
-                  display: 'inline-block',
-                  width: '40%',
-                  textAlign: 'end',
+                  background: index % 2 === 0 ? 'lightgrey' : 'transparent',
+                  padding: '10px',
                 }}
               >
-                {' '}
-                {info.description}
-              </span>
-            </Row>
-          ))}
-        </div>
+                <span style={{ display: 'inline-block', width: '40%' }}>
+                  {info.title}:
+                </span>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '40%',
+                    textAlign: 'end',
+                  }}
+                >
+                  {' '}
+                  {info.description}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
         {isOverflowed && (
           <button
             type="button"
@@ -251,6 +257,11 @@ const Device = () => {
         )}
       </Row>
       <CommentSection />
+      <EditDeviceModal
+        show={showEditDeviceModal}
+        deviceToEdit={device}
+        onHide={() => setShowEditDeviceModal(false)}
+      />
     </Container>
   );
 };

@@ -14,16 +14,15 @@ import {
 import { createDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
-
 import imageIcon from '../../assets/adminIcons/imageIcon.svg';
-import nameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
+import deviceNameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
-  const [deviseImages, setDeviceImages] = useState([]);
+  const [deviceImages, setDeviceImages] = useState([]);
 
   // При першому завантаженні записую в стор типи і бренди, шоб потім вибрати з існуючих
   useEffect(() => {
@@ -47,7 +46,23 @@ const CreateDevice = observer(({ show, onHide }) => {
   const changeInfo = (key, value, number) => {
     setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
-
+  // Змінити/додати/видалити додані зображення девайсу
+  const addImage = () => {
+    setDeviceImages([
+      ...deviceImages,
+      { deviceImage: null, number: Date.now() },
+    ]);
+    formik.setFieldValue('info', JSON.stringify(info));
+  };
+  const changeImages = (key, value, number) => {
+    setDeviceImages(
+      deviceImages.map(i => (i.number === number ? { ...i, [key]: value } : i))
+    );
+  };
+  const removeImage = number => {
+    setDeviceImages(deviceImages.filter(i => i.number !== number));
+    formik.setFieldValue('deviceImages', deviceImages);
+  };
   const selectFile = e => {
     const selectedFile = e.target.files[0];
 
@@ -144,9 +159,9 @@ const CreateDevice = observer(({ show, onHide }) => {
               {device.selectedType.name || 'Виберіть тип'}
             </Dropdown.Toggle>
             <Dropdown.Menu style={{ maxHeight: '190px', overflow: 'auto' }}>
-              {device.types.map(type => (
+              {device.types.map((type, index) => (
                 <Dropdown.Item
-                  key={type.id}
+                  key={index}
                   onClick={() => {
                     device.setSelectedType(type);
                     formik.setFieldValue('typeId', device.selectedType.id);
@@ -164,9 +179,9 @@ const CreateDevice = observer(({ show, onHide }) => {
               {device.selectedBrand.name || 'Виберіть бренд'}
             </Dropdown.Toggle>
             <Dropdown.Menu style={{ maxHeight: '190px', overflow: 'auto' }}>
-              {device.brands.map(brand => (
+              {device.brands.map((brand, index) => (
                 <Dropdown.Item
-                  key={brand.id}
+                  key={index}
                   onClick={() => {
                     device.setSelectedBrand(brand);
                     formik.setFieldValue('brandId', device.selectedBrand.id);
@@ -184,7 +199,7 @@ const CreateDevice = observer(({ show, onHide }) => {
             style={{ minHeight: '63px' }}
           >
             <InputGroup.Text style={{ height: '38px' }}>
-              <Image width={30} height={30} src={nameIcon} />
+              <Image width={30} height={30} src={deviceNameIcon} />
             </InputGroup.Text>
             <Form.Control
               style={{ height: '38px' }}
@@ -270,44 +285,77 @@ const CreateDevice = observer(({ show, onHide }) => {
               {formik.errors.rating}
             </Form.Control.Feedback>
           </InputGroup>
-
-          <hr className="mb-2" />
+          {/* Картинки (декілька)  */}
+          <hr className="my-2" />
+          <Button variant="outline-dark" onClick={addImage}>
+            Додати (змінити) зображення
+          </Button>
+          <ul>
+            {deviceImages.map(i => (
+              <Row key={i?.number} as="li">
+                <Col md={4}>
+                  <Form.Control
+                    className="mt-3"
+                    type="file"
+                    onChange={e =>
+                      changeImages('deviceImage', e.target.files[0], i.number)
+                    }
+                  />
+                </Col>
+                <Col md={4}>
+                  <Button
+                    className="mt-3"
+                    variant="outline-danger"
+                    onClick={() => removeImage(i.number)}
+                  >
+                    Видалити
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+          </ul>
+          {/* ХАРАКТЕРИСТИКИ  */}
+          <hr className="my-2" />
           <Button variant="outline-dark" onClick={addInfo}>
             Додати нову властивість
           </Button>
-          {info.map(i => (
-            <Row key={i.number}>
-              <Col md={4}>
-                <Form.Control
-                  className="mt-3"
-                  type="text"
-                  value={i.title}
-                  onChange={e => changeInfo('title', e.target.value, i.number)}
-                  placeholder="Введіть назву "
-                />
-              </Col>
-              <Col md={4}>
-                <Form.Control
-                  className="mt-3"
-                  type="text"
-                  value={i.description}
-                  onChange={e =>
-                    changeInfo('description', e.target.value, i.number)
-                  }
-                  placeholder="Введіть опис "
-                />
-              </Col>
-              <Col md={4}>
-                <Button
-                  className="mt-3"
-                  variant="outline-danger"
-                  onClick={() => removeInfo(i.number)}
-                >
-                  Видалити
-                </Button>
-              </Col>
-            </Row>
-          ))}
+          <ul>
+            {info.map(i => (
+              <Row key={i.number} as="li">
+                <Col md={4}>
+                  <Form.Control
+                    className="mt-3"
+                    type="text"
+                    value={i.title}
+                    onChange={e =>
+                      changeInfo('title', e.target.value, i.number)
+                    }
+                    placeholder="Введіть назву "
+                  />
+                </Col>
+                <Col md={4}>
+                  <Form.Control
+                    className="mt-3"
+                    type="text"
+                    value={i.description}
+                    onChange={e =>
+                      changeInfo('description', e.target.value, i.number)
+                    }
+                    placeholder="Введіть опис "
+                  />
+                </Col>
+                <Col md={4}>
+                  <Button
+                    className="mt-3"
+                    variant="outline-danger"
+                    onClick={() => removeInfo(i.number)}
+                  >
+                    Видалити
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+          </ul>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-danger" onClick={onHide}>

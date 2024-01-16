@@ -7,7 +7,7 @@ import css from './Device.module.css';
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import Stateofgoods from '../UI/UX/Stateofgoods/Stateofgoods';
 
-const DeviceItem = ({ device, loading }) => {
+const DeviceItem = ({ device, loading, index }) => {
   const navigate = useNavigate();
   return (
     <li

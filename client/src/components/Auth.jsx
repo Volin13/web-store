@@ -43,7 +43,6 @@ const Auth = observer(() => {
         if (isLogin) {
           userData = await login(email, password);
           if (userData) {
-            console.log('poof');
             user.setUser(userData);
             user.setIsAuth(true);
             navigate(SHOP_ROUTE);

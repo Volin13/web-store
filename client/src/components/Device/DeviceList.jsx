@@ -24,8 +24,12 @@ const DeviceList = observer(({ loading }) => {
         <>
           {device?.devices.length > 0 ? (
             <ul className="d-flex flex-raw flex-wrap justify-content-around justify-content-sm-start">
-              {device?.devices?.map(device => (
-                <DeviceItem key={device.id} device={device}></DeviceItem>
+              {device?.devices?.map((device, index) => (
+                <DeviceItem
+                  key={index}
+                  device={device}
+                  index={index}
+                ></DeviceItem>
               ))}
             </ul>
           ) : (

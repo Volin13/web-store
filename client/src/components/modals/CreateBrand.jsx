@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { createBrand } from '../../http/deviceApi';
-import { useFormik } from 'formik';
-import { Image, InputGroup } from 'react-bootstrap';
-import brandIcon from '../../assets/adminIcons/brandIcon.svg';
-import * as yup from 'yup';
 import { Context } from '../..';
+import { useFormik } from 'formik';
+import { Image, InputGroup, Form, Button, Modal } from 'react-bootstrap';
+import * as yup from 'yup';
+import { createBrand } from '../../http/deviceApi';
+import brandIcon from '../../assets/adminIcons/brandIcon.svg';
 
 const CreateBrand = ({ show, onHide }) => {
   const { device } = useContext(Context);

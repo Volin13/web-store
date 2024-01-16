@@ -16,15 +16,16 @@ const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
           }}
         >
           {list.map((item, index) => (
-            <BasketItem
-              closeModal={closeModal}
-              addOne={addOne}
-              reduceOne={reduceOne}
-              key={index}
-              item={item}
-              index={index}
-              removeCard={removeCard}
-            />
+            <li key={index}>
+              <BasketItem
+                closeModal={closeModal}
+                addOne={addOne}
+                reduceOne={reduceOne}
+                item={item}
+                index={index}
+                removeCard={removeCard}
+              />
+            </li>
           ))}
         </ul>
       ) : (
