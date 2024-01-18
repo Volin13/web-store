@@ -15,7 +15,6 @@ export let editDeviceSchema = yup.object().shape({
     .required('Введіть ціну'),
   newPrice: yup
     .number('Ціна повинна бути числом')
-    .positive('Ціна повинна бути додатнім числом')
     .integer('Ціна повинна бути цілим числом'),
   mainImg: yup
     .mixed()
@@ -27,7 +26,7 @@ export let editDeviceSchema = yup.object().shape({
     .test('size', 'Розмір зображення має бути менше 5 MB', value => {
       return !value || (value && value.size <= 5000000);
     })
-    .required('Додайте зображення'),
+    .nullable(),
   rating: yup
     .number('Рейтинг повинна бути числом')
     .min(1, 'Мінімальний рейтинг 1')

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card, Form, Row } from 'react-bootstrap';
+import { Button, Card, Form, Row } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import css from './CommentSection.module.css';
 import { commentSchema } from '../../../../utils/commentSchema';
 
-const CommentSection = () => {
+const CommentSection = ({ sendMessage, user }) => {
   const formik = useFormik({
     initialValues: {
       comment: '',
@@ -34,6 +34,14 @@ const CommentSection = () => {
               />
             </Form.Group>
           </Row>
+          <Button
+            variant="primary"
+            disabled={!user.isAuth}
+            className="p-2"
+            onClick={sendMessage}
+          >
+            {user.isAuth ? 'Відправити' : 'Увійдіть щоб прокоментувати'}
+          </Button>
         </Card.Body>
       </Card>
     </div>

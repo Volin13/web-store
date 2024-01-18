@@ -23,6 +23,12 @@
 .editDeviceBtn:focus {
   background-color: #1cb1de;
 }
+.playBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .showBtn {
   position: absolute;
   z-index: 100;

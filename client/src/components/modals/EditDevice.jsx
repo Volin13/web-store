@@ -71,7 +71,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       ...deviceImages,
       { deviceImage: null, number: Date.now() },
     ]);
-    formik.setFieldValue('info', JSON.stringify(info));
+    formik.setFieldValue('deviceImages', deviceImages);
   };
   const changeImages = (key, value, number) => {
     setDeviceImages(
@@ -111,6 +111,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
+    formData.append('deviceImages', formik.values.deviceImages);
 
     editDevice(formData).then(() => onHide());
   };
@@ -141,7 +142,9 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     },
   });
   const isValid = editDeviceSchema.isValidSync(formik.values);
+  console.log(deviceToEdit);
   console.log(formik.values);
+  console.log(formik.errors);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
       <Form
@@ -291,7 +294,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
           )}
 
           {/* КАРТИНКА */}
-          <h5 className="my-2">Нове головне зображення</h5>
+          <Form.Label className="my-2">Нове головне зображення</Form.Label>
           <InputGroup hasValidation style={{ minHeight: '63px' }}>
             <InputGroup.Text style={{ height: '38px' }}>
               <Image width={30} height={30} src={imageIcon} />

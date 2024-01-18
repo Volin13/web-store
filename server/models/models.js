@@ -38,9 +38,10 @@ const Device = sequelize.define('device', {
   newPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
 });
 
-const DeviceImage = sequelize.define('deviceImage', {
+const DeviceImages = sequelize.define('deviceImages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   fileName: { type: DataTypes.STRING, allowNull: false },
+  deviceId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 const Type = sequelize.define('type', {
@@ -107,8 +108,8 @@ Order.belongsTo(User);
 Device.hasMany(Rating);
 Rating.belongsTo(Device);
 
-Device.hasMany(DeviceImage);
-DeviceImage.belongsTo(Device);
+Device.hasMany(DeviceImages);
+DeviceImages.belongsTo(Device);
 
 Device.hasMany(Comment);
 Comment.belongsTo(Device);
@@ -156,5 +157,5 @@ module.exports = {
   Reply,
   TypeBrand,
   DeviceInfo,
-  DeviceImage,
+  DeviceImages,
 };

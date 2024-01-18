@@ -2,33 +2,38 @@ const uuid = require('uuid');
 const path = require('path');
 const { Op } = require('sequelize');
 const ApiError = require('../error/ApiError');
-const { Device, DeviceInfo } = require('../models/models');
+const { Device, DeviceInfo, DeviceImages } = require('../models/models');
 class DeviceController {
   // СТВОРЕННЯ
   async create(req, res, next) {
     try {
       // Створюємо новий девайс
       let { name, price, brandId, typeId, info, rating } = req.body;
-      const { images } = req.files;
-      // let fileName = uuid.v4() + '.jpg';
-      // img.mv(path.resolve(__dirname, '..', 'static', fileName));
-
+      const { mainImg } = req.files;
+      const images = req.files;
+      // зберігаємо основне фото
+      let mainFileName = uuid.v4() + '.jpg';
+      mainImg.mv(path.resolve(__dirname, '..', 'static', mainFileName));
+      // створюємо девайс
       const device = await Device.create({
         name,
         price,
         rating,
         brandId,
         typeId,
+        mainImg: mainFileName,
       });
 
-      // Зберігаємо фотографії та пов'язуємо їх з девайсом
-      const imageFileNames = [];
-      for (const image of images) {
-        const fileName = uuid.v4() + '.jpg';
-        image.mv(path.resolve(__dirname, '..', 'static', fileName));
-        imageFileNames.push(fileName);
+      // Зберігаємо додаткові фотографії та пов'язуємо їх з девайсом
+      const imageFiles = Object.keys(images)
+        .filter(key => key.startsWith('images['))
+        .map(key => images[key]);
 
-        await DeviceImage.create({ fileName, deviceId: device.id });
+      for (const image of imageFiles) {
+        let fileName = uuid.v4() + '.jpg';
+        image.mv(path.resolve(__dirname, '..', 'static', fileName));
+
+        await DeviceImages.create({ fileName, deviceId: device.id });
       }
 
       // Додаткова інформація має декілька пунктів
@@ -44,8 +49,7 @@ class DeviceController {
         );
       }
 
-      // return res.json(device);
-      return res.json({ device, images: imageFileNames });
+      return res.json(device);
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
@@ -57,6 +61,12 @@ class DeviceController {
       const { name, price, brandId, typeId, info, rating, deletedImages } =
         req.body;
       const { images } = req.files;
+      const { mainImg } = req.files;
+      if (mainImg) {
+        let mainFileName = uuid.v4() + '.jpg';
+        mainImg.mv(path.resolve(__dirname, '..', 'static', fileName));
+        device.mainImg = mainFileName;
+      }
 
       // Перевірка чи існує девайс з заданим ідентифікатором
       const device = await Device.findByPk(deviceId);
@@ -77,7 +87,7 @@ class DeviceController {
 
       // Видалення існуючих фотографій за ідентифікаторами
       if (deletedImages && deletedImages.length > 0) {
-        await DeviceImage.destroy({ where: { id: deletedImages, deviceId } });
+        await DeviceImages.destroy({ where: { id: deletedImages, deviceId } });
       }
 
       // Додавання нових фотографій
@@ -87,7 +97,7 @@ class DeviceController {
         image.mv(path.resolve(__dirname, '..', 'static', fileName));
         imageFileNames.push(fileName);
 
-        await DeviceImage.create({ fileName, deviceId });
+        await DeviceImages.create({ fileName, deviceId });
       }
 
       // Оновлення інформації про девайс
@@ -152,8 +162,21 @@ class DeviceController {
     const { id } = req.params;
     const device = await Device.findOne({
       where: { id },
-      include: [{ model: DeviceInfo, as: 'info' }],
+      include: [
+        {
+          model: DeviceInfo,
+          as: 'info',
+        },
+        {
+          model: DeviceImages,
+          as: 'deviceImages',
+        },
+      ],
     });
+
+    if (!device) {
+      return next(ApiError.badRequest(e.message));
+    }
     return res.json(device);
   }
 }

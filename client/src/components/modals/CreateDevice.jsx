@@ -47,12 +47,13 @@ const CreateDevice = observer(({ show, onHide }) => {
     setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
   // Змінити/додати/видалити додані зображення девайсу
+  // Змінити/додати/видалити додані зображення девайсу
   const addImage = () => {
     setDeviceImages([
       ...deviceImages,
       { deviceImage: null, number: Date.now() },
     ]);
-    formik.setFieldValue('info', JSON.stringify(info));
+    formik.setFieldValue('deviceImages', deviceImages);
   };
   const changeImages = (key, value, number) => {
     setDeviceImages(
@@ -63,13 +64,21 @@ const CreateDevice = observer(({ show, onHide }) => {
     setDeviceImages(deviceImages.filter(i => i.number !== number));
     formik.setFieldValue('deviceImages', deviceImages);
   };
+
   const selectFile = e => {
     const selectedFile = e.target.files[0];
-
     if (selectedFile) {
       formik.setFieldValue('mainImg', selectedFile);
     } else {
-      formik.setFieldValue('mainImg', '');
+      formik.setFieldValue('mainImg', null);
+    }
+  };
+
+  const hendleRatingChange = e => {
+    const value = e.target.value;
+    if (value) {
+      const newValue = parseFloat(e.target.value);
+      formik.setFieldValue('rating', newValue);
     }
   };
   const addDevice = () => {
@@ -81,7 +90,13 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
-
+    formik.values.deviceImages.forEach((deviceImages, index) => {
+      formData.append(
+        `images[${index}][deviceImage]`,
+        deviceImages.deviceImage
+      );
+      formData.append(`images[${index}][number]`, deviceImages.number);
+    });
     createDevice(formData).then(() => onHide());
   };
 
@@ -98,6 +113,8 @@ const CreateDevice = observer(({ show, onHide }) => {
       .lowercase()
       .notOneOf(deviceNames, 'Такий девайс вже існує')
       .required('Введіть девайс'),
+    brandId: yup.number().required('оберіть ціну'),
+    typeId: yup.number().required('Оберіть тип'),
     price: yup
       .number('Ціна повинна бути числом')
       .positive('Ціна повинна бути додатнім числом')
@@ -125,6 +142,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       name: '',
       price: 0,
       mainImg: null,
+      deviceImages: [],
       rating: 0,
       brandId: '',
       typeId: '',
@@ -138,7 +156,6 @@ const CreateDevice = observer(({ show, onHide }) => {
     },
   });
   const isValid = deviceSchema.isValidSync(formik.values);
-
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
       <Form
@@ -276,8 +293,7 @@ const CreateDevice = observer(({ show, onHide }) => {
               isInvalid={formik.values.rating && formik.errors.rating}
               value={formik.values.rating}
               onChange={e => {
-                const newValue = parseFloat(e.target.value);
-                formik.setFieldValue('rating', newValue);
+                hendleRatingChange(e);
               }}
               placeholder="Введіть рейтинг пристрою Х.Х"
             />

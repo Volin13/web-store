@@ -13,7 +13,9 @@ import PackageIcon from '../UI/UX/PackageImg/PackageIcon';
 import showMoreIcon from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import hideMoreIcon from '../../assets/defultIcons/up-arrow-arrows-svgrepo-com.svg';
 import editDeviceImg from '../../assets/shopIcons/editDevice.svg';
+import playBtn from '../../assets/shopIcons/playBtn.svg';
 import EditDeviceModal from '../modals/EditDevice';
+import DeviceImgSlider from '../modals/DeviceImgSlider';
 
 const Device = () => {
   const [device, setDevice] = useState({ info: [], deviceImages: [] });
@@ -21,6 +23,7 @@ const Device = () => {
   const [basketLength, setBasketLength] = useState(0);
   const [showList, setShowList] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
+  const [showSlider, setShowSlider] = useState(false);
   const [showEditDeviceModal, setShowEditDeviceModal] = useState(false);
 
   const navigate = useNavigate();
@@ -48,6 +51,7 @@ const Device = () => {
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Визначення величини кошика для зміни іконки при кліку на кнопку "купити"
@@ -57,16 +61,16 @@ const Device = () => {
   }, [basket.basket]);
 
   // Кнопка розгортання списку характеристик додається за умови що їх більше ніж 3
-  const container = containerRef?.current;
 
   useEffect(() => {
+    const container = containerRef?.current;
     if (container) {
       const isContentOverflowed =
         container.scrollHeight > container.clientHeight;
       // Перевірка, чи вміст більший за висоту
       setIsOverflowed(isContentOverflowed);
     }
-  }, [container, device]);
+  }, [device?.info?.length]);
 
   // Формування замовлення в кошик
   const hendleOrderClick = () => setClickedState(true);
@@ -82,7 +86,7 @@ const Device = () => {
     toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
-
+  console.log(device);
   return (
     <Container className="mt-3 ">
       <button
@@ -98,7 +102,7 @@ const Device = () => {
       <Row className="d-flex align-items-center text-center">
         <Col md={4}>
           <div
-            className="d-flex justify-content-between align-items-center "
+            className="d-flex justify-content-between align-items-center position-relative"
             style={{ minHeight: '300px' }}
           >
             <Image
@@ -106,6 +110,19 @@ const Device = () => {
               className={`${!device?.inStock ? css.greyColors : ''}`}
               src={process.env.REACT_APP_API_URL + device.mainImg}
               fluid
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setShowSlider(true);
+              }}
+              className={css.playBtn}
+            >
+              <Image width={80} height={80} src={playBtn} fluid />
+            </button>
+            <DeviceImgSlider
+              deviceImages={device?.deviceImages}
+              show={showSlider}
             />
           </div>
         </Col>
@@ -203,7 +220,7 @@ const Device = () => {
         </Row>
 
         {/* Девайс інфо  */}
-        {device?.info.length > 0 && (
+        {device?.info?.length > 0 && (
           <ul
             className={css.deviceInfoThumb}
             ref={containerRef}
@@ -256,7 +273,7 @@ const Device = () => {
           </button>
         )}
       </Row>
-      <CommentSection />
+      <CommentSection user={user} />
       <EditDeviceModal
         show={showEditDeviceModal}
         deviceToEdit={device}
