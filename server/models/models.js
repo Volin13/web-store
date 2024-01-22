@@ -44,6 +44,13 @@ const DeviceImages = sequelize.define('deviceImages', {
   deviceId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
+const DeviceInfo = sequelize.define('device_info', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  title: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false },
+  deviceId: { type: DataTypes.INTEGER, allowNull: false },
+});
+
 const Type = sequelize.define('type', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
@@ -84,12 +91,6 @@ const Reply = sequelize.define('reply', {
       len: [1, 255], // Мінімальна та максимальна довжина тексту реплая
     },
   },
-});
-
-const DeviceInfo = sequelize.define('device_info', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  title: { type: DataTypes.STRING, allowNull: false },
-  description: { type: DataTypes.STRING, allowNull: false },
 });
 
 const TypeBrand = sequelize.define('type_brand', {

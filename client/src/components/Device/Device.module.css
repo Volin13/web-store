@@ -10,8 +10,11 @@
   background-color: transparent;
 }
 .editDeviceBtn {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   min-width: 150px;
-  margin: 0 auto;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -23,12 +26,25 @@
 .editDeviceBtn:focus {
   background-color: #1cb1de;
 }
-.playBtn {
+
+.playBtnImg {
   position: absolute;
+  opacity: 0.5;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  transition: opacity 0.5s ease;
 }
+.blurOnHover:hover,
+.blurOnHover:focus {
+  filter: blur(2px);
+}
+
+.blurOnHover:hover + .playBtnImg,
+.blurOnHover:focus + .playBtnImg {
+  opacity: 1;
+}
+
 .showBtn {
   position: absolute;
   z-index: 100;
@@ -37,6 +53,7 @@
   border: 1px solid #e6e9ec;
   border-radius: 6px;
 }
+
 .showMoreBtn {
   top: 210px;
 }

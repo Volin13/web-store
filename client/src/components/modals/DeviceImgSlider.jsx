@@ -1,35 +1,54 @@
 import React, { useState } from 'react';
-import { Carousel, Image } from 'react-bootstrap';
+import { Carousel, Image, Modal } from 'react-bootstrap';
 
-const DeviceImgSlider = ({ showSlider, deviceImages }) => {
+const DeviceImgSlider = ({ show, onHide, deviceImages, mainImg }) => {
   const [index, setIndex] = useState(0);
-
   const handleSelect = selectedIndex => {
     setIndex(selectedIndex);
   };
   return (
-    <>
-      {showSlider && (
-        <Carousel activeIndex={index} onSelect={handleSelect}>
-          {deviceImages?.map(item => (
-            <Carousel.Item>
-              <Image
-                width={'100%'}
-                //   className={`${!device?.inStock ? css.greyColors : ''}`}
-                src={process.env.REACT_APP_API_URL + deviceImages?.fileName}
-                fluid
-              />{' '}
-              <Carousel.Caption>
-                <h3>First slide label</h3>
-                <p>
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
-                </p>
-              </Carousel.Caption>
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      )}
-    </>
+    <Modal dialogClassName="modal-90h" show={show} onHide={onHide} centered>
+      <Modal.Header closeButton></Modal.Header>
+      <Modal.Body>
+        {deviceImages?.length > 0 ? (
+          <Carousel
+            slide
+            touch
+            activeIndex={index}
+            variant="dark"
+            pause="hover"
+            onSelect={handleSelect}
+            style={{
+              padding: '0 35px 35px',
+              textAlign: 'center',
+            }}
+          >
+            {deviceImages?.map(item => (
+              <Carousel.Item key={item?.id}>
+                <Image
+                  height={250}
+                  src={process.env.REACT_APP_API_URL + item?.fileName}
+                  style={{
+                    objectFit: 'scale-down',
+                  }}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        ) : (
+          <div className="d-flex justify-content-center">
+            <Image
+              height="400px"
+              //   className={`${!device?.inStock ? css.greyColors : ''}`}
+              src={process.env.REACT_APP_API_URL + mainImg}
+              style={{
+                margin: '0 auto',
+              }}
+            />
+          </div>
+        )}
+      </Modal.Body>
+    </Modal>
   );
 };
 

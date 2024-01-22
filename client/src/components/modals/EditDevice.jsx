@@ -15,6 +15,7 @@ import { editDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 import { editDeviceSchema } from '../../utils/editDeviceSchema';
 import imageIcon from '../../assets/adminIcons/imageIcon.svg';
 import deviceNameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
@@ -45,6 +46,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       formik.setFieldValue('info', deviceToEdit.info);
       setInfo(deviceToEdit?.info);
       setDeviceImages(deviceToEdit?.deviceImages || []);
+      formik.setFieldValue('deviceImages', deviceImages);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceToEdit]);
@@ -77,6 +79,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     setDeviceImages(
       deviceImages.map(i => (i.number === number ? { ...i, [key]: value } : i))
     );
+    formik.setFieldValue('deviceImages', deviceImages);
   };
   const removeImage = number => {
     setDeviceImages(deviceImages.filter(i => i.number !== number));
@@ -85,12 +88,10 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
 
   const selectFile = e => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      formik.setFieldValue('mainImg', selectedFile);
-    } else {
-      formik.setFieldValue('mainImg', null);
-    }
+    formik.setFieldValue('mainImg', selectedFile || null);
   };
+
+  // Задаємо тип і бренд по айді
   const ChoseDevPropByID = (arr, name) => {
     runInAction(() => {
       arr.forEach(item => {
@@ -102,18 +103,33 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       });
     });
   };
-  const editData = () => {
+
+  const editData = values => {
     const formData = new FormData();
-    formData.append('name', formik.values.name);
-    formData.append('price', `${formik.values.price}`);
-    formData.append('mainImg', formik.values.mainImg);
-    formData.append('rating', formik.values.rating);
+    const fileNames = [];
+    const oldfileNames = [];
+
+    formData.append('name', values.name);
+    formData.append('price', values.price);
+    formData.append('oldMainImg', deviceToEdit?.mainImg);
+    formData.append('rating', values.rating);
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
-    formData.append('deviceImages', formik.values.deviceImages);
-
-    editDevice(formData).then(() => onHide());
+    deviceImages.forEach((item, index) => {
+      if (item.deviceImage instanceof File) {
+        formData.append(`images[${index}][deviceImage]`, item.deviceImage);
+        formData.append(`images[${index}][number]`, item.number);
+      } else if (item.fileName) {
+        fileNames.push(item.fileName);
+      }
+    });
+    deviceToEdit.deviceImages.forEach(image => {
+      oldfileNames.push(image.fileName);
+    });
+    formData.append('oldDeviceImages', JSON.stringify(oldfileNames));
+    formData.append('deviceImagesNames', JSON.stringify(fileNames));
+    editDevice(deviceToEdit?.id, formData).then(() => onHide());
   };
 
   // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
@@ -135,24 +151,20 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       info: deviceToEdit?.info || [],
     },
     validationSchema: editDeviceSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      editData(values);
-      setSubmitting(false);
-      resetForm();
+    onSubmit: (values, { setSubmitting }) => {
+      try {
+        editData(values);
+        setSubmitting(false);
+        toast.success('Девайс було змінено');
+      } catch (error) {
+        toast.error('Сталась помилка спробуйте пізніше');
+      }
     },
   });
   const isValid = editDeviceSchema.isValidSync(formik.values);
-  console.log(deviceToEdit);
-  console.log(formik.values);
-  console.log(formik.errors);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>
-      <Form
-        onSubmit={e => {
-          e.preventDefault();
-          formik.handleSubmit(e);
-        }}
-      >
+      <Form onSubmit={formik.handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             Редагувати пристрій
@@ -343,7 +355,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
             variant="outline-dark"
             onClick={() => setImageSectionVisible(!imageSectionVisible)}
           >
-            Змінити другорядні зображення
+            {imageSectionVisible ? 'Закрити' : 'Змінити другорядні зображення'}
           </Button>
           {/* Картинки (декілька)  */}
           {imageSectionVisible && (
@@ -354,10 +366,22 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
               </Button>
               <ul>
                 {deviceImages.map(i => (
-                  <Row key={i?.number} as="li">
-                    <Col md={4}>
+                  <Row key={i?.number} as="li" className="my-3">
+                    <Col
+                      md={6}
+                      className="d-flex align-items-center justify-content-center mb-2"
+                    >
+                      <Image
+                        width={50}
+                        src={
+                          i.fileName
+                            ? process.env.REACT_APP_API_URL + i.fileName
+                            : imageIcon
+                        }
+                        fluid
+                        style={{ marginRight: '10px' }}
+                      />
                       <Form.Control
-                        className="mt-3"
                         type="file"
                         onChange={e =>
                           changeImages(
@@ -368,9 +392,8 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
                         }
                       />
                     </Col>
-                    <Col md={4}>
+                    <Col md={4} className="d-flex align-items-center">
                       <Button
-                        className="mt-3"
                         variant="outline-danger"
                         onClick={() => removeImage(i.number)}
                       >
@@ -387,7 +410,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
             variant="outline-dark"
             onClick={() => setInfoSectionVisible(!infoSectionVisible)}
           >
-            Змінити характеристики
+            {infoSectionVisible ? 'Закрити' : 'Змінити характеристики'}
           </Button>
           {/* ХАРАКТЕРИСТИКИ  */}
           {infoSectionVisible && (
@@ -441,7 +464,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
             Вийти
           </Button>
           <Button disabled={!isValid} type="submit" variant="outline-success">
-            Додати
+            Змінити
           </Button>
         </Modal.Footer>
       </Form>

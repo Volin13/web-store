@@ -86,47 +86,53 @@ const Device = () => {
     toast.info(`${device.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
-  console.log(device);
+
   return (
     <Container className="mt-3 ">
-      <button
-        type="button"
-        className={css.editDeviceBtn}
-        onClick={() => {
-          setShowEditDeviceModal(true);
-        }}
-      >
-        <span>Edit device</span>
-        <Image width={30} height={30} src={editDeviceImg} />{' '}
-      </button>
       <Row className="d-flex align-items-center text-center">
         <Col md={4}>
-          <div
-            className="d-flex justify-content-between align-items-center position-relative"
-            style={{ minHeight: '300px' }}
+          <button
+            type="button"
+            onClick={() => {
+              setShowSlider(true);
+            }}
+            className="position-relative"
           >
-            <Image
-              width={'100%'}
-              className={`${!device?.inStock ? css.greyColors : ''}`}
-              src={process.env.REACT_APP_API_URL + device.mainImg}
-              fluid
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setShowSlider(true);
-              }}
-              className={css.playBtn}
+            <div
+              className={`d-flex justify-content-between align-items-center ${css.blurOnHover}`}
+              style={{ minHeight: '300px' }}
             >
-              <Image width={80} height={80} src={playBtn} fluid />
-            </button>
-            <DeviceImgSlider
-              deviceImages={device?.deviceImages}
-              show={showSlider}
+              <Image
+                width={'100%'}
+                className={`${!device?.inStock ? css.greyColors : ''}`}
+                src={process.env.REACT_APP_API_URL + device.mainImg}
+                fluid
+              />
+            </div>
+            <Image
+              width={80}
+              height={80}
+              src={playBtn}
+              fluid
+              className={css.playBtnImg}
             />
-          </div>
+          </button>
         </Col>
-        <Col md={4}>
+        <Col
+          md={4}
+          className="position-relative"
+          style={{ paddingTop: '75px' }}
+        >
+          <button
+            type="button"
+            className={css.editDeviceBtn}
+            onClick={() => {
+              setShowEditDeviceModal(true);
+            }}
+          >
+            <span>Edit device</span>
+            <Image width={30} height={30} src={editDeviceImg} />{' '}
+          </button>
           <h1
             style={{
               display: 'inline-block',
@@ -274,6 +280,12 @@ const Device = () => {
         )}
       </Row>
       <CommentSection user={user} />
+      <DeviceImgSlider
+        onHide={() => setShowSlider(false)}
+        deviceImages={device?.deviceImages}
+        mainImg={device?.mainImg}
+        show={showSlider}
+      />
       <EditDeviceModal
         show={showEditDeviceModal}
         deviceToEdit={device}

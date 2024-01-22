@@ -81,16 +81,16 @@ const CreateDevice = observer(({ show, onHide }) => {
       formik.setFieldValue('rating', newValue);
     }
   };
-  const addDevice = () => {
+  const addDevice = values => {
     const formData = new FormData();
-    formData.append('name', formik.values.name);
-    formData.append('price', `${formik.values.price}`);
-    formData.append('mainImg', formik.values.mainImg);
-    formData.append('rating', formik.values.rating);
+    formData.append('name', values.name);
+    formData.append('price', `${values.price}`);
+    formData.append('mainImg', values.mainImg);
+    formData.append('rating', values.rating);
     formData.append('brandId', device.selectedBrand.id);
     formData.append('typeId', device.selectedType.id);
     formData.append('info', JSON.stringify(info));
-    formik.values.deviceImages.forEach((deviceImages, index) => {
+    values.deviceImages.forEach((deviceImages, index) => {
       formData.append(
         `images[${index}][deviceImage]`,
         deviceImages.deviceImage

@@ -31,8 +31,8 @@ export const createDevice = async device => {
   return data;
 };
 
-export const editDevice = async id => {
-  const { data } = await $authHost.get('api/device/' + id);
+export const editDevice = async (id, device) => {
+  const { data } = await $authHost.patch('api/device/' + id, device);
   return data;
 };
 
