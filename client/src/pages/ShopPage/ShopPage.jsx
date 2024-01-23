@@ -4,7 +4,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { Context } from '../..';
 import BrandBar from '../../components/Bars/BrandBar';
 import DeviceList from '../../components/Device/DeviceList';
-import Pages from '../../components/Pages';
+import Pages from '../../components/UI/UX/Pages';
 import TypeBar from '../../components/Bars/TypeBar';
 import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
 

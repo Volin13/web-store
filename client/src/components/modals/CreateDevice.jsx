@@ -46,8 +46,7 @@ const CreateDevice = observer(({ show, onHide }) => {
   const changeInfo = (key, value, number) => {
     setInfo(info.map(i => (i.number === number ? { ...i, [key]: value } : i)));
   };
-  // Змінити/додати/видалити додані зображення девайсу
-  // Змінити/додати/видалити додані зображення девайсу
+  // додати/видалити додані зображення девайсу
   const addImage = () => {
     setDeviceImages([
       ...deviceImages,
@@ -64,7 +63,7 @@ const CreateDevice = observer(({ show, onHide }) => {
     setDeviceImages(deviceImages.filter(i => i.number !== number));
     formik.setFieldValue('deviceImages', deviceImages);
   };
-
+  // Додавання головного зображення
   const selectFile = e => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -73,6 +72,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       formik.setFieldValue('mainImg', null);
     }
   };
+  // Додавання початкового рейтингу
 
   const hendleRatingChange = e => {
     const value = e.target.value;
@@ -81,6 +81,9 @@ const CreateDevice = observer(({ show, onHide }) => {
       formik.setFieldValue('rating', newValue);
     }
   };
+
+  // Функція для збору і відправки даних на бекенд
+
   const addDevice = values => {
     const formData = new FormData();
     formData.append('name', values.name);
@@ -137,6 +140,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       .max(10, 'Максимальний рейтинг 10')
       .required('Введіть рейтинг'),
   });
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -190,7 +194,7 @@ const CreateDevice = observer(({ show, onHide }) => {
             </Dropdown.Menu>
           </Dropdown>
 
-          {/* БРЕНД           */}
+          {/* БРЕНД */}
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
               {device.selectedBrand.name || 'Виберіть бренд'}

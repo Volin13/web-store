@@ -65,11 +65,10 @@ const Rating = sequelize.define('rating', {
   rate: { type: DataTypes.FLOAT, allowNull: false },
 });
 
-const Comment = sequelize.define('comment', {
+const Comment = sequelize.define('comments', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   userId: { type: DataTypes.INTEGER, allowNull: false },
   deviceId: { type: DataTypes.INTEGER, allowNull: false },
-  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   text: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -109,8 +108,11 @@ Order.belongsTo(User);
 Device.hasMany(Rating);
 Rating.belongsTo(Device);
 
-Device.hasMany(DeviceImages);
+Device.hasMany(DeviceImages, { as: 'deviceImages' });
 DeviceImages.belongsTo(Device);
+
+Device.hasMany(DeviceInfo, { as: 'info' });
+DeviceInfo.belongsTo(Device);
 
 Device.hasMany(Comment);
 Comment.belongsTo(Device);
@@ -118,23 +120,17 @@ Comment.belongsTo(Device);
 Device.hasMany(BasketDevice);
 BasketDevice.belongsTo(Device);
 
-Device.hasMany(DeviceInfo, { as: 'info' });
-DeviceInfo.belongsTo(Device);
-
 Comment.belongsTo(User);
 User.hasMany(Comment);
 
 Comment.belongsTo(Device);
 Device.hasMany(Comment);
 
-Comment.hasMany(Reply);
+Comment.hasMany(Reply, { as: 'reply' });
 Reply.belongsTo(Comment);
 
 Reply.belongsTo(User);
 User.hasMany(Reply);
-
-Reply.belongsTo(Comment);
-Comment.hasMany(Reply);
 
 Basket.hasMany(BasketDevice);
 BasketDevice.belongsTo(Basket);

@@ -160,21 +160,6 @@ class DeviceController {
         );
       }
 
-      // Оновлення інформації про девайс
-      // if (info) {
-      //   // Видалення існуючої інформації про девайс
-      //   await DeviceInfo.destroy({ where: { deviceId: id } });
-
-      //   // Додавання нової інформації про девайс
-      //   info = JSON.parse(info);
-      //   info.forEach(i =>
-      //     DeviceInfo.create({
-      //       title: i.title,
-      //       description: i.description,
-      //       deviceId: id,
-      //     }),
-      //   );
-      // }
       try {
         // Видалення існуючих записів для deviceId
         await DeviceInfo.destroy({ where: { deviceId: id }, transaction: t });

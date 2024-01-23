@@ -1,6 +1,5 @@
 import { $host, $authHost } from './index';
 import jwt_decode from 'jwt-decode';
-import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
 const decodeToken = jwt_decode(token);
@@ -11,10 +10,9 @@ export const createType = async type => {
   return data;
 };
 
-export const fetchDeviceComments = async (deviceId, page, limit = 5) => {
-  const { data } = await $host.get('api/comments', {
+export const fetchDeviceComments = async (deviceId, page, limit) => {
+  const { data } = await $host.get('api/comments/' + deviceId, {
     params: {
-      deviceId,
       limit,
       page,
     },
@@ -34,11 +32,11 @@ export const createComment = async (deviceId, user, text) => {
     return data;
   }
 };
-export const createReply = async (commentId, userId, text) => {
+export const createReply = async (commentId, text) => {
   const { data } = await $authHost.post('api/replies', {
     params: {
       commentId,
-      userId,
+      userId: userId,
       text,
     },
   });

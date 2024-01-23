@@ -5,8 +5,8 @@ const { Op } = require('sequelize');
 class CommentController {
   async createComment(req, res, next) {
     try {
-      const { deviceId, userId, text } = req.body;
-
+      const { deviceId, userId, text } = req.body.params;
+      console.log(deviceId, userId, text);
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
@@ -66,7 +66,9 @@ class CommentController {
       const { commentId } = req.params;
       const { userId } = req.body; // Додайте це поле в ваш запит
 
-      const comment = await Comment.findByPk(commentId);
+      const comment = await Comment.findOne({
+        where: { id: commentId },
+      });
       if (!comment) {
         return next(ApiError.badRequest('Коментар не знайдено'));
       }
@@ -120,9 +122,12 @@ class CommentController {
 
   async createReply(req, res, next) {
     try {
-      const { commentId, userId, text } = req.body;
+      const { commentId, userId, text } = req.body.params;
 
-      const comment = await Comment.findByPk(commentId);
+      const comment = await Comment.findOne({
+        where: { id: commentId },
+      });
+
       if (!comment) {
         return next(ApiError.badRequest('Коментар не знайдено'));
       }
@@ -204,18 +209,20 @@ class CommentController {
   }
   async getDeviceComments(req, res, next) {
     try {
-      const { deviceId, limit, page } = req.body;
+      let { limit, page } = req.query;
+      const { id } = req.params;
       page = page || 1;
       limit = limit || 12;
-      const offset = page * limit - limit;
 
-      const device = await Comment.findAndCountAll({
-        where: { deviceId },
+      let offset = page * limit - limit;
+
+      const comments = await Comment.findAndCountAll({
+        where: { deviceId: id },
         include: [{ model: Reply, as: 'reply' }],
         limit,
         offset,
       });
-      return res.json(device);
+      return res.json(comments);
     } catch (error) {
       return next(
         ApiError.internal(

@@ -146,7 +146,7 @@ const Device = () => {
         </Col>
         <Col md={4}>
           <Card
-            className="d-flex flex-column align-items-center justify-content-around position-relative"
+            className="d-flex flex-column align-items-center justify-content-around position-relative p-3"
             style={{
               width: '100%',
               height: 300,
@@ -279,7 +279,7 @@ const Device = () => {
           </button>
         )}
       </Row>
-      <CommentSection user={user} />
+      <CommentSection user={user} id={id} device={device} />
       <DeviceImgSlider
         onHide={() => setShowSlider(false)}
         deviceImages={device?.deviceImages}

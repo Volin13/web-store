@@ -86,6 +86,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     formik.setFieldValue('deviceImages', deviceImages);
   };
 
+  // Зміна головного зображення
   const selectFile = e => {
     const selectedFile = e.target.files[0];
     formik.setFieldValue('mainImg', selectedFile || null);
@@ -103,6 +104,8 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       });
     });
   };
+
+  // Функція для збору і відправки даних на бекенд
 
   const editData = values => {
     const formData = new FormData();
