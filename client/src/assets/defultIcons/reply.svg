@@ -2,7 +2,7 @@
 <svg version="1.1" id="designs" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	 width="800px" height="800px" viewBox="0 0 32 32" xml:space="preserve">
 <style type="text/css">
-	.sketchy_een{fill:#111918;}
+	.sketchy_een{fill:currentColor;}
 </style>
 <path class="sketchy_een" d="M29.934,24.707c-0.076-0.892-0.193-1.784-0.353-2.666c-0.162-0.906-0.417-1.778-0.787-2.62
 	c-0.337-0.771-0.75-1.501-1.155-2.238c-0.197-0.356-0.405-0.707-0.615-1.057c-0.249-0.411-0.538-0.793-0.837-1.169

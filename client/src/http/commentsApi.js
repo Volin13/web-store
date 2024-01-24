@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 
 const token = localStorage.getItem('token');
 const decodeToken = jwt_decode(token);
-const userId = decodeToken.id;
+export const userId = decodeToken.id || 1;
 
 export const createType = async type => {
   const { data } = await $authHost.post('api/type', type);
@@ -43,9 +43,9 @@ export const createReply = async (commentId, text) => {
   return data;
 };
 
-export const editComment = async (id, user, text) => {
+export const editComment = async (commentId, user, text) => {
   if (user) {
-    const { data } = await $authHost.post('api/comments' + id, {
+    const { data } = await $authHost.post('api/comments' + commentId, {
       params: {
         userId: userId,
         text,
@@ -54,10 +54,10 @@ export const editComment = async (id, user, text) => {
     return data;
   }
 };
-export const editReply = async (commentId, text) => {
-  const { data } = await $authHost.post('api/replies' + commentId, {
+export const editReply = async (replyId, text) => {
+  const { data } = await $authHost.post('api/replies' + replyId, {
     params: {
-      userId,
+      userId: userId,
       text,
     },
   });

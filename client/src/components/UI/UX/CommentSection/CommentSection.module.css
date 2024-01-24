@@ -1,0 +1,8 @@
+.messageBtn {
+  transition: all 500ms;
+}
+.messageBtn:hover,
+.messageBtn:focus {
+  scale: 1.15;
+  fill: #1db4e4;
+}
