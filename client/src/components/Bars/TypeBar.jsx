@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { Image, ListGroup, Placeholder } from 'react-bootstrap';
@@ -90,5 +91,9 @@ const TypeBar = observer(({ loading }) => {
     </div>
   );
 });
+
+TypeBar.propTypes = {
+  loading: PropTypes.bool.isRequired,
+};
 
 export default TypeBar;

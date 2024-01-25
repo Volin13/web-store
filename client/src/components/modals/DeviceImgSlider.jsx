@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Carousel, Image, Modal } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 const DeviceImgSlider = ({ show, onHide, deviceImages, mainImg }) => {
   const [index, setIndex] = useState(0);
@@ -50,6 +51,13 @@ const DeviceImgSlider = ({ show, onHide, deviceImages, mainImg }) => {
       </Modal.Body>
     </Modal>
   );
+};
+
+DeviceImgSlider.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  deviceImages: PropTypes.array.isRequired,
+  mainImg: PropTypes.string.isRequired,
 };
 
 export default DeviceImgSlider;

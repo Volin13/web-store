@@ -5,12 +5,13 @@ import * as yup from 'yup';
 import { Image, InputGroup, Form, Button, Modal } from 'react-bootstrap';
 import { createType } from '../../http/deviceApi';
 import typeIcon from '../../assets/adminIcons/typeIcon.svg';
+import PropTypes from 'prop-types';
 
 const CreateType = ({ show, onHide }) => {
   const { device } = useContext(Context);
 
   const addType = value => {
-    createType({ name: value }).then(data => {
+    createType({ name: value }).then(() => {
       onHide();
     });
   };
@@ -84,6 +85,11 @@ const CreateType = ({ show, onHide }) => {
       </Modal.Footer>
     </Modal>
   );
+};
+
+CreateType.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
 };
 
 export default CreateType;

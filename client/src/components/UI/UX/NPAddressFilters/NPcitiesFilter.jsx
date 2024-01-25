@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { fetchNovaPoshtaCities } from '../../../../http/npAPI';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
 import _debounce from 'lodash/debounce';
+import PropTypes from 'prop-types';
 
 const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
@@ -65,4 +66,7 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
   );
 });
 
+NPcityFilter.propTypes = {
+  formik: PropTypes.object.isRequired,
+};
 export default NPcityFilter;

@@ -1,5 +1,6 @@
 import React from 'react';
 import OrdersItem from './OrdersItem';
+import PropTypes from 'prop-types';
 
 const OrdersList = ({ list }) => {
   return (
@@ -15,4 +16,7 @@ const OrdersList = ({ list }) => {
   );
 };
 
+OrdersList.propTypes = {
+  list: PropTypes.array.isRequired,
+};
 export default OrdersList;

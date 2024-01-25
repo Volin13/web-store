@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { Col } from 'react-bootstrap';
 import { Context } from '../..';
 import DeviceItem from './DeviceItem';
+import PropTypes from 'prop-types';
 
 const DeviceList = observer(({ loading }) => {
   const { device } = useContext(Context);
@@ -50,4 +51,7 @@ const DeviceList = observer(({ loading }) => {
   );
 });
 
+DeviceList.propTypes = {
+  loading: PropTypes.bool.isRequired,
+};
 export default DeviceList;

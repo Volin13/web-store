@@ -1,5 +1,6 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import PropTypes from 'prop-types';
 
 // Форматування дати
 
@@ -122,7 +123,7 @@ const Invoice = ({
 
         <View style={styles.section}>
           <Text style={styles.sectionText}>Постачальник:</Text>
-          <Text style={styles.sectionText}>ТОВ "WebStore"</Text>
+          <Text style={styles.sectionText}>ТОВ &quot;WebStore&quot;</Text>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Одержувач:</Text>
@@ -213,4 +214,11 @@ const Invoice = ({
   );
 };
 
+Invoice.propTypes = {
+  order: PropTypes.object.isRequired,
+  convertedPrice: PropTypes.string.isRequired,
+  convertedPDV: PropTypes.string.isRequired,
+  totalPriceNumb: PropTypes.number.isRequired,
+  totalCount: PropTypes.object.isRequired,
+};
 export default Invoice;

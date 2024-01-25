@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as AddIcon } from '../../assets/basketIcons/arrow-next-small-svgrepo-com.svg';
@@ -16,7 +17,7 @@ const BasketItem = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="mb-2" style={{ width: '80%' }}>
+    <Card className="mb-2">
       <Card.Header>
         <button
           type="button"
@@ -86,6 +87,15 @@ const BasketItem = ({
       </div>
     </Card>
   );
+};
+
+BasketItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  removeCard: PropTypes.func.isRequired,
+  reduceOne: PropTypes.func.isRequired,
+  addOne: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default BasketItem;

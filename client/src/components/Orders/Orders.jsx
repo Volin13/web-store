@@ -54,7 +54,7 @@ const Orders = () => {
               <span className={css.ordersItemTitle}>№</span>
             </Col>
             <Col md="2">
-              <span className={css.ordersItemTitle}>Ім'я</span>
+              <span className={css.ordersItemTitle}>Ім&apos;я</span>
             </Col>
             <Col md="3">
               <span className={css.ordersItemTitle}>Прізвище</span>

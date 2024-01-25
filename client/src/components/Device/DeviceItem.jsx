@@ -6,11 +6,13 @@ import star from '../../assets/shopIcons/smallStar.svg';
 import css from './Device.module.css';
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import Stateofgoods from '../UI/UX/Stateofgoods/Stateofgoods';
+import PropTypes from 'prop-types';
 
 const DeviceItem = ({ device, loading, index }) => {
   const navigate = useNavigate();
   return (
     <li
+      key={index}
       className={css.deviceItemCol}
       onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
     >
@@ -100,4 +102,9 @@ const DeviceItem = ({ device, loading, index }) => {
   );
 };
 
+DeviceItem.propTypes = {
+  device: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
+};
 export default DeviceItem;

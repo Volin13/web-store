@@ -21,6 +21,7 @@ import imageIcon from '../../assets/adminIcons/imageIcon.svg';
 import deviceNameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
+import PropTypes from 'prop-types';
 
 const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
   const { device } = useContext(Context);
@@ -266,7 +267,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
             <Form.Check
               type="switch"
               checked={formik.values.discount}
-              onChange={e => {
+              onChange={() => {
                 formik.setFieldValue('discount', !formik.values.discount);
               }}
               label="Знижка"
@@ -274,7 +275,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
             <Form.Check
               checked={formik.values.inStock}
               type="switch"
-              onChange={e => {
+              onChange={() => {
                 formik.setFieldValue('inStock', !formik.values.inStock);
               }}
               label="Є у наявності"
@@ -474,5 +475,11 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     </Modal>
   );
 });
+
+EditDeviceModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  deviceToEdit: PropTypes.object.isRequired,
+};
 
 export default EditDeviceModal;

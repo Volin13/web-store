@@ -123,7 +123,7 @@ const MainFilter = () => {
               <button
                 className={css.clearBtn}
                 type="button"
-                onClick={e => {
+                onClick={() => {
                   hendleClearClick(mainFilter);
                   setVisibility(false);
                 }}

@@ -1,3 +1,4 @@
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Suspense } from 'react';
 import { useContext, useEffect, useState } from 'react';
@@ -16,7 +17,7 @@ const App = observer(() => {
   useEffect(() => {
     if (token) {
       check()
-        .then(data => {
+        .then(() => {
           user.setUser(true);
           user.setIsAuth(true);
         })

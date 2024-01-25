@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import CustomMenu from './CustomMenu';
 import CustomToggle from './CustomToggle';
+import PropTypes from 'prop-types';
 
 const CheckoutDropdown = ({
   setOnShow,
@@ -37,6 +38,17 @@ const CheckoutDropdown = ({
       )}
     </Dropdown>
   );
+};
+
+CheckoutDropdown.propTypes = {
+  setOnShow: PropTypes.func.isRequired,
+  setInput: PropTypes.func.isRequired,
+  onShow: PropTypes.bool.isRequired,
+  list: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
+  formik: PropTypes.object.isRequired,
+  inputName: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 export default CheckoutDropdown;

@@ -5,13 +5,14 @@ import { Image, InputGroup, Form, Button, Modal } from 'react-bootstrap';
 import * as yup from 'yup';
 import { createBrand } from '../../http/deviceApi';
 import brandIcon from '../../assets/adminIcons/brandIcon.svg';
+import PropTypes from 'prop-types';
 
 const CreateBrand = ({ show, onHide }) => {
   const { device } = useContext(Context);
   let brandNames = [];
   device.brands.map(brand => brandNames.push(brand.name.toLowerCase()));
   const addBrand = value => {
-    createBrand({ name: value }).then(data => {
+    createBrand({ name: value }).then(() => {
       onHide();
     });
   };
@@ -80,6 +81,11 @@ const CreateBrand = ({ show, onHide }) => {
       </Form>
     </Modal>
   );
+};
+
+CreateBrand.propTypes = {
+  onHide: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
 };
 
 export default CreateBrand;

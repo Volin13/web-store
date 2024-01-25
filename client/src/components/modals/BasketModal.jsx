@@ -5,6 +5,7 @@ import { Button, Card, Image, Modal } from 'react-bootstrap';
 import { BASKET_ROUTE } from '../../utils/constants';
 import trashIcon from '../../assets/defultIcons/trash-bin-trash-svgrepo-com.svg';
 import BasketList from '../basket/BasketList';
+import PropTypes from 'prop-types';
 
 const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const [list, setList] = useState([]);
@@ -166,5 +167,12 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     </Modal>
   );
 });
+
+BasketModal.propTypes = {
+  localBasket: PropTypes.array.isRequired,
+  basket: PropTypes.object.isRequired,
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+};
 
 export default BasketModal;

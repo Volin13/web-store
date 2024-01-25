@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
+import PropTypes from 'prop-types';
 import { ORDERS_ROUTE, USER_ORDERS_ROUTE } from '../../utils/constants';
 import css from './Orders.module.css';
 
@@ -86,6 +86,11 @@ const OrdersItem = ({ item, index }) => {
       </div>
     </li>
   );
+};
+
+OrdersItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default OrdersItem;

@@ -18,6 +18,7 @@ import imageIcon from '../../assets/adminIcons/imageIcon.svg';
 import deviceNameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
+import PropTypes from 'prop-types';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
@@ -389,5 +390,10 @@ const CreateDevice = observer(({ show, onHide }) => {
     </Modal>
   );
 });
+
+CreateDevice.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+};
 
 export default CreateDevice;

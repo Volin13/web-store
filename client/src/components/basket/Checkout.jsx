@@ -6,6 +6,7 @@ import NPterminalFilter from '../UI/UX/NPAddressFilters/NPterminalFilter';
 import NPregionsFilter from '../UI/UX/NPAddressFilters/NPregionsFilter';
 import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
 import { createOrder } from '../../http/ordersApi';
+import PropTypes from 'prop-types';
 
 const Checkout = ({ list, total, user }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -222,6 +223,12 @@ const Checkout = ({ list, total, user }) => {
       </Form>
     </>
   );
+};
+
+Checkout.propTypes = {
+  list: PropTypes.array.isRequired,
+  total: PropTypes.number.isRequired,
+  user: PropTypes.bool.isRequired,
 };
 
 export default Checkout;

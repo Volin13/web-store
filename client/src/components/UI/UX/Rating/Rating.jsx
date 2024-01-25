@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { getDeviceRating, createRating } from '../../../../http/deviceApi';
 import css from './Rating.module.css';
+import PropTypes from 'prop-types';
 
 const Rating = ({ deviceId, apiRating, isAuth }) => {
   const rating = useRef(null);
@@ -62,4 +63,9 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
   );
 };
 
+Rating.propTypes = {
+  deviceId: PropTypes.number.isRequired,
+  apiRating: PropTypes.number.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+};
 export default Rating;

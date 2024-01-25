@@ -3,6 +3,7 @@ import css from './Stateofgoods.module.css';
 import notInStockImg from '../../../../assets/shopIcons/Unavailable.svg';
 import discountImg from '../../../../assets/shopIcons/discount.svg';
 import { Image } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 const Stateofgoods = ({ device }) => {
   return (
@@ -32,4 +33,7 @@ const Stateofgoods = ({ device }) => {
   );
 };
 
+Stateofgoods.propTypes = {
+  device: PropTypes.object.isRequired,
+};
 export default Stateofgoods;

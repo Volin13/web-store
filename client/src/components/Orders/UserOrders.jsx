@@ -68,7 +68,6 @@ const UserOrders = () => {
             {userOrders?.map((item, index) => (
               <li
                 key={item.id}
-                item={item}
                 style={{
                   background: item?.declined ? 'transparent' : '#ffc2c2',
                   padding: '16px',

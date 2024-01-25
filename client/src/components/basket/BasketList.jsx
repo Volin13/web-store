@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BasketItem from './BasketItem';
 
 const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
@@ -11,12 +12,11 @@ const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
             maxHeight: '50vh',
             overflow: 'auto',
             paddingTop: '10px',
-            width: '100%',
             margin: '0 auto',
           }}
         >
           {list.map((item, index) => (
-            <li key={index}>
+            <li key={index} style={{ width: '80%' }}>
               <BasketItem
                 closeModal={closeModal}
                 addOne={addOne}
@@ -38,6 +38,14 @@ const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
       )}
     </>
   );
+};
+
+BasketList.propTypes = {
+  list: PropTypes.array.isRequired,
+  removeCard: PropTypes.func.isRequired,
+  reduceOne: PropTypes.func.isRequired,
+  addOne: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default BasketList;

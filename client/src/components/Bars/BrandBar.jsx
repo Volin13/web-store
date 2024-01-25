@@ -1,9 +1,10 @@
-import { observer } from 'mobx-react-lite';
 import React, { useState, useRef } from 'react';
+import { observer } from 'mobx-react-lite';
 import { useContext, useEffect } from 'react';
 import { Image, ListGroup, Placeholder } from 'react-bootstrap';
 import Arrow from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import { Context } from '../..';
+import PropTypes from 'prop-types';
 
 const BrandBar = observer(({ loading }) => {
   const { device } = useContext(Context);
@@ -168,5 +169,9 @@ const BrandBar = observer(({ loading }) => {
     </div>
   );
 });
+
+BrandBar.propTypes = {
+  loading: PropTypes.bool.isRequired,
+};
 
 export default BrandBar;

@@ -6,7 +6,6 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { useReactToPrint } from 'react-to-print';
 import Invoice from './Invoice';
 import css from './Orders.module.css';
-// @ts-ignore
 var numberToString = require('number-to-cyrillic');
 
 const SingleOrder = () => {
@@ -166,7 +165,7 @@ const SingleOrder = () => {
             }
             fileName={`Invoice_${order.id}_${order.userData?.firstName} ${order.userData?.lastName}.pdf`}
           >
-            {({ blob, url, loading, error }) => (
+            {({ loading }) => (
               <Button type="button" variant="outline-primary">
                 {loading ? 'Йде завантаження...' : 'Завантажити інвойс'}
               </Button>

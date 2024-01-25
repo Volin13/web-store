@@ -5,6 +5,7 @@ import oneBigPack from '../../../../assets/shopIcons/package-box-svgrepo-com.svg
 import twoSmallPacks from '../../../../assets/shopIcons/shopping-bag-svgrepo-com.svg';
 import threeBigPacks from '../../../../assets/shopIcons/threePackags-svgrepo-com.svg';
 import css from './PackageImage.module.css';
+import PropTypes from 'prop-types';
 
 const PackageIcon = ({ count }) => {
   const [img, setImg] = useState(null);
@@ -34,6 +35,10 @@ const PackageIcon = ({ count }) => {
       />
     </>
   );
+};
+
+PackageIcon.propTypes = {
+  count: PropTypes.number.isRequired,
 };
 
 export default PackageIcon;

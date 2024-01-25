@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
+import { Context } from '../../../..';
 import {
   Button,
   Card,
@@ -25,6 +26,7 @@ import {
 import replyImg from '../../../../assets/defultIcons/reply.svg';
 import editImg from '../../../../assets/defultIcons/edit-message.svg';
 import deleteImg from '../../../../assets/defultIcons/delete-message.svg';
+import PropTypes from 'prop-types';
 
 const CommentSection = ({ user, id }) => {
   const [comments, setComments] = useState([]);
@@ -32,11 +34,13 @@ const CommentSection = ({ user, id }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [isEdditing, setIsEdditing] = useState(false);
   const replyInput = useRef(null);
+  const { device } = useContext(Context);
 
   // Завантажуєм коментарі до девайсу при першому завантаженні сторінки
   useEffect(() => {
     fetchDeviceComments(id).then(data => setComments(data.rows));
   }, []);
+
   //  відправка повідомлення/відповіді + редагування
   const handleSendMessageClick = (type, commentId) => {
     if (type === 'comment') {
@@ -63,7 +67,7 @@ const CommentSection = ({ user, id }) => {
   };
   // по кліку на едіт встановлюю текст у відповідне поле для валідації і відправки
   // вмикаю режим редагування + відкриваю інпут для редагування і скролю до нього для зручності
-  console.log(replyInput);
+
   const handleEditClick = (type, text) => {
     formik.setFieldValue(type, text);
     setIsEdditing(true);
@@ -98,8 +102,7 @@ const CommentSection = ({ user, id }) => {
     },
   });
   const isValid = commentSchema.isValidSync(formik.values);
-  console.log(isValid);
-  console.log(comments);
+
   return (
     <div className="mt-3">
       <Card className="mb-3 pt-3">
@@ -127,7 +130,6 @@ const CommentSection = ({ user, id }) => {
                               >
                                 <button
                                   onClick={() => {
-                                    setShowReplyInput(true);
                                     handleEditClick('comment', comment?.text);
                                   }}
                                   style={{
@@ -412,6 +414,11 @@ const CommentSection = ({ user, id }) => {
       </Card>
     </div>
   );
+};
+
+CommentSection.propTypes = {
+  user: PropTypes.object.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default CommentSection;

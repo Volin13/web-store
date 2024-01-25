@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import updateDataOnceAMonth from '../../../../utils/updateDataOnceAMonth ';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
+import PropTypes from 'prop-types';
 
 const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
@@ -60,5 +61,7 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
     </>
   );
 });
-
+NPregionsFilter.propTypes = {
+  formik: PropTypes.object.isRequired,
+};
 export default NPregionsFilter;

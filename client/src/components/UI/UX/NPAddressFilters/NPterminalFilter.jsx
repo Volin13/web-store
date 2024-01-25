@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { fetchNovaPoshtaOffice } from '../../../../http/npAPI';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
 import _debounce from 'lodash/debounce';
+import PropTypes from 'prop-types';
 
 const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
@@ -62,5 +63,8 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
     </>
   );
 });
+NPterminalFilter.propTypes = {
+  formik: PropTypes.object.isRequired,
+};
 
 export default NPterminalFilter;
