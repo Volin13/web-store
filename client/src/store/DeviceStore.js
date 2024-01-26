@@ -1,19 +1,49 @@
-import { makeAutoObservable } from 'mobx';
-
+import { observable, action, makeObservable, computed } from 'mobx';
 export default class DeviceStore {
-  constructor() {
-    this._types = [];
-    this._brands = [];
-    this._devices = [];
-    this._comments = [];
-    this._query = '';
-    this._selectedType = {};
-    this._selectedBrand = {};
-    this._page = 1;
-    this._totalCount = 0;
-    this._limit = 12;
+  _types = [];
+  _brands = [];
+  _devices = [];
+  _comments = [];
+  _query = '';
+  _selectedType = {};
+  _selectedBrand = {};
+  _page = 1;
+  _totalCount = 0;
+  _limit = 8;
 
-    makeAutoObservable(this);
+  constructor() {
+    makeObservable(this, {
+      _types: observable,
+      _brands: observable,
+      _devices: observable,
+      _comments: observable,
+      _query: observable,
+      _selectedType: observable,
+      _selectedBrand: observable,
+      _page: observable,
+      _totalCount: observable,
+      _limit: observable,
+      setTypes: action,
+      setBrands: action,
+      setDevices: action,
+      setComments: action,
+      setQuery: action,
+      setSelectedType: action,
+      setSelectedBrand: action,
+      setPage: action,
+      setTotalCount: action,
+      setLimit: action,
+      types: computed,
+      brands: computed,
+      devices: computed,
+      comments: computed,
+      query: computed,
+      selectedType: computed,
+      selectedBrand: computed,
+      page: computed,
+      totalCount: computed,
+      limit: computed,
+    });
   }
 
   setTypes(types) {
@@ -27,26 +57,33 @@ export default class DeviceStore {
   setDevices(devices) {
     this._devices = devices;
   }
+
   setComments(comments) {
     this._comments = comments;
   }
+
   setQuery(query) {
     this._query = query;
   }
+
   setSelectedType(type) {
     this.setPage(1);
     this._selectedType = type;
   }
+
   setSelectedBrand(brand) {
     this.setPage(1);
     this._selectedBrand = brand;
   }
+
   setPage(page) {
     this._page = page;
   }
+
   setTotalCount(totalCount) {
     this._totalCount = totalCount;
   }
+
   setLimit(limit) {
     this._limit = limit;
   }
@@ -62,24 +99,31 @@ export default class DeviceStore {
   get devices() {
     return this._devices;
   }
+
   get comments() {
     return this._comments;
   }
+
   get query() {
     return this._query;
   }
+
   get selectedType() {
     return this._selectedType;
   }
+
   get selectedBrand() {
     return this._selectedBrand;
   }
+
   get page() {
     return this._page;
   }
+
   get totalCount() {
     return this._totalCount;
   }
+
   get limit() {
     return this._limit;
   }

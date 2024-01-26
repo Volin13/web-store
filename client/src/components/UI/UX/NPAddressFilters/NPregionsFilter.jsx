@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import updateDataOnceAMonth from '../../../../utils/updateDataOnceAMonth ';
+import updateDataOnceAMonth from '../../../../utils/updateDataOnceAMonth';
 import CheckoutDropdown from '../CheckoutDropdown/CheckoutDropdown';
 import PropTypes from 'prop-types';
 

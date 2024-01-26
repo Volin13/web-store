@@ -65,7 +65,7 @@ const Rating = ({ deviceId, apiRating, isAuth }) => {
 
 Rating.propTypes = {
   deviceId: PropTypes.number.isRequired,
-  apiRating: PropTypes.number.isRequired,
+  apiRating: PropTypes.string.isRequired,
   isAuth: PropTypes.bool.isRequired,
 };
 export default Rating;

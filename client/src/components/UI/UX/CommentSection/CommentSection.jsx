@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Context } from '../../../..';
 import {
   Button,
@@ -10,9 +10,9 @@ import {
   Tooltip,
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { observer } from 'mobx-react-lite';
 import css from './CommentSection.module.css';
 import { commentSchema } from '../../../../utils/commentSchema';
-import { useState } from 'react';
 import {
   createComment,
   createReply,
@@ -23,22 +23,26 @@ import {
   deleteComment,
   deleteReply,
 } from '../../../../http/commentsApi';
+import { toast } from 'react-toastify';
 import replyImg from '../../../../assets/defultIcons/reply.svg';
 import editImg from '../../../../assets/defultIcons/edit-message.svg';
 import deleteImg from '../../../../assets/defultIcons/delete-message.svg';
 import PropTypes from 'prop-types';
+import MessagesLoading from '../Spinner/MessagesLoading';
 
-const CommentSection = ({ user, id }) => {
-  const [comments, setComments] = useState([]);
+const CommentSection = observer(({ user, id }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [isEdditing, setIsEdditing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const replyInput = useRef(null);
   const { device } = useContext(Context);
 
   // Завантажуєм коментарі до девайсу при першому завантаженні сторінки
   useEffect(() => {
-    fetchDeviceComments(id).then(data => setComments(data.rows));
+    fetchDeviceComments(id, device.page, device.limit).then(data =>
+      device.setComments(data.rows)
+    );
   }, []);
 
   //  відправка повідомлення/відповіді + редагування
@@ -95,10 +99,19 @@ const CommentSection = ({ user, id }) => {
 
     validationSchema: commentSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      handleSendMessageClick();
-      setSubmitting(false);
-      resetForm();
-      fetchDeviceComments(id).then(data => setComments(data.rows));
+      try {
+        setLoading(true);
+        handleSendMessageClick();
+      } catch (error) {
+        toast.error('При відправці сталась помилка, спробуйте пізніше');
+      } finally {
+        setLoading(false);
+        fetchDeviceComments(id, device.page, device.limit).then(data =>
+          device.setComments(data.rows)
+        );
+        setSubmitting(false);
+        resetForm();
+      }
     },
   });
   const isValid = commentSchema.isValidSync(formik.values);
@@ -106,15 +119,17 @@ const CommentSection = ({ user, id }) => {
   return (
     <div className="mt-3">
       <Card className="mb-3 pt-3">
-        <Card.Title as="h2" style={{ paddingLeft: '12px' }}>
-          Відгуки
-        </Card.Title>
+        {device.comments?.length ? (
+          <Card.Title as="h2" style={{ paddingLeft: '12px' }}>
+            Відгуки
+          </Card.Title>
+        ) : null}
         <Card.Body>
           <Form onSubmit={formik.handleSubmit}>
-            {comments?.length ? (
+            {device.comments?.length ? (
               <Row className="my-3">
                 <ul>
-                  {comments?.map(comment => (
+                  {device.comments?.map(comment => (
                     <Card as="li" key={comment.id}>
                       <Card.Body>
                         <div className="d-flex justify-content-between align-items-center">
@@ -310,27 +325,33 @@ const CommentSection = ({ user, id }) => {
                         )}
                         {showReplyInput && (
                           <div className="mt-2">
-                            <Form.Group>
-                              <Form.Control
-                                ref={replyInput}
-                                placeholder="Дотримуйтесь культури спілкування будь-ласка"
-                                name="reply"
-                                as="textarea"
-                                value={formik.values.reply}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                isInvalid={
-                                  formik.touched.reply && !!formik.errors.reply
-                                }
-                                rows={2}
-                              />
+                            {loading ? (
+                              <MessagesLoading />
+                            ) : (
+                              <Form.Group>
+                                <Form.Control
+                                  ref={replyInput}
+                                  placeholder="Дотримуйтесь культури спілкування будь-ласка"
+                                  name="reply"
+                                  as="textarea"
+                                  value={formik.values.reply}
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  isInvalid={
+                                    formik.touched.reply &&
+                                    !!formik.errors.reply
+                                  }
+                                  rows={2}
+                                />
 
-                              {formik.touched.reply && formik.errors.reply && (
-                                <Form.Control.Feedback type="invalid">
-                                  {formik.errors.reply}
-                                </Form.Control.Feedback>
-                              )}
-                            </Form.Group>
+                                {formik.touched.reply &&
+                                  formik.errors.reply && (
+                                    <Form.Control.Feedback type="invalid">
+                                      {formik.errors.reply}
+                                    </Form.Control.Feedback>
+                                  )}
+                              </Form.Group>
+                            )}
                             <div className="d-flex justify-content-end mt-3">
                               <Button
                                 variant="outline-primary"
@@ -372,27 +393,31 @@ const CommentSection = ({ user, id }) => {
             {!showReplyInput && (
               <>
                 <Row className="p-3">
-                  <Form.Group>
-                    <Form.Label>Додайте свій відгук</Form.Label>
-                    <Form.Control
-                      placeholder="Дотримуйтесь культури спілкування будь-ласка"
-                      name="comment"
-                      value={formik.values.comment}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      isInvalid={
-                        formik.touched.comment && !!formik.errors.comment
-                      }
-                      as="textarea"
-                      rows={3}
-                    />
+                  {loading ? (
+                    <MessagesLoading />
+                  ) : (
+                    <Form.Group>
+                      <Form.Label>Додайте свій відгук</Form.Label>
+                      <Form.Control
+                        placeholder="Дотримуйтесь культури спілкування будь-ласка"
+                        name="comment"
+                        value={formik.values.comment}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        isInvalid={
+                          formik.touched.comment && !!formik.errors.comment
+                        }
+                        as="textarea"
+                        rows={3}
+                      />
 
-                    {formik.touched.comment && formik.errors.comment && (
-                      <Form.Control.Feedback type="invalid">
-                        {formik.errors.comment}
-                      </Form.Control.Feedback>
-                    )}
-                  </Form.Group>
+                      {formik.touched.comment && formik.errors.comment && (
+                        <Form.Control.Feedback type="invalid">
+                          {formik.errors.comment}
+                        </Form.Control.Feedback>
+                      )}
+                    </Form.Group>
+                  )}
                 </Row>
                 <div className="text-end">
                   <Button
@@ -414,7 +439,7 @@ const CommentSection = ({ user, id }) => {
       </Card>
     </div>
   );
-};
+});
 
 CommentSection.propTypes = {
   user: PropTypes.object.isRequired,

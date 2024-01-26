@@ -212,7 +212,7 @@ class CommentController {
       let { limit, page } = req.query;
       const { id } = req.params;
       page = page || 1;
-      limit = limit || 12;
+      limit = limit || 5;
 
       let offset = page * limit - limit;
 

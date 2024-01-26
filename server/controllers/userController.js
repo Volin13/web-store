@@ -1,7 +1,10 @@
+const { User, Basket } = require('../models/models');
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { User, Basket } = require('../models/models');
+const md5 = require('md5');
+const sequelize = require('../db');
+
 let SECRET_KEY = process.env.SECRET_KEY || 'random_secret_key1234';
 
 const generateJwt = (id, email, role) => {
@@ -12,7 +15,8 @@ const generateJwt = (id, email, role) => {
 
 class UserController {
   async registration(req, res, next) {
-    const { email, password, role } = req.body;
+    const { email, password, role, login } = req.body;
+    console.log(req.body);
     if (!email || !password) {
       return next(ApiError.badRequest('Ваш email або пароль невірний'));
     }
@@ -23,12 +27,27 @@ class UserController {
     const hashPassword = await bcrypt.hash(password, 5);
     // Створення користувача і його кошика
 
-    const user = await User.create({ email, role, password: hashPassword });
+    // Генерація аватара за замовчуванням з використанням gravatar
+    const avatar = generateAvatar(email);
+    // Функція для генерації аватара за допомогою gravatar
+    function generateAvatar(email) {
+      const gravatarUrl = `https://www.gravatar.com/avatar/${md5(
+        email,
+      )}?d=identicon`;
+      return gravatarUrl;
+    }
+    const user = await User.create({
+      email,
+      role,
+      password: hashPassword,
+      login,
+      avatar,
+    });
     const basket = await Basket.create({ userId: user.id });
     // Повертаю токен з айді і роллю для подальшої перевірки
 
     const token = generateJwt(user.id, user.email, user.role);
-    res.json(token);
+    res.json({ token });
   }
 
   async login(req, res, next) {
@@ -53,6 +72,22 @@ class UserController {
 
     const token = generateJwt(req.user.id, req.user.email, req.user.role);
     return res.json({ token });
+  }
+
+  async checkLogin(req, res, next) {
+    try {
+      // перевірка ролі при логінізації/оновленню токена
+      const { login } = req.query;
+      const createdLogin = await User.findOne({
+        where: sequelize.where(
+          sequelize.fn('LOWER', sequelize.col('login')),
+          sequelize.fn('LOWER', login),
+        ),
+      });
+      return res.json(createdLogin ? true : false);
+    } catch (error) {
+      return next(ApiError.internal('Невірний логін'));
+    }
   }
 }
 

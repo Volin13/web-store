@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Carousel, Image, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-const DeviceImgSlider = ({ show, onHide, deviceImages, mainImg }) => {
+const DeviceImgSlider = ({ show, onHide, deviceImages, mainImg = '' }) => {
   const [index, setIndex] = useState(0);
   const handleSelect = selectedIndex => {
     setIndex(selectedIndex);
   };
+
   return (
     <Modal dialogClassName="modal-90h" show={show} onHide={onHide} centered>
       <Modal.Header closeButton></Modal.Header>
