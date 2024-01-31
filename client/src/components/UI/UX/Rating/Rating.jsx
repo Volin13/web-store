@@ -4,7 +4,7 @@ import { getDeviceRating, createRating } from '../../../../http/deviceApi';
 import css from './Rating.module.css';
 import PropTypes from 'prop-types';
 
-const Rating = ({ deviceId, apiRating, isAuth }) => {
+const Rating = ({ deviceId = 0, apiRating = 0, isAuth }) => {
   const rating = useRef(null);
   const ratingActive = useRef(null);
   const ratingValue = useRef(null);

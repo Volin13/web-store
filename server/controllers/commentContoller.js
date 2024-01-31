@@ -1,4 +1,4 @@
-const { Device, Comment, Reply } = require('../models/models');
+const { Device, Comment, Reply, User } = require('../models/models');
 const ApiError = require('../error/ApiError');
 const { Op } = require('sequelize');
 
@@ -6,7 +6,6 @@ class CommentController {
   async createComment(req, res, next) {
     try {
       const { deviceId, userId, text } = req.body.params;
-      console.log(deviceId, userId, text);
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
@@ -25,14 +24,24 @@ class CommentController {
 
       if (existingComment) {
         // Якщо коментар вже існує для цього користувача, девайсу і в цей день, ви можете відредагувати його
-        existingComment.text = text;
+        existingComment.text = `${existingComment.text} <br> ${text}`;
         await existingComment.save();
 
         return res.json(existingComment);
       }
-
+      const user = await User.findOne({
+        where: {
+          id: userId,
+        },
+      });
       // Якщо коментар не існує, створюємо новий
-      const comment = await Comment.create({ text, userId, deviceId });
+      const comment = await Comment.create({
+        text,
+        userId,
+        deviceId,
+        login: user.login,
+        avatar: user.avatar,
+      });
 
       // Додаємо коментар до девайсу
       const device = await Device.findByPk(deviceId);
@@ -123,7 +132,11 @@ class CommentController {
   async createReply(req, res, next) {
     try {
       const { commentId, userId, text } = req.body.params;
-
+      const user = await User.findOne({
+        where: {
+          id: userId,
+        },
+      });
       const comment = await Comment.findOne({
         where: { id: commentId },
       });
@@ -132,7 +145,13 @@ class CommentController {
         return next(ApiError.badRequest('Коментар не знайдено'));
       }
 
-      const reply = await Reply.create({ text, userId, commentId });
+      const reply = await Reply.create({
+        text,
+        userId,
+        commentId,
+        login: user.login,
+        avatar: user.avatar,
+      });
 
       return res.json(reply);
     } catch (error) {

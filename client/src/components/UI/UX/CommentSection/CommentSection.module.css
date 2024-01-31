@@ -6,3 +6,27 @@
   scale: 1.15;
   fill: #1db4e4;
 }
+.commentThumb {
+  width: 68%;
+}
+.commentText {
+  overflow-wrap: break-word;
+}
+
+@media screen and (max-width: 575px) {
+  .commentThumb {
+    width: 68%;
+  }
+  .commentText {
+    width: 40vw;
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 768px) {
+  .commentThumb {
+    width: auto;
+  }
+  .commentText {
+    width: 195px;
+  }
+}

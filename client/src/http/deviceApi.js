@@ -53,7 +53,7 @@ export const createRating = async (deviceId, rate, user) => {
       return toast.info(e.response.data.message);
     }
   }
-  toast.info('Будь-ласка спочатку увійдіть в свій аккаунт');
+  toast.info('Будь ласка, спочатку увійдіть в свій аккаунт');
   return;
 };
 

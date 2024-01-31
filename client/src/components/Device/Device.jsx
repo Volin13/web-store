@@ -13,6 +13,7 @@ import PackageIcon from '../UI/UX/PackageImg/PackageIcon';
 import showMoreIcon from '../../assets/defultIcons/down-arrow-arrows-svgrepo-com.svg';
 import hideMoreIcon from '../../assets/defultIcons/up-arrow-arrows-svgrepo-com.svg';
 import editDeviceImg from '../../assets/shopIcons/editDevice.svg';
+import loadImg from '../../assets/shopIcons/shoppingLogo.svg';
 import playBtn from '../../assets/shopIcons/playBtn.svg';
 import EditDeviceModal from '../modals/EditDevice';
 import DeviceImgSlider from '../modals/DeviceImgSlider';
@@ -25,7 +26,7 @@ const Device = () => {
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [showSlider, setShowSlider] = useState(false);
   const [showEditDeviceModal, setShowEditDeviceModal] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const containerRef = useRef(null);
@@ -45,6 +46,7 @@ const Device = () => {
     fetchSingleDevice(id).then(data => {
       if (isMounted) {
         setDevice(data);
+        setLoading(false);
       }
     });
 
@@ -104,18 +106,25 @@ const Device = () => {
             >
               <Image
                 width={'100%'}
+                height={300}
                 className={`${!device?.inStock ? css.greyColors : ''}`}
-                src={process.env.REACT_APP_API_URL + device.mainImg}
-                fluid
+                src={
+                  loading
+                    ? loadImg
+                    : process.env.REACT_APP_API_URL + device.mainImg
+                }
+                style={{ objectFit: 'contain' }}
               />
             </div>
-            <Image
-              width={80}
-              height={80}
-              src={playBtn}
-              fluid
-              className={css.playBtnImg}
-            />
+            {!loading && (
+              <Image
+                width={80}
+                height={80}
+                src={playBtn}
+                fluid
+                className={css.playBtnImg}
+              />
+            )}
           </button>
         </Col>
         <Col
