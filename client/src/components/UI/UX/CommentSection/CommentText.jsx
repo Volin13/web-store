@@ -44,8 +44,8 @@ const CommentText = ({ text = '' }) => {
 };
 
 CommentText.propTypes = {
-  text: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  text: PropTypes.string,
+  type: PropTypes.string,
 };
 
 export default CommentText;

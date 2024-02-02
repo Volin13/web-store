@@ -67,6 +67,6 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
 });
 
 NPcityFilter.propTypes = {
-  formik: PropTypes.object.isRequired,
+  formik: PropTypes.object,
 };
 export default NPcityFilter;

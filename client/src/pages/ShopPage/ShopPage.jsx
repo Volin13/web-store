@@ -7,6 +7,7 @@ import DeviceList from '../../components/Device/DeviceList';
 import Pages from '../../components/UI/UX/Pages';
 import TypeBar from '../../components/Bars/TypeBar';
 import { fetchBrands, fetchDevices, fetchTypes } from '../../http/deviceApi';
+import FilterBar from '../../components/Bars/FilterBar';
 
 const Shop = observer(() => {
   const { device } = useContext(Context);
@@ -22,9 +23,9 @@ const Shop = observer(() => {
         device.selectedBrand.id,
         device.query,
         device.page,
-        device.limit
+        device.limit,
+        device.devicesOrder
       );
-
       device.setTypes(types);
       device.setBrands(brands);
       device.setDevices(devicesData.rows);
@@ -38,19 +39,29 @@ const Shop = observer(() => {
 
   useEffect(() => {
     fetchData();
+    device.setSelectedBrand({});
+    device.setSelectedType({});
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [device.page, device.selectedType, device.selectedBrand, device.query]);
+  }, [
+    device.page,
+    device.selectedType,
+    device.selectedBrand,
+    device.query,
+    device.devicesOrder,
+  ]);
 
   return (
     <Container>
       <Row className="mt-2">
         <Col md={3} className="mb-3">
           <TypeBar loading={loading} />
+          <FilterBar loading={loading} />
         </Col>
         <Col md={9}>
           <BrandBar loading={loading} />

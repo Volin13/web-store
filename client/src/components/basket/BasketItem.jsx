@@ -90,12 +90,12 @@ const BasketItem = ({
 };
 
 BasketItem.propTypes = {
-  item: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  removeCard: PropTypes.func.isRequired,
-  reduceOne: PropTypes.func.isRequired,
-  addOne: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  index: PropTypes.number,
+  removeCard: PropTypes.func,
+  reduceOne: PropTypes.func,
+  addOne: PropTypes.func,
+  closeModal: PropTypes.func,
 };
 
 export default BasketItem;

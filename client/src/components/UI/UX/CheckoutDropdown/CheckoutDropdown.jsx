@@ -41,14 +41,14 @@ const CheckoutDropdown = ({
 };
 
 CheckoutDropdown.propTypes = {
-  setOnShow: PropTypes.func.isRequired,
-  setInput: PropTypes.func.isRequired,
-  onShow: PropTypes.bool.isRequired,
-  list: PropTypes.array.isRequired,
-  children: PropTypes.object.isRequired,
-  formik: PropTypes.object.isRequired,
-  inputName: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  setOnShow: PropTypes.func,
+  setInput: PropTypes.func,
+  onShow: PropTypes.bool,
+  list: PropTypes.array,
+  children: PropTypes.object,
+  formik: PropTypes.object,
+  inputName: PropTypes.string,
+  value: PropTypes.string,
 };
 
 export default CheckoutDropdown;

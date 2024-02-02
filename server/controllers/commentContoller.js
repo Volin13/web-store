@@ -36,9 +36,9 @@ class CommentController {
       });
       // Якщо коментар не існує, створюємо новий
       const comment = await Comment.create({
-        text,
-        userId,
-        deviceId,
+        text: text,
+        userId: userId,
+        deviceId: deviceId,
         login: user.login,
         avatar: user.avatar,
       });
@@ -53,6 +53,7 @@ class CommentController {
 
       return res.json(comment);
     } catch (error) {
+      console.log(error);
       if (error.name === 'SequelizeValidationError') {
         // Обробка помилки валідації Sequelize
         return next(
@@ -72,21 +73,27 @@ class CommentController {
 
   async deleteComment(req, res, next) {
     try {
-      const { commentId } = req.params;
-      const { userId } = req.body; // Додайте це поле в ваш запит
-
+      const { userId } = req.query;
+      const { id } = req.params;
       const comment = await Comment.findOne({
-        where: { id: commentId },
+        where: { id: id },
+      });
+      const replies = await Reply.findAll({
+        where: { commentId: id },
       });
       if (!comment) {
         return next(ApiError.badRequest('Коментар не знайдено'));
       }
 
       // Перевірка, чи користувач власник коментаря
-      if (comment.userId !== userId) {
+      if (comment.userId !== Number(userId)) {
         return next(ApiError.forbidden('Ви не можете видалити чужий коментар'));
       }
-
+      if (replies.length > 0) {
+        replies.forEach(async reply => {
+          await reply.destroy();
+        });
+      }
       await comment.destroy();
 
       return res.json({ message: 'Коментар успішно видалено' });
@@ -146,9 +153,9 @@ class CommentController {
       }
 
       const reply = await Reply.create({
-        text,
-        userId,
-        commentId,
+        text: text,
+        userId: userId,
+        commentId: commentId,
         login: user.login,
         avatar: user.avatar,
       });
@@ -237,6 +244,7 @@ class CommentController {
 
       const comments = await Comment.findAndCountAll({
         where: { deviceId: id },
+        order: [['createdAt', 'ASC']],
         include: [{ model: Reply, as: 'reply' }],
         limit,
         offset,

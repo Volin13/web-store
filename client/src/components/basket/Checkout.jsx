@@ -226,9 +226,9 @@ const Checkout = ({ list, total, user }) => {
 };
 
 Checkout.propTypes = {
-  list: PropTypes.array.isRequired,
-  total: PropTypes.number.isRequired,
-  user: PropTypes.bool.isRequired,
+  list: PropTypes.array,
+  total: PropTypes.number,
+  user: PropTypes.bool,
 };
 
 export default Checkout;

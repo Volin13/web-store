@@ -62,6 +62,6 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
   );
 });
 NPregionsFilter.propTypes = {
-  formik: PropTypes.object.isRequired,
+  formik: PropTypes.object,
 };
 export default NPregionsFilter;

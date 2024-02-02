@@ -3,7 +3,7 @@ export default class DeviceStore {
   _types = [];
   _brands = [];
   _devices = [];
-  _comments = [];
+  _devicesOrder = [];
   _query = '';
   _selectedType = {};
   _selectedBrand = {};
@@ -16,7 +16,7 @@ export default class DeviceStore {
       _types: observable,
       _brands: observable,
       _devices: observable,
-      _comments: observable,
+      _devicesOrder: observable,
       _query: observable,
       _selectedType: observable,
       _selectedBrand: observable,
@@ -26,7 +26,7 @@ export default class DeviceStore {
       setTypes: action,
       setBrands: action,
       setDevices: action,
-      setComments: action,
+      setDevicesOrder: action,
       setQuery: action,
       setSelectedType: action,
       setSelectedBrand: action,
@@ -36,7 +36,7 @@ export default class DeviceStore {
       types: computed,
       brands: computed,
       devices: computed,
-      comments: computed,
+      devicesOrder: computed,
       query: computed,
       selectedType: computed,
       selectedBrand: computed,
@@ -58,8 +58,8 @@ export default class DeviceStore {
     this._devices = devices;
   }
 
-  setComments(comments) {
-    this._comments = comments;
+  setDevicesOrder(devicesOrder) {
+    this._devicesOrder = devicesOrder;
   }
 
   setQuery(query) {
@@ -100,8 +100,8 @@ export default class DeviceStore {
     return this._devices;
   }
 
-  get comments() {
-    return this._comments;
+  get devicesOrder() {
+    return this._devicesOrder;
   }
 
   get query() {

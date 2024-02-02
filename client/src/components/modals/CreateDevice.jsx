@@ -392,8 +392,8 @@ const CreateDevice = observer(({ show, onHide }) => {
 });
 
 CreateDevice.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
+  show: PropTypes.bool,
+  onHide: PropTypes.func,
 };
 
 export default CreateDevice;

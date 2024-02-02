@@ -88,8 +88,8 @@ const CreateType = ({ show, onHide }) => {
 };
 
 CreateType.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
+  show: PropTypes.bool,
+  onHide: PropTypes.func,
 };
 
 export default CreateType;

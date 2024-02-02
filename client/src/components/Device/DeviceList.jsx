@@ -52,6 +52,6 @@ const DeviceList = observer(({ loading }) => {
 });
 
 DeviceList.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
 };
 export default DeviceList;

@@ -12,6 +12,7 @@ export let commentSchema = yup.object().shape({
       }
       return true;
     })
+    .min(2, 'Ваш коментар занадто короткий')
     .max(254, 'Максимальна довжина відповіді коментаря 254 символа'),
   reply: yup
     .string()
@@ -24,5 +25,6 @@ export let commentSchema = yup.object().shape({
       }
       return true;
     })
+    .min(2, 'Ваш коментар занадто короткий')
     .max(254, 'Максимальна довжина відповіді 254 символа'),
 });

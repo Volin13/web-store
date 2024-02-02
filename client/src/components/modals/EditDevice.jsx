@@ -477,9 +477,9 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
 });
 
 EditDeviceModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  deviceToEdit: PropTypes.object.isRequired,
+  show: PropTypes.bool,
+  onHide: PropTypes.func,
+  deviceToEdit: PropTypes.object,
 };
 
 export default EditDeviceModal;

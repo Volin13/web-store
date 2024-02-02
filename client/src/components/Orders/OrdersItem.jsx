@@ -89,8 +89,8 @@ const OrdersItem = ({ item, index }) => {
 };
 
 OrdersItem.propTypes = {
-  item: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
+  item: PropTypes.object,
+  index: PropTypes.number,
 };
 
 export default OrdersItem;

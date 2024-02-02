@@ -95,9 +95,9 @@ const CommentSection = observer(({ user, id }) => {
 
   return (
     <div className="mt-3">
-      <Card className="mb-3 pt-3">
+      <Card className="pt-3 mt-2">
         {commentsList.length ? (
-          <Card.Title as="h2" style={{ paddingLeft: '12px' }}>
+          <Card.Title as="h2" style={{ paddingLeft: '12px', margin: 0 }}>
             Відгуки
           </Card.Title>
         ) : null}
@@ -158,7 +158,7 @@ const CommentSection = observer(({ user, id }) => {
                     variant="outline-primary"
                     type="submit"
                     disabled={!user?.isAuth || !isValid}
-                    className="p-2 mt-3"
+                    className="p-2 mt-1"
                     onClick={() => {
                       handleSendMessageClick('comment');
                     }}
@@ -191,8 +191,8 @@ const CommentSection = observer(({ user, id }) => {
 });
 
 CommentSection.propTypes = {
-  user: PropTypes.object.isRequired,
-  id: PropTypes.number.isRequired,
+  user: PropTypes.object,
+  id: PropTypes.number,
 };
 
 export default CommentSection;

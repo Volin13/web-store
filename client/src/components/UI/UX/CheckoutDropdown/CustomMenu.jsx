@@ -28,8 +28,8 @@ const CustomMenu = React.forwardRef(({ children, className }, ref) => {
 CustomMenu.displayName = 'CustomMenu';
 
 CustomMenu.propTypes = {
-  children: PropTypes.object.isRequired,
-  className: PropTypes.string.isRequired,
+  children: PropTypes.object,
+  className: PropTypes.string,
 };
 
 export default CustomMenu;

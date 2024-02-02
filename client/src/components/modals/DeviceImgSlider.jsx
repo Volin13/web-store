@@ -55,10 +55,10 @@ const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
 };
 
 DeviceImgSlider.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  deviceImages: PropTypes.array.isRequired,
-  mainImg: PropTypes.string.isRequired,
+  show: PropTypes.bool,
+  onHide: PropTypes.func,
+  deviceImages: PropTypes.array,
+  mainImg: PropTypes.string,
 };
 
 export default DeviceImgSlider;

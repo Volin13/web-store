@@ -17,6 +17,6 @@ const OrdersList = ({ list }) => {
 };
 
 OrdersList.propTypes = {
-  list: PropTypes.array.isRequired,
+  list: PropTypes.array,
 };
 export default OrdersList;

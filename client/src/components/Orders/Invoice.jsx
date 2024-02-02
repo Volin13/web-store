@@ -215,10 +215,10 @@ const Invoice = ({
 };
 
 Invoice.propTypes = {
-  order: PropTypes.object.isRequired,
-  convertedPrice: PropTypes.string.isRequired,
-  convertedPDV: PropTypes.string.isRequired,
-  totalPriceNumb: PropTypes.number.isRequired,
-  totalCount: PropTypes.object.isRequired,
+  order: PropTypes.object,
+  convertedPrice: PropTypes.string,
+  convertedPDV: PropTypes.string,
+  totalPriceNumb: PropTypes.number,
+  totalCount: PropTypes.object,
 };
 export default Invoice;

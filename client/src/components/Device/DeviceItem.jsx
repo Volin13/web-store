@@ -103,8 +103,8 @@ const DeviceItem = ({ device, loading, index }) => {
 };
 
 DeviceItem.propTypes = {
-  device: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  loading: PropTypes.bool.isRequired,
+  device: PropTypes.object,
+  index: PropTypes.number,
+  loading: PropTypes.bool,
 };
 export default DeviceItem;

@@ -84,8 +84,8 @@ const CreateBrand = ({ show, onHide }) => {
 };
 
 CreateBrand.propTypes = {
-  onHide: PropTypes.func.isRequired,
-  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func,
+  show: PropTypes.bool,
 };
 
 export default CreateBrand;

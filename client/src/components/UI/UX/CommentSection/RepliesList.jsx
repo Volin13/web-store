@@ -8,7 +8,8 @@ import css from './CommentSection.module.css';
 const RepliesList = ({
   repliesList,
   handleEditClick,
-  handleDeleteClick,
+  setShowDeleteModal,
+  setMessageToDelete,
   userId,
 }) => {
   return (
@@ -54,7 +55,10 @@ const RepliesList = ({
                 }}
                 className={`${css.messageBtn}`}
                 type="button"
-                onClick={() => handleDeleteClick('reply', item.id)}
+                onClick={() => {
+                  setShowDeleteModal(true);
+                  setMessageToDelete({ type: 'reply', commentId: item?.id });
+                }}
               >
                 <Image width={18} height={18} src={deleteImg} />
               </button>
@@ -70,9 +74,11 @@ const RepliesList = ({
 };
 
 RepliesList.propTypes = {
-  repliesList: PropTypes.array.isRequired,
-  userId: PropTypes.number.isRequired,
-  handleEditClick: PropTypes.func.isRequired,
-  handleDeleteClick: PropTypes.func.isRequired,
+  repliesList: PropTypes.array,
+  userId: PropTypes.number,
+  handleEditClick: PropTypes.func,
+  setMessageToDelete: PropTypes.func,
+  setShowDeleteModal: PropTypes.func,
 };
+
 export default RepliesList;

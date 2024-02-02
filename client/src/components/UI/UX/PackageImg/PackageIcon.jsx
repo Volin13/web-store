@@ -38,7 +38,7 @@ const PackageIcon = ({ count }) => {
 };
 
 PackageIcon.propTypes = {
-  count: PropTypes.number.isRequired,
+  count: PropTypes.number,
 };
 
 export default PackageIcon;

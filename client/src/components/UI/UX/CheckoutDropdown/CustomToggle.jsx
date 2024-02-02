@@ -15,8 +15,8 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 CustomToggle.displayName = 'CustomToggle';
 
 CustomToggle.propTypes = {
-  children: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired,
+  children: PropTypes.object,
+  onClick: PropTypes.func,
 };
 
 export default CustomToggle;

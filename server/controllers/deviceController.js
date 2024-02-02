@@ -200,7 +200,8 @@ class DeviceController {
   // ДІСТАЄМО ВСІ
   async getAll(req, res, next) {
     try {
-      let { brandId, typeId, query, limit, page } = req.query;
+      let { brandId, typeId, query, limit, page, order } = req.query;
+      order = order || [];
       page = page || 1;
       limit = limit || 12;
       const offset = page * limit - limit;
@@ -218,9 +219,21 @@ class DeviceController {
           [Op.iLike]: `%${query}%`,
         };
       }
-
+      // сортування девайсів
+      let filterArr = [
+        ['inStock', 'DESC'], // потім девайси з inStock===false
+        ['discount', 'DESC'], // спочатку девайси з discount===true
+        ['price', 'DESC'],
+      ];
+      if (order.includes('priceDesc')) {
+        filterArr.unshift(['price', 'ASC']);
+      }
+      if (order.includes('ratingDesc')) {
+        filterArr.unshift(['rating', 'DESC']);
+      }
       const devices = await Device.findAndCountAll({
         where: whereCondition,
+        order: filterArr,
         limit,
         offset,
       });

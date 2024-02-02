@@ -41,11 +41,11 @@ const BasketList = ({ list, removeCard, reduceOne, addOne, closeModal }) => {
 };
 
 BasketList.propTypes = {
-  list: PropTypes.array.isRequired,
-  removeCard: PropTypes.func.isRequired,
-  reduceOne: PropTypes.func.isRequired,
-  addOne: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired,
+  list: PropTypes.array,
+  removeCard: PropTypes.func,
+  reduceOne: PropTypes.func,
+  addOne: PropTypes.func,
+  closeModal: PropTypes.func,
 };
 
 export default BasketList;

@@ -34,6 +34,6 @@ const Stateofgoods = ({ device }) => {
 };
 
 Stateofgoods.propTypes = {
-  device: PropTypes.object.isRequired,
+  device: PropTypes.object,
 };
 export default Stateofgoods;

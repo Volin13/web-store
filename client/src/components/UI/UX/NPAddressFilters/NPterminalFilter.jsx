@@ -64,7 +64,7 @@ const NPterminalFilter = forwardRef(function NPterminalFilter({ formik }, ref) {
   );
 });
 NPterminalFilter.propTypes = {
-  formik: PropTypes.object.isRequired,
+  formik: PropTypes.object,
 };
 
 export default NPterminalFilter;

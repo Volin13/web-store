@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
@@ -11,6 +11,8 @@ const TypeBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [showBar, setShowBar] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
+  // const [scrollPosition, setScrollPosition] = useState(0);
+  const listRef = useRef(null);
 
   const handleTypeBarClick = type => {
     // якщо натиснутий тип співпадає з обраним раніше то відміняємо фільтрацію
@@ -20,7 +22,24 @@ const TypeBar = observer(({ loading }) => {
       device.setSelectedType(type);
     }
   };
+  // const list = listRef?.current;
 
+  // useEffect(() => {
+  //   const position = listRef?.current?.scrollTop;
+  //   setScrollPosition(position);
+
+  //   if (device.selectedType.name && scrollPosition && list !== null) {
+  //     listRef?.current?.scrollTo({
+  //       top: scrollPosition,
+  //       behavior: 'smooth', // опціонально: зробить прокрутку плавною
+  //     });
+  //   }
+  // }, [device.selectedType.name, list]);
+
+  // const handleScroll = () => {
+  //   if (listRef.current) {
+  //   }
+  // };
   return (
     <div
       onMouseEnter={() => {
@@ -29,8 +48,11 @@ const TypeBar = observer(({ loading }) => {
       onMouseLeave={() => {
         setShowBtn(false);
       }}
+      className="position-relative"
     >
       <ListGroup
+        ref={listRef}
+        // onScroll={handleScroll}
         style={{
           position: 'sticky',
           maxHeight: showBar ? '80vh' : '141px',
@@ -42,7 +64,10 @@ const TypeBar = observer(({ loading }) => {
         {loading ? (
           <>
             {Array.from({ length: 4 }, (_, index) => (
-              <ListGroup.Item key={index} className="text-center text-sm-start">
+              <ListGroup.Item
+                key={index}
+                className="text-center text-sm-start "
+              >
                 <Placeholder as="p" animation="glow">
                   <Placeholder xs={12} />
                 </Placeholder>
@@ -76,6 +101,9 @@ const TypeBar = observer(({ loading }) => {
             width: '100%',
             border: '1px solid #e6e9ec',
             borderRadius: '6px',
+            position: 'absolute',
+            left: 0,
+            bottom: '-25px',
           }}
           onClick={() => {
             setShowBar(!showBar);
@@ -93,7 +121,7 @@ const TypeBar = observer(({ loading }) => {
 });
 
 TypeBar.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
 };
 
 export default TypeBar;

@@ -171,7 +171,7 @@ const BrandBar = observer(({ loading }) => {
 });
 
 BrandBar.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
 };
 
 export default BrandBar;

@@ -169,10 +169,10 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
 });
 
 BasketModal.propTypes = {
-  localBasket: PropTypes.array.isRequired,
-  basket: PropTypes.object.isRequired,
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
+  localBasket: PropTypes.array,
+  basket: PropTypes.object,
+  show: PropTypes.bool,
+  onHide: PropTypes.func,
 };
 
 export default BasketModal;
