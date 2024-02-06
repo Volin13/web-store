@@ -23,6 +23,7 @@ const CommentText = ({ text = '' }) => {
         className={css.commentText}
         ref={textRef}
         style={{
+          width: '100%',
           maxHeight: expanded ? 'none' : '5em',
           overflowY: expanded ? 'unset' : 'hidden',
         }}

@@ -6,66 +6,86 @@ const token = localStorage.getItem('token');
 const decodeToken = jwt_decode(token);
 export const userId = decodeToken.id || 1;
 
-export const createType = async type => {
-  const { data } = await $authHost.post('api/type', type);
-  return data;
-};
-
 export const fetchDeviceComments = async (deviceId, page, limit) => {
-  const { data } = await $host.get('api/comments/' + deviceId, {
-    params: {
-      limit,
-      page,
-    },
-  });
-  return data;
+  try {
+    const { data } = await $host.get('api/comments/' + deviceId, {
+      params: {
+        limit,
+        page,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
+  }
 };
 
 export const createComment = async (deviceId, user, text) => {
-  if (user) {
-    const { data } = await $authHost.post('api/comments', {
-      params: {
-        deviceId: Number(deviceId),
-        userId: userId,
-        text,
-      },
-    });
-    return data;
+  try {
+    if (user) {
+      const { data } = await $authHost.post('api/comments', {
+        params: {
+          deviceId: Number(deviceId),
+          userId: userId,
+          text,
+        },
+      });
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
   }
 };
 export const createReply = async (commentId, text) => {
-  const { data } = await $authHost.post('api/replies', {
-    params: {
-      commentId: Number(commentId),
-      userId: userId,
-      text,
-    },
-  });
-  return data;
+  try {
+    const { data } = await $authHost.post('api/replies', {
+      params: {
+        commentId: Number(commentId),
+        userId: userId,
+        text,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
+  }
 };
 
 export const editComment = async (commentId, user, text) => {
-  if (user) {
-    const { data } = await $authHost.post('api/comments/' + commentId, {
+  try {
+    if (user) {
+      const { data } = await $authHost.patch('api/comments/' + commentId, {
+        params: {
+          userId: userId,
+          text,
+        },
+      });
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
+  }
+};
+export const editReply = async (replyId, text) => {
+  try {
+    const { data } = await $authHost.patch('api/replies/' + replyId, {
       params: {
         userId: userId,
         text,
       },
     });
     return data;
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
   }
 };
-export const editReply = async (replyId, text) => {
-  const { data } = await $authHost.post('api/replies/' + replyId, {
-    params: {
-      userId: userId,
-      text,
-    },
-  });
-  return data;
-};
 
-export const deleteComment = async (commentId, user) => {
+export const deleteComment = async (commentId, user, text) => {
   try {
     if (user) {
       const { data } = await $authHost.delete('api/comments/' + commentId, {
@@ -73,27 +93,22 @@ export const deleteComment = async (commentId, user) => {
           userId: userId,
         },
       });
-      toast.success('Коментар було видалено');
+      toast.success(`Коментар ${text} було видалено`);
       return data;
     }
   } catch (error) {
     console.log(error);
-    return toast.error(
-      error.response.data.message,
-      'При видаленні коментаря сталась помилка'
-    );
+    return toast.error(error.response.data.message);
   }
 };
-export const deleteReply = async (replyId, userId, text) => {
+export const deleteReply = async (replyId, text) => {
   try {
     const { data } = await $authHost.delete('api/replies/' + replyId, {
       params: {
-        replyId,
-        userId,
-        text,
+        userId: userId,
       },
     });
-    toast.success('Коментар було видалено');
+    toast.success(`Коментар ${text} було видалено`);
 
     return data;
   } catch (error) {

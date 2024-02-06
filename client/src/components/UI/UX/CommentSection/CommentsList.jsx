@@ -32,7 +32,7 @@ const CommentsList = ({
   setIsEdditing,
   showReplyInput,
   setShowReplyInput,
-  handleSendMessageClick,
+  handleEditClick,
 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -45,16 +45,6 @@ const CommentsList = ({
   // по кліку на едіт встановлюю текст у відповідне поле для валідації і відправки
   // вмикаю режим редагування + відкриваю інпут для редагування і скролю до нього для зручності
 
-  const handleEditClick = (type, text) => {
-    formik.setFieldValue(type, text);
-    setIsEdditing(true);
-    if (type === 'reply') {
-      setShowReplyInput(true);
-    }
-    if (replyInput.current) {
-      replyInput.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
   // обробка видалення повідомлення/відповіді
   const handleDeleteClick = deleteMessage => {
     const { type, commentId } = deleteMessage;
@@ -88,12 +78,12 @@ const CommentsList = ({
                 <div
                   className={`d-flex flex-column-reverse flex-sm-row align-items-end justify-content-sm-end justify-content-md-between align-items-sm-start flex-grow-1 ${css.commentThumb}`}
                 >
-                  <div className="d-flex flex-column align-items-end">
+                  <div className="d-flex flex-column align-items-end flex-grow-1 text-start">
                     <CommentText text={comment?.text} />
                   </div>
 
                   {user?.isAuth && (
-                    <div className="d-flex" style={{ marginLeft: '10px' }}>
+                    <div className="d-flex" style={{ marginLeft: '15px' }}>
                       <OverlayTrigger
                         placement="bottom"
                         delay={{ show: 250, hide: 400 }}
@@ -101,8 +91,13 @@ const CommentsList = ({
                       >
                         <button
                           onClick={() => {
-                            setShowReplyInput(false);
-                            handleEditClick('comment', comment?.text);
+                            setShowReplyInput(comment?.id);
+                            handleEditClick(
+                              'comment',
+                              comment?.text,
+                              replyInput
+                            );
+                            formik.setFieldValue('messageId', comment?.id);
                           }}
                           style={{
                             marginRight: '15px',
@@ -125,7 +120,8 @@ const CommentsList = ({
                           className={`${css.messageBtn}`}
                           type="button"
                           onClick={() => {
-                            setShowReplyInput(!showReplyInput);
+                            setShowReplyInput(comment?.id);
+                            setIsEdditing(false);
                           }}
                         >
                           <Image src={replyImg} width={20} height={20} />
@@ -162,10 +158,14 @@ const CommentsList = ({
               {showReplies && comment?.reply?.length ? (
                 <>
                   <RepliesList
+                    formik={formik}
                     userId={userId}
+                    ref={replyInput}
+                    commentId={comment?.id}
                     repliesList={comment?.reply}
                     handleEditClick={handleEditClick}
                     handleDeleteClick={handleDeleteClick}
+                    setShowReplyInput={setShowReplyInput}
                     setMessageToDelete={setMessageToDelete}
                     setShowDeleteModal={setShowDeleteModal}
                   />
@@ -220,7 +220,7 @@ const CommentsList = ({
                   ) : null}
                 </div>
               )}
-              {showReplyInput && (
+              {showReplyInput === comment?.id && (
                 <div className="mt-2">
                   {loading ? (
                     <MessagesLoading />
@@ -253,10 +253,6 @@ const CommentsList = ({
                       type="submit"
                       disabled={!user?.isAuth || !isValid}
                       className="p-2"
-                      onClick={() => {
-                        handleSendMessageClick('reply', comment.id);
-                        setIsEdditing(false);
-                      }}
                       style={{ marginRight: '10px' }}
                     >
                       Відправити
@@ -265,9 +261,9 @@ const CommentsList = ({
                       className="p-2"
                       variant="outline-danger"
                       onClick={() => {
-                        setShowReplyInput(false);
                         formik.setFieldValue('reply', '');
                         setIsEdditing(false);
+                        setShowReplyInput(false);
                       }}
                     >
                       Закрити
@@ -277,7 +273,7 @@ const CommentsList = ({
               )}
             </Card.Body>
             <Card.Footer className="text-end">
-              {new Date(comment?.updatedAt).toLocaleString()}
+              {new Date(comment?.createdAt).toLocaleString()}
             </Card.Footer>
           </Card>
         ))}
@@ -297,8 +293,9 @@ CommentsList.propTypes = {
   isValid: PropTypes.bool,
   loading: PropTypes.bool,
   formik: PropTypes.object,
-  showReplyInput: PropTypes.bool,
+  showReplyInput: PropTypes.bool || PropTypes.number,
   setIsEdditing: PropTypes.func,
+  handleEditClick: PropTypes.func,
   setShowReplyInput: PropTypes.func,
   handleSendMessageClick: PropTypes.func,
 };

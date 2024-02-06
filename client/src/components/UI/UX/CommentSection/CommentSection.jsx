@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Context } from '../../../..';
 import { Button, Card, Form, Row } from 'react-bootstrap';
 import { useFormik } from 'formik';
@@ -22,72 +22,80 @@ const CommentSection = observer(({ user, id }) => {
   const [isEdditing, setIsEdditing] = useState(false);
   const [commentsList, setCommentsList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const messageInput = useRef(null);
 
   const { device } = useContext(Context);
 
   // Завантажуєм коментарі до девайсу при першому завантаженні сторінки
   useEffect(() => {
-    fetchDeviceComments(id, device.page, device.limit).then(data =>
-      setCommentsList(data.rows)
-    );
+    setLoading(true);
+    fetchDeviceComments(id, device.page, device.limit).then(data => {
+      setCommentsList(data.rows);
+      setLoading(false);
+    });
   }, []);
 
   //  відправка повідомлення/відповіді + редагування
   const handleSendMessageClick = (type, commentId) => {
-    try {
-      setLoading(true);
-      if (type === 'comment') {
-        createComment(id, user, formik.values.comment);
-      }
-      if (type === 'reply') {
-        createReply(commentId, formik.values.reply);
-        setShowReplyInput(false);
-      }
-      if (isEdditing) {
-        editMessage(type, commentId);
-        setIsEdditing(false);
-      }
-    } catch (error) {
-      toast.error('При відправці сталась помилка, спробуйте пізніше');
-      console.log(error);
-    } finally {
-      setLoading(false);
-      fetchDeviceComments(id, device.page, device.limit).then(data =>
-        setCommentsList(data.rows)
-      );
+    if (isEdditing) {
+      editMessage(type, formik.values.messageId);
+      setIsEdditing(false);
     }
-  };
-  // редагую коментар/відповідь
-  const editMessage = (type, commentId) => {
-    if (type === 'comment') {
-      editComment(commentId, user, formik.values.comment);
+    if (type === 'comment' && !isEdditing) {
+      createComment(id, user, formik.values.comment);
     }
-    if (type === 'reply') {
-      editReply(commentId, formik.values.reply);
+    if (type === 'reply' && !isEdditing) {
+      createReply(commentId, formik.values.reply);
       setShowReplyInput(false);
     }
   };
+  // редагую коментар/відповідь
+  const editMessage = (type, messageId) => {
+    if (type === 'comment') {
+      editComment(messageId, user, formik.values.comment);
+    }
+    if (type === 'reply') {
+      editReply(messageId, formik.values.reply);
+      setShowReplyInput(false);
+    }
+  };
+  const handleEditClick = (type, text, ref) => {
+    formik.setFieldValue(type, text);
+    formik.setFieldValue('type', type);
 
+    setIsEdditing(true);
+
+    if (ref?.current) {
+      ref?.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (type === 'comment' && messageInput?.current) {
+      messageInput?.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   const formik = useFormik({
     initialValues: {
       comment: '',
       reply: '',
+      type: '',
+      messageId: 0,
     },
-
     validationSchema: commentSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
+      const { type, messageId } = values;
       try {
         setLoading(true);
-        handleSendMessageClick();
+        handleSendMessageClick(type, messageId);
+        setIsEdditing(false);
       } catch (error) {
         toast.error('При відправці сталась помилка, спробуйте пізніше');
+        console.log(error);
       } finally {
-        setLoading(false);
-        fetchDeviceComments(id, device.page, device.limit).then(data =>
-          setCommentsList(data.rows)
-        );
-        setSubmitting(false);
-        resetForm();
+        fetchDeviceComments(id, device.page, device.limit).then(data => {
+          console.log(data);
+          setCommentsList(data.rows);
+          resetForm(true);
+          setLoading(false);
+        });
       }
     },
   });
@@ -105,19 +113,24 @@ const CommentSection = observer(({ user, id }) => {
           <Form onSubmit={formik.handleSubmit}>
             {commentsList.length ? (
               <CommentsList
-                list={commentsList}
                 user={user}
                 formik={formik}
                 isValid={isValid}
                 loading={loading}
+                list={commentsList}
                 setIsEdditing={setIsEdditing}
                 showReplyInput={showReplyInput}
+                handleEditClick={handleEditClick}
                 setShowReplyInput={setShowReplyInput}
                 handleSendMessageClick={handleSendMessageClick}
               />
             ) : (
               <Row className="my-3">
-                <h2 className="text-center "> Коментарів поки немає</h2>
+                {loading ? (
+                  <MessagesLoading />
+                ) : (
+                  <h2 className="text-center "> Коментарів поки немає</h2>
+                )}
               </Row>
             )}
             {!showReplyInput && (
@@ -126,7 +139,7 @@ const CommentSection = observer(({ user, id }) => {
                   {loading ? (
                     <MessagesLoading />
                   ) : (
-                    <Form.Group>
+                    <Form.Group ref={messageInput}>
                       <Form.Label>
                         {isEdditing
                           ? 'Редагувати коментар'
@@ -153,14 +166,14 @@ const CommentSection = observer(({ user, id }) => {
                     </Form.Group>
                   )}
                 </Row>
-                <div className="text-end">
+                <div className="text-end  mt-1">
                   <Button
                     variant="outline-primary"
                     type="submit"
                     disabled={!user?.isAuth || !isValid}
-                    className="p-2 mt-1"
+                    className="p-2"
                     onClick={() => {
-                      handleSendMessageClick('comment');
+                      formik.setFieldValue('type', 'comment');
                     }}
                   >
                     {user.isAuth ? 'Відправити' : 'Увійдіть щоб прокоментувати'}
@@ -171,7 +184,7 @@ const CommentSection = observer(({ user, id }) => {
                       variant="outline-danger"
                       type="submit"
                       disabled={!isValid}
-                      className="p-2 mt-3"
+                      className="p-2"
                       onClick={() => {
                         setIsEdditing(false);
                         formik.setFieldValue('comment', '');

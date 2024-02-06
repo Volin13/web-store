@@ -32,7 +32,12 @@ const FilterBar = ({ loading }) => {
         </div>
       ) : (
         <Card className="text-center" style={{ marginTop: '27px' }}>
-          <Card.Title className="p-1">Сортувати</Card.Title>
+          <Card.Title
+            className="p-1"
+            style={{ borderBottom: '1px solid #e6e9ec' }}
+          >
+            Сортувати
+          </Card.Title>
           <Card.Body className="p-1">
             <Form
               onSubmit={formik.handleSubmit}

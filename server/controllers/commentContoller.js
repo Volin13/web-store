@@ -14,8 +14,8 @@ class CommentController {
 
       const existingComment = await Comment.findOne({
         where: {
-          userId,
-          deviceId,
+          userId: userId,
+          deviceId: deviceId,
           createdAt: {
             [Op.between]: [todayStart, todayEnd],
           },
@@ -28,6 +28,10 @@ class CommentController {
         await existingComment.save();
 
         return res.json(existingComment);
+      }
+      const device = await Device.findByPk(deviceId);
+      if (!device) {
+        return next(ApiError.badRequest('Девайс не знайдено'));
       }
       const user = await User.findOne({
         where: {
@@ -42,14 +46,6 @@ class CommentController {
         login: user.login,
         avatar: user.avatar,
       });
-
-      // Додаємо коментар до девайсу
-      const device = await Device.findByPk(deviceId);
-      if (!device) {
-        return next(ApiError.badRequest('Девайс не знайдено'));
-      }
-
-      await device.setComments([...(device.comments || []), comment]);
 
       return res.json(comment);
     } catch (error) {
@@ -106,14 +102,15 @@ class CommentController {
 
   async editComment(req, res, next) {
     try {
-      const { commentId } = req.params;
-      const { text } = req.body;
-
-      const comment = await Comment.findByPk(commentId);
+      const { id } = req.params;
+      const { userId, text } = req.body.params;
+      const comment = await Comment.findByPk(id);
       if (!comment) {
         return next(ApiError.badRequest('Коментар не знайдено'));
       }
-
+      if (comment.userId !== Number(userId)) {
+        return next(ApiError.forbidden('Ви не можете видалити чужий коментар'));
+      }
       comment.text = text;
       await comment.save();
 
@@ -181,16 +178,16 @@ class CommentController {
 
   async deleteReply(req, res, next) {
     try {
-      const { replyId } = req.params;
-      const { userId } = req.body; // Додайте це поле в ваш запит
-
-      const reply = await Reply.findByPk(replyId);
+      const { id } = req.params;
+      const { userId } = req.query;
+      console.log(userId, typeof userId);
+      const reply = await Reply.findByPk(id);
       if (!reply) {
         return next(ApiError.badRequest('Відповідь не знайдено'));
       }
 
       // Перевірка, чи користувач власник відповіді
-      if (reply.userId !== userId) {
+      if (reply.userId !== Number(userId)) {
         return next(ApiError.forbidden('Ви не можете видалити чужу відповідь'));
       }
 
@@ -204,14 +201,18 @@ class CommentController {
 
   async editReply(req, res, next) {
     try {
-      const { replyId } = req.params;
-      const { text } = req.body;
-
-      const reply = await Reply.findByPk(replyId);
+      const { id } = req.params;
+      const { text, userId } = req.body.params;
+      console.log(id, text, userId);
+      const reply = await Reply.findByPk(id);
       if (!reply) {
         return next(ApiError.badRequest('Відповідь не знайдено'));
       }
-
+      if (reply.userId !== Number(userId)) {
+        return next(
+          ApiError.forbidden('Ви не можете редагувати чужу відповідь'),
+        );
+      }
       reply.text = text;
       await reply.save();
 
@@ -245,7 +246,7 @@ class CommentController {
       const comments = await Comment.findAndCountAll({
         where: { deviceId: id },
         order: [['createdAt', 'ASC']],
-        include: [{ model: Reply, as: 'reply' }],
+        include: [{ model: Reply, as: 'reply', order: [['createdAt', 'ASC']] }],
         limit,
         offset,
       });
