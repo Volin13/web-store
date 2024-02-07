@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import MessagesLoading from '../Spinner/MessagesLoading';
 import CommentsList from './CommentsList';
+import CommentPagination from './CommentPagination';
 
 const CommentSection = observer(({ user, id }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -29,42 +30,59 @@ const CommentSection = observer(({ user, id }) => {
   // Завантажуєм коментарі до девайсу при першому завантаженні сторінки
   useEffect(() => {
     setLoading(true);
-    fetchDeviceComments(id, device.page, device.limit).then(data => {
-      setCommentsList(data.rows);
-      setLoading(false);
-    });
+    fetchDeviceComments(id, device.commentPage, device.commentsLimit).then(
+      data => {
+        setCommentsList(data.rows);
+        setLoading(false);
+      }
+    );
   }, []);
 
   //  відправка повідомлення/відповіді + редагування
-  const handleSendMessageClick = (type, commentId) => {
+  const handleSendMessageClick = async (type, commentId) => {
     if (isEdditing) {
-      editMessage(type, formik.values.messageId);
+      await editMessage(type, formik.values.messageId);
       setIsEdditing(false);
     }
     if (type === 'comment' && !isEdditing) {
-      createComment(id, user, formik.values.comment);
+      await createComment(id, user, formik.values.comment);
     }
     if (type === 'reply' && !isEdditing) {
-      createReply(commentId, formik.values.reply);
+      const replyText = formik.values.reply;
+      await createReply(commentId, replyText.trim());
       setShowReplyInput(false);
     }
   };
   // редагую коментар/відповідь
-  const editMessage = (type, messageId) => {
+  const editMessage = async (type, messageId) => {
     if (type === 'comment') {
-      editComment(messageId, user, formik.values.comment);
+      await editComment(messageId, user, formik.values.comment);
     }
     if (type === 'reply') {
-      editReply(messageId, formik.values.reply);
+      await editReply(messageId, formik.values.reply);
       setShowReplyInput(false);
     }
   };
+  // обробка кліку на кнопку едіт - встановлюю режим редагування, тип і скролю до відповідного інпута
   const handleEditClick = (type, text, ref) => {
     formik.setFieldValue(type, text);
     formik.setFieldValue('type', type);
-
     setIsEdditing(true);
-
+    if (ref?.current) {
+      ref?.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (type === 'comment' && messageInput?.current) {
+      messageInput?.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  // скидаю режим редагування (якшо є) скидаю значення інпуту
+  // (якшо є) встановлюю тип і значення інпута який треба показувати
+  const handleReplyClick = (type, commentId, ref) => {
+    setShowReplyInput(commentId);
+    formik.setFieldValue('messageId', commentId);
+    formik.setFieldValue('comment', '');
+    formik.setFieldValue('type', type);
+    setIsEdditing(false);
     if (ref?.current) {
       ref?.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -80,7 +98,7 @@ const CommentSection = observer(({ user, id }) => {
       messageId: 0,
     },
     validationSchema: commentSchema,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       const { type, messageId } = values;
       try {
         setLoading(true);
@@ -90,8 +108,11 @@ const CommentSection = observer(({ user, id }) => {
         toast.error('При відправці сталась помилка, спробуйте пізніше');
         console.log(error);
       } finally {
-        fetchDeviceComments(id, device.page, device.limit).then(data => {
-          console.log(data);
+        await fetchDeviceComments(
+          id,
+          device.commentPage,
+          device.commentsLimit
+        ).then(data => {
           setCommentsList(data.rows);
           resetForm(true);
           setLoading(false);
@@ -113,6 +134,7 @@ const CommentSection = observer(({ user, id }) => {
           <Form onSubmit={formik.handleSubmit}>
             {commentsList.length ? (
               <CommentsList
+                id={id}
                 user={user}
                 formik={formik}
                 isValid={isValid}
@@ -120,7 +142,9 @@ const CommentSection = observer(({ user, id }) => {
                 list={commentsList}
                 setIsEdditing={setIsEdditing}
                 showReplyInput={showReplyInput}
+                setCommentsList={setCommentsList}
                 handleEditClick={handleEditClick}
+                handleReplyClick={handleReplyClick}
                 setShowReplyInput={setShowReplyInput}
                 handleSendMessageClick={handleSendMessageClick}
               />
@@ -133,7 +157,7 @@ const CommentSection = observer(({ user, id }) => {
                 )}
               </Row>
             )}
-            {!showReplyInput && (
+            {(formik.values.type === 'comment' || !showReplyInput) && (
               <>
                 <Row className="p-3">
                   {loading ? (
@@ -199,6 +223,7 @@ const CommentSection = observer(({ user, id }) => {
           </Form>
         </Card.Body>
       </Card>
+      <CommentPagination />
     </div>
   );
 });

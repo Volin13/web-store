@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import {
   Button,
   Card,
@@ -16,6 +16,7 @@ import deleteImg from '../../../../assets/defultIcons/delete-message.svg';
 import {
   deleteComment,
   deleteReply,
+  fetchDeviceComments,
   userId,
 } from '../../../../http/commentsApi';
 
@@ -23,7 +24,9 @@ import MessagesLoading from '../Spinner/MessagesLoading';
 import RepliesList from './RepliesList';
 import CommentText from './CommentText';
 import DeleteMessageModal from '../../../modals/DeleteMessageModal';
+import { Context } from '../../../..';
 const CommentsList = ({
+  id,
   list,
   user,
   formik,
@@ -31,8 +34,10 @@ const CommentsList = ({
   loading,
   setIsEdditing,
   showReplyInput,
-  setShowReplyInput,
+  setCommentsList,
   handleEditClick,
+  handleReplyClick,
+  setShowReplyInput,
 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -40,27 +45,40 @@ const CommentsList = ({
     type: '',
     commentId: 0,
   });
-
+  const { device } = useContext(Context);
   const replyInput = useRef(null);
   // по кліку на едіт встановлюю текст у відповідне поле для валідації і відправки
   // вмикаю режим редагування + відкриваю інпут для редагування і скролю до нього для зручності
 
   // обробка видалення повідомлення/відповіді
-  const handleDeleteClick = deleteMessage => {
+  const handleDeleteClick = async deleteMessage => {
     const { type, commentId } = deleteMessage;
-    setIsEdditing(false);
-    setShowReplyInput(false);
-    if (type === 'comment') {
-      deleteComment(commentId, user, formik.values.comment).then(
-        setShowDeleteModal(false)
-      );
-    }
-    if (type === 'reply') {
-      deleteReply(commentId, formik.values.reply).then(
-        setShowDeleteModal(false)
-      );
+    try {
+      if (type === 'comment') {
+        await deleteComment(commentId, user, formik.values.comment).then(
+          setShowDeleteModal(false)
+        );
+      }
+      if (type === 'reply') {
+        await deleteReply(commentId, formik.values.reply).then(
+          setShowDeleteModal(false)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await fetchDeviceComments(
+        id,
+        device.commentPage,
+        device.commentsLimit
+      ).then(data => {
+        setCommentsList(data.rows);
+        setIsEdditing(false);
+        setShowReplyInput(false);
+      });
     }
   };
+
   return (
     <>
       <ul className="my-3">
@@ -98,6 +116,7 @@ const CommentsList = ({
                               replyInput
                             );
                             formik.setFieldValue('messageId', comment?.id);
+                            formik.setFieldValue('type', 'comment');
                           }}
                           style={{
                             marginRight: '15px',
@@ -120,8 +139,7 @@ const CommentsList = ({
                           className={`${css.messageBtn}`}
                           type="button"
                           onClick={() => {
-                            setShowReplyInput(comment?.id);
-                            setIsEdditing(false);
+                            handleReplyClick('reply', comment?.id, replyInput);
                           }}
                         >
                           <Image src={replyImg} width={20} height={20} />
@@ -155,7 +173,7 @@ const CommentsList = ({
                   )}
                 </div>
               </div>
-              {showReplies && comment?.reply?.length ? (
+              {showReplies === comment?.id && comment?.reply?.length ? (
                 <>
                   <RepliesList
                     formik={formik}
@@ -164,6 +182,7 @@ const CommentsList = ({
                     commentId={comment?.id}
                     repliesList={comment?.reply}
                     handleEditClick={handleEditClick}
+                    handleReplyClick={handleReplyClick}
                     handleDeleteClick={handleDeleteClick}
                     setShowReplyInput={setShowReplyInput}
                     setMessageToDelete={setMessageToDelete}
@@ -207,7 +226,10 @@ const CommentsList = ({
                     >
                       <button
                         className={`${css.messageBtn} mt-2`}
-                        onClick={() => setShowReplies(true)}
+                        onClick={() => {
+                          setShowReplies(comment?.id);
+                          formik.setFieldValue('messageId', comment?.id);
+                        }}
                         style={{ color: '#0c6efc' }}
                       >
                         {`${comment?.reply?.length} ${
@@ -220,57 +242,58 @@ const CommentsList = ({
                   ) : null}
                 </div>
               )}
-              {showReplyInput === comment?.id && (
-                <div className="mt-2">
-                  {loading ? (
-                    <MessagesLoading />
-                  ) : (
-                    <Form.Group>
-                      <Form.Control
-                        ref={replyInput}
-                        placeholder="Дотримуйтесь культури спілкування будь-ласка"
-                        name="reply"
-                        as="textarea"
-                        value={formik.values.reply}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        isInvalid={
-                          formik.touched.reply && !!formik.errors.reply
-                        }
-                        rows={2}
-                      />
+              {formik.values.type === 'reply' &&
+                showReplyInput === comment?.id && (
+                  <div className="mt-2">
+                    {loading ? (
+                      <MessagesLoading />
+                    ) : (
+                      <Form.Group>
+                        <Form.Control
+                          ref={replyInput}
+                          placeholder="Дотримуйтесь культури спілкування будь-ласка"
+                          name="reply"
+                          as="textarea"
+                          value={formik.values.reply}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          isInvalid={
+                            formik.touched.reply && !!formik.errors.reply
+                          }
+                          rows={2}
+                        />
 
-                      {formik.touched.reply && formik.errors.reply && (
-                        <Form.Control.Feedback type="invalid">
-                          {formik.errors.reply}
-                        </Form.Control.Feedback>
-                      )}
-                    </Form.Group>
-                  )}
-                  <div className="d-flex justify-content-end mt-3">
-                    <Button
-                      variant="outline-primary"
-                      type="submit"
-                      disabled={!user?.isAuth || !isValid}
-                      className="p-2"
-                      style={{ marginRight: '10px' }}
-                    >
-                      Відправити
-                    </Button>
-                    <Button
-                      className="p-2"
-                      variant="outline-danger"
-                      onClick={() => {
-                        formik.setFieldValue('reply', '');
-                        setIsEdditing(false);
-                        setShowReplyInput(false);
-                      }}
-                    >
-                      Закрити
-                    </Button>
+                        {formik.touched.reply && formik.errors.reply && (
+                          <Form.Control.Feedback type="invalid">
+                            {formik.errors.reply}
+                          </Form.Control.Feedback>
+                        )}
+                      </Form.Group>
+                    )}
+                    <div className="d-flex justify-content-end mt-3">
+                      <Button
+                        variant="outline-primary"
+                        type="submit"
+                        disabled={!user?.isAuth || !isValid}
+                        className="p-2"
+                        style={{ marginRight: '10px' }}
+                      >
+                        Відправити
+                      </Button>
+                      <Button
+                        className="p-2"
+                        variant="outline-danger"
+                        onClick={() => {
+                          formik.setFieldValue('reply', '');
+                          setIsEdditing(false);
+                          setShowReplyInput(false);
+                        }}
+                      >
+                        Закрити
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </Card.Body>
             <Card.Footer className="text-end">
               {new Date(comment?.createdAt).toLocaleString()}
@@ -288,15 +311,17 @@ const CommentsList = ({
   );
 };
 CommentsList.propTypes = {
+  id: PropTypes.number,
   list: PropTypes.array,
   user: PropTypes.object,
   isValid: PropTypes.bool,
   loading: PropTypes.bool,
   formik: PropTypes.object,
-  showReplyInput: PropTypes.bool || PropTypes.number,
+  showReplyInput: PropTypes.any,
   setIsEdditing: PropTypes.func,
   handleEditClick: PropTypes.func,
+  setCommentsList: PropTypes.func,
+  handleReplyClick: PropTypes.func,
   setShowReplyInput: PropTypes.func,
-  handleSendMessageClick: PropTypes.func,
 };
 export default CommentsList;

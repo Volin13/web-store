@@ -8,14 +8,14 @@ import css from './CommentSection.module.css';
 const RepliesList = forwardRef(
   (
     {
+      userId,
+      formik,
       commentId,
       repliesList,
       handleEditClick,
+      setShowReplyInput,
       setShowDeleteModal,
       setMessageToDelete,
-      setShowReplyInput,
-      userId,
-      formik,
     },
     ref
   ) => {

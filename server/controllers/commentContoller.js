@@ -238,8 +238,8 @@ class CommentController {
     try {
       let { limit, page } = req.query;
       const { id } = req.params;
-      page = page || 1;
-      limit = limit || 5;
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 5;
 
       let offset = page * limit - limit;
 

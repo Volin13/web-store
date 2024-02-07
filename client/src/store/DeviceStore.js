@@ -8,8 +8,11 @@ export default class DeviceStore {
   _selectedType = {};
   _selectedBrand = {};
   _page = 1;
-  _totalCount = 0;
   _limit = 8;
+  _commentPage = 1;
+  _commentsLimit = 4;
+  _totalCount = 0;
+  _totalCommentCount = 0;
 
   constructor() {
     makeObservable(this, {
@@ -21,8 +24,11 @@ export default class DeviceStore {
       _selectedType: observable,
       _selectedBrand: observable,
       _page: observable,
-      _totalCount: observable,
       _limit: observable,
+      _commentPage: observable,
+      _commentsLimit: observable,
+      _totalCount: observable,
+      _totalCommentCount: observable,
       setTypes: action,
       setBrands: action,
       setDevices: action,
@@ -42,7 +48,10 @@ export default class DeviceStore {
       selectedBrand: computed,
       page: computed,
       totalCount: computed,
+      totalCommentCount: computed,
       limit: computed,
+      commentPage: computed,
+      commentsLimit: computed,
     });
   }
 
@@ -68,24 +77,35 @@ export default class DeviceStore {
 
   setSelectedType(type) {
     this.setPage(1);
+    this.setCommentPage(1);
     this._selectedType = type;
   }
 
   setSelectedBrand(brand) {
     this.setPage(1);
+    this.setCommentPage(1);
     this._selectedBrand = brand;
   }
 
   setPage(page) {
     this._page = page;
   }
+  setCommentPage(commentPage) {
+    this._commentPage = commentPage;
+  }
 
   setTotalCount(totalCount) {
     this._totalCount = totalCount;
   }
+  setTotalCommentCount(totalCommentCount) {
+    this._totalCommentCount = totalCommentCount;
+  }
 
   setLimit(limit) {
     this._limit = limit;
+  }
+  setCommentsLimit(commentsLimit) {
+    this._commentsLimit = commentsLimit;
   }
 
   get types() {
@@ -123,8 +143,17 @@ export default class DeviceStore {
   get totalCount() {
     return this._totalCount;
   }
+  get totalCommentCount() {
+    return this._totalCommentCount;
+  }
 
   get limit() {
     return this._limit;
+  }
+  get commentPage() {
+    return this._commentPage;
+  }
+  get commentsLimit() {
+    return this._commentsLimit;
   }
 }
