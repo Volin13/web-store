@@ -22,12 +22,16 @@ import {
 import { observer } from 'mobx-react-lite';
 import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
+import logInIcon from '../../assets/authIcons/login-2-svgrepo-com.svg';
 import BasketModal from '../modals/BasketModal';
 import MenuIcon from '../UI/UX/MenuIcon/MenuIcon';
 import MainFilter from '../UI/UX/MainFilter/MainFilter';
+import UserMenu from '../modals/userMenu/UserMenu';
+import { getUserData } from '../../http/userAPI';
 
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
+  const [userMenuVisible, setUserMenuVisible] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
   const [show, setShow] = useState(false);
 
@@ -57,6 +61,18 @@ const NavBar = observer(() => {
   let localBasket = null;
   localBasket = localbasketData ? JSON.parse(localbasketData) : basket.basket;
 
+  useEffect(() => {
+    if (user?.isAuth) {
+      getUserData().then(data => {
+        user.setUserLogin(data?.login);
+        user.setAvatar(data?.avatar);
+        user.setEmail(data?.email);
+        user.setRole(data?.role);
+        user.setId(data?.id);
+      });
+    }
+  }, []);
+
   // Встановлюю кількість покупок в кошику залежно від записаного в sessionStorage або в store MobX
   useEffect(() => {
     setBasketLength(localBasket?.length || basket.basket.length);
@@ -74,6 +90,7 @@ const NavBar = observer(() => {
               onClick={() => {
                 device.setSelectedBrand({});
                 device.setSelectedType({});
+                device.setQuery('');
               }}
             >
               Online
@@ -94,13 +111,14 @@ const NavBar = observer(() => {
           </Col>
           <Col md="2" className="d-flex align-items-center ">
             {/* basket*/}
-            {!basketVisivility && (
+
+            {!basketVisivility && user?.isAuth && (
               <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id="tooltip-bottom">Кошик</Tooltip>}
               >
                 <button
-                  className="d-flex align-items-center justify-content-center basket_btn"
+                  className="d-flex align-items-center justify-content-center button_thumb"
                   type="button"
                   onClick={() => setBasketVisible(true)}
                   style={{ marginLeft: '10px' }}
@@ -114,17 +132,34 @@ const NavBar = observer(() => {
             )}
 
             {/* menu */}
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-bottom">Меню</Tooltip>}
-            >
-              <button
-                onClick={() => setShow(true)}
-                style={{ marginLeft: '10px' }}
+            {user?.isAuth ? (
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="tooltip-bottom">Меню</Tooltip>}
               >
-                <MenuIcon />
-              </button>
-            </OverlayTrigger>
+                <button
+                  onClick={() => setShow(true)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  <MenuIcon />
+                </button>
+              </OverlayTrigger>
+            ) : (
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="tooltip-bottom">Увійти</Tooltip>}
+              >
+                <button
+                  className="d-flex align-items-center justify-content-center button_thumb"
+                  type="button"
+                  disabled={location.pathname === LOGIN_ROUTE}
+                  onClick={() => navigate(LOGIN_ROUTE)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  <Image width={20} height={20} src={logInIcon} />
+                </button>
+              </OverlayTrigger>
+            )}
           </Col>
 
           <Offcanvas
@@ -140,7 +175,7 @@ const NavBar = observer(() => {
               <Offcanvas.Title>Меню</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              {user.isAuth ? (
+              {user?.isAuth ? (
                 <Nav
                   className="d-flex flex-column align-items-start"
                   id="collapse"
@@ -148,14 +183,22 @@ const NavBar = observer(() => {
                     gap: '20px',
                   }}
                 >
-                  <NavLink to={ADMIN_ROUTE}>
-                    <Button
-                      variant="outline-dark"
-                      onClick={() => setShow(false)}
-                    >
-                      Адміністратору
-                    </Button>{' '}
-                  </NavLink>
+                  <Button
+                    variant="outline-dark"
+                    onClick={() => setUserMenuVisible(true)}
+                  >
+                    Профіль
+                  </Button>{' '}
+                  {user?.role === 'ADMIN' && (
+                    <NavLink to={ADMIN_ROUTE}>
+                      <Button
+                        variant="outline-dark"
+                        onClick={() => setShow(false)}
+                      >
+                        Адміністратору
+                      </Button>{' '}
+                    </NavLink>
+                  )}
                   <Button
                     variant="outline-dark"
                     onClick={() => {
@@ -179,6 +222,11 @@ const NavBar = observer(() => {
           </Offcanvas>
         </Container>
       </Navbar>
+      <UserMenu
+        user={user}
+        show={userMenuVisible}
+        onHide={() => setUserMenuVisible(false)}
+      />
       <BasketModal
         show={basketVisible}
         onHide={() => setBasketVisible(false)}

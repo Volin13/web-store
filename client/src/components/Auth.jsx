@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Image, InputGroup, Row, Card, Form, Button } from 'react-bootstrap';
+import { Image, InputGroup, Card, Form, Button } from 'react-bootstrap';
 import {
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
@@ -47,13 +47,17 @@ const Auth = observer(() => {
       .required('Введіть ваш імеіл'),
     login: yup
       .string()
-      .min(3, 'Ваш логін занадто короткий')
-      .max(30, 'Ваш логін занадто довгий')
+      .matches(/^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ1-9']+$/, {
+        message: 'Логін не має містити спец символи',
+      })
+      .trim()
+      .max(25, 'Ваш логін занадто довгий')
       .lowercase()
+      .notRequired()
+      .nullable()
       .test('checkLogin', 'Такий логін вже існує', () => {
         return !alreadyUsedName;
-      })
-      .required('Введіть ваш логін'),
+      }),
     password: yup
       .string()
       .trim()
@@ -111,10 +115,23 @@ const Auth = observer(() => {
   const checkName = async name => {
     return await checkUsedLogin(name);
   };
-  const handleLoginChange = value => {
-    checkName(value).then(data => setAlreadyUsedName(data));
+  const handleLoginChange = async value => {
+    try {
+      setLoading(true);
+      await checkName(value).then(data => {
+        setAlreadyUsedName(data);
+        setLoading(false);
+        if (!data) {
+          formik.setFieldError('login', '');
+          return;
+        }
+        authSchema.validateSyncAt('login'); // Викликаємо валідацію
+      });
+    } catch (error) {
+      formik.setFieldError('login', error.message); // Встановлюємо помилку
+    }
   };
-  const debounceFn = useCallback(_debounce(handleLoginChange, 500), []);
+  const debounceFn = useCallback(_debounce(handleLoginChange, 300), []);
 
   return (
     <>
@@ -167,8 +184,8 @@ const Auth = observer(() => {
                   formik.handleChange(e);
                   debounceFn(e.target.value);
                 }}
-                onBlur={e => checkName(e.target.value)}
-                isInvalid={formik.touched.login && formik.errors.login}
+                onBlur={formik.handleBlur}
+                isInvalid={formik.errors.login}
                 placeholder="Введіть ваш логін"
               />
               <Form.Control.Feedback type="invalid">
@@ -221,27 +238,32 @@ const Auth = observer(() => {
             </Form.Control.Feedback>
           </InputGroup>
 
-          <Row className="d-flex align-items-center justify-content-between  px-3">
+          <div
+            className="d-flex flex-column-reverse flex-sm-row text-center text-sm-start  align-items-center justify-content-between  px-3"
+            style={{ gap: '20px' }}
+          >
             {isLogin ? (
-              <div style={{ display: 'inline', width: '70%' }}>
+              <div>
                 Немає акаунта?{' '}
                 <NavLink to={REGISTRATION_ROUTE}>Зареєструйся</NavLink>{' '}
               </div>
             ) : (
-              <div style={{ display: 'inline', width: '70%' }}>
+              <div>
                 Є акаунт? <NavLink to={LOGIN_ROUTE}>Увійди</NavLink>{' '}
               </div>
             )}
+
             <Button
-              variant={'outline-success'}
+              variant={`outline-${
+                !isValid || loading ? 'secondary' : 'success'
+              }`}
               disabled={!isValid || loading}
               type="submit"
-              className="ml-auto"
-              style={{ maxWidth: '30%' }}
+              style={{ minWidth: '30%' }}
             >
               {isLogin ? 'Увійти' : 'Реєстрація'}
             </Button>
-          </Row>
+          </div>
         </Form>
       </Card>
     </>

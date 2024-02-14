@@ -109,6 +109,7 @@ ul {
 } */
 
 button {
+  line-height: 0;
   padding: 0;
   cursor: pointer;
   font: inherit;
@@ -191,7 +192,7 @@ hr {
 
 /* NAV BAR */
 
-.basket_btn {
+.button_thumb {
   border-radius: 50%;
   background-color: white;
   height: 38px;
@@ -200,8 +201,8 @@ hr {
   outline: 2px ridge #ffffff99;
   transition: all 500ms;
 }
-.basket_btn:hover,
-.basket_btn:focus {
+.button_thumb:hover,
+.button_thumb:focus {
   transform: scale(1.15);
 }
 

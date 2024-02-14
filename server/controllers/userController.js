@@ -4,6 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 const sequelize = require('../db');
+const path = require('path');
+
+const fs = require('fs');
+const uuid = require('uuid');
 
 let SECRET_KEY = process.env.SECRET_KEY || 'random_secret_key1234';
 
@@ -87,6 +91,88 @@ class UserController {
       return res.json(createdLogin ? true : false);
     } catch (error) {
       return next(ApiError.internal('Невірний логін'));
+    }
+  }
+
+  async getUserData(req, res, next) {
+    try {
+      // перевірка ролі при логінізації/оновленню токена
+      const { userId } = req.params;
+
+      const user = await User.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        return next(
+          ApiError.internal(
+            'Користувача з вашим id не знайдень, спробуйте пізніше',
+          ),
+        );
+      }
+      return res.json(user);
+    } catch (error) {
+      return next(ApiError.internal('Сталась помилка, спробуйте пізніше'));
+    }
+  }
+
+  async changeUserData(req, res, next) {
+    try {
+      // перевірка ролі при логінізації/оновленню токена
+      const { userId } = req.params;
+      const { login } = req.body;
+      const { avatar } = req.files;
+      const user = await User.findOne({
+        where: { id: Number(userId) },
+      });
+      if (login && login !== user.login) {
+        user.login = login;
+      }
+      if (avatar) {
+        // Функція для видалення файлу
+        function deleteFileIfExists(filePath) {
+          // Перевіряємо, чи існує файл
+          if (filePath && fs.existsSync(filePath)) {
+            fs.access(filePath, fs.constants.F_OK, err => {
+              if (!err) {
+                // Файл існує, видаляємо його
+                fs.unlink(filePath, err => {
+                  if (err) {
+                    console.error(`Помилка видалення файлу ${filePath}:`, err);
+                  } else {
+                    console.log(`Файл ${filePath} успішно видалено.`);
+                  }
+                });
+              } else {
+                console.error(`Файл ${filePath} не існує.`);
+              }
+            });
+          }
+        }
+        const oldMainImgPath = path.resolve(
+          __dirname,
+          '..',
+          'static',
+          user.avatar,
+        );
+
+        // Виклик функції для видалення старого avatar
+        if (oldMainImgPath) {
+          try {
+            deleteFileIfExists(oldMainImgPath);
+          } catch (error) {
+            console.log('При видалені аватару виникла проблема');
+          }
+        }
+        // Зберігаємо новий аватар
+        let mainFileName = uuid.v4() + '.jpg';
+        avatar.mv(path.resolve(__dirname, '..', 'static', mainFileName));
+        user.avatar = mainFileName;
+      }
+
+      await user.save();
+      return res.json(user);
+    } catch (error) {
+      return next(ApiError.internal('Сталась помилка, спробуйте пізніше'));
     }
   }
 }

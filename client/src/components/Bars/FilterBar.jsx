@@ -42,6 +42,7 @@ const FilterBar = ({ loading }) => {
             <Form
               onSubmit={formik.handleSubmit}
               className=" d-flex flex-column align-items-center flex-sm-row justify-content-sm-around d-md-block "
+              style={{ textAlign: 'start' }}
             >
               <Form.Check
                 label={`За ціною ${

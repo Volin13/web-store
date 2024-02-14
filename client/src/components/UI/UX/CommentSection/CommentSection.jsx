@@ -45,7 +45,8 @@ const CommentSection = observer(({ user, id }) => {
       setIsEdditing(false);
     }
     if (type === 'comment' && !isEdditing) {
-      await createComment(id, user, formik.values.comment);
+      const commentText = formik.values.comment;
+      await createComment(id, user, commentText.trim());
     }
     if (type === 'reply' && !isEdditing) {
       const replyText = formik.values.reply;

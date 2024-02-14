@@ -96,8 +96,8 @@ class DeviceController {
           { mainImg: mainImg },
           {
             where: { id: id },
-            returning: true, // Дозволяє повертати оновлені дані
-            plain: true, // Дозволяє отримати лише оновлений запис, а не масив
+            returning: true,
+            plain: true,
           },
         );
 
@@ -110,8 +110,6 @@ class DeviceController {
             console.error(`Error deleting file ${filePath}:`, error);
           }
         }
-
-        // Припустимо, що ви маєте шлях до старого mainImg
         const oldMainImgPath = path.resolve(
           __dirname,
           '..',
@@ -203,7 +201,7 @@ class DeviceController {
       let { brandId, typeId, query, limit, page, order } = req.query;
       order = order || [];
       page = page || 1;
-      limit = limit || 12;
+      limit = limit || 8;
       const offset = page * limit - limit;
 
       const whereCondition = {};

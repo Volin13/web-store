@@ -1,6 +1,11 @@
 import { $host, $authHost } from './index';
 import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
+
+const token = localStorage.getItem('token');
+const decodeToken = jwt_decode(token);
+export const userId = decodeToken.id || 1;
+
 export const registration = async (email, password, login) => {
   try {
     const { data } = await $host.post('api/user/registration', {
@@ -48,6 +53,41 @@ export const checkUsedLogin = async login => {
     return data;
   } catch (error) {
     console.log(error);
+    return;
+  }
+};
+export const getUserData = async () => {
+  try {
+    const { data } = await $authHost.get('api/user/auth/data/' + userId);
+    return data;
+  } catch (e) {
+    console.log(e);
+    toast.error(e.response.data.message);
+    return;
+  }
+};
+
+export const changeUserData = async (userId, login, newImage) => {
+  const formData = new FormData();
+  formData.append('login', login);
+  formData.append('avatar', newImage);
+  try {
+    const { data } = await $authHost.patch(
+      'api/user/auth/data/' + userId,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    toast.success('Ваші дані було змінено');
+
+    return data;
+  } catch (e) {
+    console.log(e);
+    toast.error(e.response.data.message);
+
     return;
   }
 };
