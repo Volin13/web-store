@@ -79,6 +79,10 @@ const CommentsList = ({
     }
   };
 
+  const isGravatar = url => {
+    return url.startsWith('https://www.gravatar.com/avatar/');
+  };
+
   return (
     <>
       <ul className="my-3">
@@ -90,7 +94,16 @@ const CommentsList = ({
                   className="d-flex flex-column align-items-center justify-content-start"
                   style={{ marginRight: '15px' }}
                 >
-                  <Image width={40} height={40} src={comment?.avatar} />
+                  <Image
+                    width={50}
+                    height={50}
+                    className={css.commentAvatar}
+                    src={
+                      isGravatar(comment?.avatar)
+                        ? comment?.avatar
+                        : process.env.REACT_APP_API_URL + comment?.avatar
+                    }
+                  />
                   <span>{comment?.login}</span>
                 </div>
                 <div
@@ -180,6 +193,7 @@ const CommentsList = ({
                     userId={userId}
                     ref={replyInput}
                     commentId={comment?.id}
+                    isGravatar={isGravatar}
                     repliesList={comment?.reply}
                     handleEditClick={handleEditClick}
                     handleReplyClick={handleReplyClick}

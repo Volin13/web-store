@@ -234,6 +234,32 @@ class CommentController {
       );
     }
   }
+  async getAllComments(req, res, next) {
+    try {
+      let { date, limit, page } = req.query;
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
+      let offset = page * limit - limit;
+
+      const comments = await Comment.findAndCountAll({
+        where: { updatedAt: date },
+        order: [['createdAt', 'ASC']],
+        include: [{ model: Reply, as: 'reply', order: [['createdAt', 'ASC']] }],
+        limit,
+        offset,
+      });
+
+      return res.json(comments);
+    } catch (error) {
+      return next(
+        ApiError.internal(
+          error.message,
+          'При завантажені коментарів сталась помилка',
+        ),
+      );
+    }
+  }
+
   async getDeviceComments(req, res, next) {
     try {
       let { limit, page } = req.query;

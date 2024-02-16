@@ -1,6 +1,5 @@
 const sequelize = require('../db');
 const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
 
 const User = sequelize.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -13,11 +12,6 @@ const User = sequelize.define('user', {
   },
   avatar: { type: DataTypes.STRING, allowNull: false },
   role: { type: DataTypes.STRING, defaultValue: 'USER' },
-});
-
-const Basket = sequelize.define('baskets', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  order: { type: DataTypes.JSON },
 });
 
 const Order = sequelize.define('orders', {
@@ -102,7 +96,29 @@ const Reply = sequelize.define('reply', {
     },
   },
 });
+User.addHook('afterUpdate', async user => {
+  // Отримання всіх коментарів та реплік, які належать цьому користувачеві
+  const comments = await Comment.findAll({ where: { userId: user.id } });
+  const replies = await Reply.findAll({ where: { userId: user.id } });
 
+  // Оновлення даних про аватар та логін у всіх коментарях та репліках
+  await Promise.all(
+    comments.map(async comment => {
+      await comment.update({ avatar: user.avatar, login: user.login });
+    }),
+  );
+
+  await Promise.all(
+    replies.map(async reply => {
+      await reply.update({ avatar: user.avatar, login: user.login });
+    }),
+  );
+});
+
+const Basket = sequelize.define('baskets', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  order: { type: DataTypes.JSON },
+});
 const TypeBrand = sequelize.define('type_brand', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });

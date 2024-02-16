@@ -9,6 +9,9 @@
 .commentThumb {
   width: 68%;
 }
+.commentAvatar {
+  border-radius: 50%;
+}
 .commentText {
   overflow-wrap: break-word;
 }

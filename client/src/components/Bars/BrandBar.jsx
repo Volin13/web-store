@@ -11,6 +11,7 @@ const BrandBar = observer(({ loading }) => {
   const [hidden, setHidden] = useState(true);
   const [showMoreBtn, setShowMoreBtn] = useState(true);
   const [showScrollToBtn, setShowScrollToBtn] = useState(false);
+  const [checkedItem, setСheckedItem] = useState(false);
   const listRef = useRef(null);
   const timerRef = useRef(null);
 
@@ -48,8 +49,10 @@ const BrandBar = observer(({ loading }) => {
     // якщо натиснутий бренд співпадає з обраним раніше то відміняємо фільтрацію
     if (brand.id === device.selectedBrand.id) {
       device.setSelectedBrand({});
+      setСheckedItem(false);
     } else {
       device.setSelectedBrand(brand);
+      setСheckedItem(device.selectedBrand);
     }
   };
 
@@ -112,6 +115,24 @@ const BrandBar = observer(({ loading }) => {
           </>
         ) : (
           <>
+            {checkedItem && (
+              <ListGroup.Item
+                style={{
+                  cursor: 'pointer',
+                  width: hidden ? '' : '50%',
+                  minWidth: '110px',
+                  border: '1px solid #e6e9ec',
+                }}
+                active={checkedItem?.id === device.selectedBrand?.id}
+                action
+                onClick={() => {
+                  device.setSelectedBrand({});
+                  setСheckedItem(false);
+                }}
+              >
+                {checkedItem?.name}
+              </ListGroup.Item>
+            )}
             {device?.brands?.map(brand => (
               <ListGroup.Item
                 style={{
@@ -119,9 +140,12 @@ const BrandBar = observer(({ loading }) => {
                   width: hidden ? '110px' : '50%',
                   minWidth: '110px',
                   border: '1px solid #e6e9ec',
+                  display:
+                    brand.id === device.selectedBrand.id
+                      ? 'none'
+                      : 'inline-block',
                 }}
                 action
-                active={brand.id === device.selectedBrand.id}
                 key={brand.id}
                 onClick={() => handleBrandBarClick(brand)}
               >

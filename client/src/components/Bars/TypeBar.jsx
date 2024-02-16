@@ -11,6 +11,8 @@ const TypeBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [showBar, setShowBar] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
+  const [checkedItem, setСheckedItem] = useState(false);
+
   // const [scrollPosition, setScrollPosition] = useState(0);
   const listRef = useRef(null);
 
@@ -18,28 +20,13 @@ const TypeBar = observer(({ loading }) => {
     // якщо натиснутий тип співпадає з обраним раніше то відміняємо фільтрацію
     if (type.id === device.selectedType.id) {
       device.setSelectedType({});
+      setСheckedItem(false);
     } else {
       device.setSelectedType(type);
+      setСheckedItem(device.selectedType);
     }
   };
-  // const list = listRef?.current;
 
-  // useEffect(() => {
-  //   const position = listRef?.current?.scrollTop;
-  //   setScrollPosition(position);
-
-  //   if (device.selectedType.name && scrollPosition && list !== null) {
-  //     listRef?.current?.scrollTo({
-  //       top: scrollPosition,
-  //       behavior: 'smooth', // опціонально: зробить прокрутку плавною
-  //     });
-  //   }
-  // }, [device.selectedType.name, list]);
-
-  // const handleScroll = () => {
-  //   if (listRef.current) {
-  //   }
-  // };
   return (
     <div
       onMouseEnter={() => {
@@ -76,10 +63,31 @@ const TypeBar = observer(({ loading }) => {
           </>
         ) : (
           <>
+            {checkedItem && (
+              <ListGroup.Item
+                style={{
+                  cursor: 'pointer',
+                }}
+                active={checkedItem?.id === device.selectedType?.id}
+                action
+                onClick={() => {
+                  device.setSelectedType({});
+                  setСheckedItem(false);
+                }}
+              >
+                {checkedItem?.name}
+              </ListGroup.Item>
+            )}
             {device?.types?.map(type => (
               <ListGroup.Item
                 className="text-center text-sm-start"
-                style={{ cursor: 'pointer' }}
+                style={{
+                  cursor: 'pointer',
+                  display:
+                    type.id === device.selectedType.id
+                      ? 'none'
+                      : 'inline-block',
+                }}
                 active={type.id === device.selectedType.id}
                 key={type.id}
                 onClick={() => {

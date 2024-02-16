@@ -11,6 +11,7 @@ const RepliesList = forwardRef(
       userId,
       formik,
       commentId,
+      isGravatar,
       repliesList,
       handleEditClick,
       setShowReplyInput,
@@ -28,7 +29,16 @@ const RepliesList = forwardRef(
                 className="d-flex flex-column align-items-center"
                 style={{ marginRight: '10px' }}
               >
-                <Image width={40} height={40} src={item?.avatar} />
+                <Image
+                  width={40}
+                  height={40}
+                  className={css.commentAvatar}
+                  src={
+                    isGravatar(item?.avatar)
+                      ? item?.avatar
+                      : process.env.REACT_APP_API_URL + item?.avatar
+                  }
+                />
                 <span>{item?.login}</span>
               </div>
               <p className="flex-grow-1 p-1">{item?.text}</p>
@@ -86,6 +96,7 @@ const RepliesList = forwardRef(
 RepliesList.propTypes = {
   formik: PropTypes.object,
   userId: PropTypes.number,
+  isGravatar: PropTypes.func,
   commentId: PropTypes.number,
   repliesList: PropTypes.array,
   handleEditClick: PropTypes.func,

@@ -6,6 +6,22 @@ const token = localStorage.getItem('token');
 const decodeToken = jwt_decode(token);
 export const userId = decodeToken.id || 1;
 
+export const fetchAllComments = async (date = '', page, limit) => {
+  try {
+    const { data } = await $host.get('api/comments/', {
+      params: {
+        date,
+        limit,
+        page,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    return toast.error(error.response.data.message);
+  }
+};
+
 export const fetchDeviceComments = async (deviceId, page, limit) => {
   try {
     const { data } = await $host.get('api/comments/' + deviceId, {

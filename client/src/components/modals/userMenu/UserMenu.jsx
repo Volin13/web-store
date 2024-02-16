@@ -55,7 +55,6 @@ const UserMenu = observer(({ show, onHide, user }) => {
     onSubmit: (values, { setSubmitting }) => {
       const { image, userName } = values;
       changeUserData(user?.id, userName.trim(), image).then(data => {
-        console.log(data);
         user.setAvatar(data?.avatar);
         user.setUserLogin(data?.login);
       });
@@ -69,8 +68,6 @@ const UserMenu = observer(({ show, onHide, user }) => {
       formik.setFieldValue('userName', user.userLogin);
     }
   }, [user.userLogin]);
-  console.log(formik.values);
-  console.log(imageFile);
   const isValid = userDataSchema.isValidSync(formik.values);
   const checkName = async name => {
     return await checkUsedLogin(name);
