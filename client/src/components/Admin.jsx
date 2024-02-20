@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { ORDERS_ROUTE } from '../utils/constants';
+import CommentsModal from './modals/CommentsModal';
 import CreateBrand from './modals/CreateBrand';
 import CreateDevice from './modals/CreateDevice';
 import CreateType from './modals/CreateType';
@@ -37,7 +38,7 @@ const Admin = () => {
       <Button
         variant={'outline-dark'}
         className="mt-4 p-2"
-        onClick={() => setDeviceVisible(true)}
+        onClick={() => setCommentsVisible(true)}
       >
         Переглянути коментарі
       </Button>

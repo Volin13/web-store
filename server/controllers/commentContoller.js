@@ -241,15 +241,21 @@ class CommentController {
       limit = parseInt(limit) || 10;
       let offset = page * limit - limit;
 
+      const whereCondition = {};
+
+      if (date !== undefined && date !== '') {
+        whereCondition.updatedAt = date;
+      }
+
       const comments = await Comment.findAndCountAll({
-        where: { updatedAt: date },
+        where: whereCondition,
         order: [['createdAt', 'ASC']],
         include: [{ model: Reply, as: 'reply', order: [['createdAt', 'ASC']] }],
         limit,
         offset,
       });
 
-      return res.json(comments);
+      res.json(comments);
     } catch (error) {
       return next(
         ApiError.internal(

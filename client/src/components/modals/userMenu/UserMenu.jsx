@@ -42,7 +42,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
         return !alreadyUsedName;
       })
       .min(3, 'Your name must be 1 character at least')
-      .max(16, '16 characters max'),
+      .max(12, '12 characters max'),
   });
 
   const formik = useFormik({

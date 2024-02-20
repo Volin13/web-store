@@ -51,7 +51,7 @@ const Auth = observer(() => {
         message: 'Логін не має містити спец символи',
       })
       .trim()
-      .max(25, 'Ваш логін занадто довгий')
+      .max(12, 'Ваш логін занадто довгий')
       .lowercase()
       .notRequired()
       .nullable()
