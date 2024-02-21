@@ -1,24 +1,22 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { useContext } from 'react';
 import { Pagination } from 'react-bootstrap';
-import { Context } from '../../../..';
 
-const CommentPagination = observer(() => {
-  const { device } = useContext(Context);
-  const pageCount = Math.ceil(device.totalCommentCount / device.commentsLimit);
+const CommentPagination = observer(({ state }) => {
+  const pageCount = Math.ceil(state?.totalCommentCount / state?.commentsLimit);
+  console.log(pageCount);
 
   const pages = [];
-  for (let i = 0; i < pageCount.length; i++) {
+  for (let i = 0; i < pageCount; i++) {
     pages.push(i + 1);
   }
   return (
-    <Pagination className="mt-5">
+    <Pagination className="mt-1 text-center">
       {pages.map(page => (
         <Pagination.Item
-          active={device.commentPage === page}
+          active={state?.commentPage === page}
           key={page}
-          onClick={() => device.setCommentPage(page)}
+          onClick={() => state?.setCommentPage(page)}
         >
           {page}
         </Pagination.Item>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
+import { Context } from '../..';
 import * as yup from 'yup';
 import {
   Image,
@@ -11,17 +12,21 @@ import {
   Button,
   OverlayTrigger,
   Tooltip,
+  NavLink,
 } from 'react-bootstrap';
 import RepliesList from '../UI/UX/CommentSection/RepliesList';
+import CommentPagination from '../UI/UX/CommentSection/CommentPagination';
 import MessagesLoading from '../UI/UX/Spinner/MessagesLoading';
 import DeleteMessageModal from './DeleteMessageModal';
 import { fetchAllComments } from '../../http/commentsApi';
 import css from '../UI/UX/CommentSection/CommentSection.module.css';
 import editIcon from '../../assets/defultIcons/edit-message.svg';
 import deleteIcon from '../../assets/defultIcons/delete-message.svg';
+import DataPicker from '../UI/UX/DataPicker/DataPicker';
+import { observer } from 'mobx-react-lite';
+import { DEVICE_ROUTE } from '../../utils/constants';
 
-const CommentsModal = ({ show, onHide }) => {
-  const [comments, setComments] = useState([]);
+const CommentsModal = observer(({ show, onHide }) => {
   const [loading, setLoading] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -30,14 +35,28 @@ const CommentsModal = ({ show, onHide }) => {
     type: '',
     commentId: 0,
   });
+  const { user } = useContext(Context);
+  useEffect(() => {
+    setLoading(true);
+    fetchAllComments().then(data => {
+      user.setTotalCommentCount(data?.count);
+      user.setAdminComments(data?.rows);
+      setLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setLoading(true);
-    fetchAllComments('', 1, 10).then(data => {
-      setComments(data?.rows);
+    fetchAllComments(
+      user.commentDate,
+      user.commentPage,
+      user.commentsLimit
+    ).then(data => {
+      user.setAdminComments(data?.rows);
       setLoading(false);
     });
-  }, []);
+  }, [user, user.commentPage, user.commentDate]);
 
   let typeSchema = yup.object().shape({
     commentText: yup
@@ -65,13 +84,23 @@ const CommentsModal = ({ show, onHide }) => {
   const isValid = typeSchema.isValidSync(formik.values);
   return (
     <>
-      <Modal size="lg" show={show} onHide={onHide} centered>
-        <Modal.Header closeButton></Modal.Header>
+      <Modal
+        size="lg"
+        show={show}
+        onHide={() => {
+          user.setCommentDate('');
+          onHide();
+        }}
+        centered
+      >
+        <Modal.Header closeButton>
+          <h2>Коментарі користувачів</h2>
+        </Modal.Header>
         <Modal.Title className="text-center" id="contained-modal-title-vcenter">
-          Останні коментарі
+          <DataPicker user={user} />
         </Modal.Title>
         <Modal.Body>
-          <ListGroup style={{ overflowУ: 'auto', height: '450px' }}>
+          <ListGroup style={{ height: '350px', overflowY: 'auto' }}>
             {loading ? (
               <>
                 {Array.from({ length: 8 }, (_, index) => (
@@ -87,7 +116,7 @@ const CommentsModal = ({ show, onHide }) => {
               </>
             ) : (
               <>
-                {comments?.map(comment => (
+                {user.adminComments?.map(comment => (
                   <ListGroup.Item
                     className="text-center text-sm-start"
                     key={comment.id}
@@ -137,7 +166,18 @@ const CommentsModal = ({ show, onHide }) => {
                         </button>
                       </OverlayTrigger>
                     </div>
-                    <p>{comment.text}</p>
+                    <NavLink to={DEVICE_ROUTE + `/${comment.deviceId}`}>
+                      <p
+                        className="p-1"
+                        style={{
+                          backgroundColor: '#e6e9ec',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        {comment.text}
+                      </p>
+                    </NavLink>
+
                     {showReplies ? (
                       <>
                         <RepliesList
@@ -265,7 +305,9 @@ const CommentsModal = ({ show, onHide }) => {
             )}
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+        <Modal.Footer className="justify-content-center">
+          <CommentPagination state={user} />
+        </Modal.Footer>
       </Modal>
       <DeleteMessageModal
         handleDeleteClick={handleDeleteClick}
@@ -275,7 +317,7 @@ const CommentsModal = ({ show, onHide }) => {
       />
     </>
   );
-};
+});
 
 CommentsModal.propTypes = {
   show: PropTypes.bool,

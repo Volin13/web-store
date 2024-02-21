@@ -238,13 +238,23 @@ class CommentController {
     try {
       let { date, limit, page } = req.query;
       page = parseInt(page) || 1;
-      limit = parseInt(limit) || 10;
+      limit = parseInt(limit) || 8;
       let offset = page * limit - limit;
 
       const whereCondition = {};
 
       if (date !== undefined && date !== '') {
-        whereCondition.updatedAt = date;
+        // Визначення діапазону дати для пошуку
+
+        const startDate = new Date(date);
+        const endDate = new Date(
+          new Date(date).setDate(startDate.getDate() + 1),
+        ); // Додаємо один день до дати
+
+        whereCondition.updatedAt = {
+          [Op.gte]: startDate,
+          [Op.lt]: endDate,
+        };
       }
 
       const comments = await Comment.findAndCountAll({

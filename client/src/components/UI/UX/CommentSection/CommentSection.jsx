@@ -224,7 +224,7 @@ const CommentSection = observer(({ user, id }) => {
           </Form>
         </Card.Body>
       </Card>
-      <CommentPagination />
+      <CommentPagination state={device} />
     </div>
   );
 });

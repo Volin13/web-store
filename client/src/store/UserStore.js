@@ -8,6 +8,12 @@ export default class UserStore {
   _id = 0;
   _role = '';
   _email = '';
+  _adminComments = [];
+  _commentPage = 1;
+  _commentDate = '';
+  _commentsLimit = 8;
+  _totalCommentCount = 0;
+
   constructor() {
     makeObservable(this, {
       _isAuth: observable,
@@ -17,6 +23,11 @@ export default class UserStore {
       _id: observable,
       _role: observable,
       _email: observable,
+      _adminComments: observable,
+      _commentPage: observable,
+      _commentDate: observable,
+      _commentsLimit: observable,
+      _totalCommentCount: observable,
       setIsAuth: action,
       setUser: action,
       setUserLogin: action,
@@ -24,6 +35,11 @@ export default class UserStore {
       setId: action,
       setRole: action,
       setEmail: action,
+      setCommentPage: action,
+      setCommentDate: action,
+      setCommentsLimit: action,
+      setTotalCommentCount: action,
+      setAdminComments: action,
       isAuth: computed,
       user: computed,
       userLogin: computed,
@@ -31,6 +47,11 @@ export default class UserStore {
       role: computed,
       email: computed,
       id: computed,
+      adminComments: computed,
+      commentsLimit: computed,
+      totalCommentCount: computed,
+      commentPage: computed,
+      commentDate: computed,
     });
   }
   setIsAuth(bool) {
@@ -46,6 +67,9 @@ export default class UserStore {
   setAvatar(avatar) {
     this._avatar = avatar;
   }
+  setAdminComments(adminComments) {
+    this._adminComments = adminComments;
+  }
   setId(id) {
     this._id = id;
   }
@@ -55,7 +79,18 @@ export default class UserStore {
   setEmail(email) {
     this._email = email;
   }
-
+  setCommentPage(commentPage) {
+    this._commentPage = commentPage;
+  }
+  setCommentDate(commentDate) {
+    this._commentDate = commentDate;
+  }
+  setCommentsLimit(totalCommentsCount) {
+    this._totalCommentsCount = totalCommentsCount;
+  }
+  setTotalCommentCount(totalCommentCount) {
+    this._totalCommentCount = totalCommentCount;
+  }
   get isAuth() {
     return this._isAuth;
   }
@@ -77,5 +112,20 @@ export default class UserStore {
   }
   get id() {
     return this._id;
+  }
+  get adminComments() {
+    return this._adminComments;
+  }
+  get commentPage() {
+    return this._commentPage;
+  }
+  get commentDate() {
+    return this._commentDate;
+  }
+  get totalCommentCount() {
+    return this._totalCommentCount;
+  }
+  get commentsLimit() {
+    return this._commentsLimit;
   }
 }
