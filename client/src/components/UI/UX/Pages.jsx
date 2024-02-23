@@ -13,17 +13,21 @@ const Pages = observer(() => {
     pages.push(i + 1);
   }
   return (
-    <Pagination className="mt-5">
-      {pages.map(page => (
-        <Pagination.Item
-          active={device?.page === page}
-          key={page}
-          onClick={() => device?.setPage(page)}
-        >
-          {page}
-        </Pagination.Item>
-      ))}
-    </Pagination>
+    <>
+      {pages.length > 1 && (
+        <Pagination className="mt-3 justify-content-center">
+          {pages.map(page => (
+            <Pagination.Item
+              active={device?.page === page}
+              key={page}
+              onClick={() => device?.setPage(page)}
+            >
+              {page}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+      )}
+    </>
   );
 });
 

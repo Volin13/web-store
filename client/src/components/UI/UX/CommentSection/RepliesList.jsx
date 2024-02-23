@@ -8,6 +8,7 @@ import css from './CommentSection.module.css';
 const RepliesList = forwardRef(
   (
     {
+      user,
       userId,
       formik,
       commentId,
@@ -70,7 +71,10 @@ const RepliesList = forwardRef(
               >
                 <button
                   style={{
-                    display: userId === item?.userId ? 'block' : 'none',
+                    display:
+                      userId === item?.userId || user?.role === 'ADMIN'
+                        ? 'block'
+                        : 'none',
                   }}
                   className={`${css.messageBtn}`}
                   type="button"
@@ -94,6 +98,7 @@ const RepliesList = forwardRef(
 );
 
 RepliesList.propTypes = {
+  user: PropTypes.object,
   formik: PropTypes.object,
   userId: PropTypes.number,
   isGravatar: PropTypes.func,

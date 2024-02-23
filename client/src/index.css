@@ -10,12 +10,9 @@ body {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bgColor);
-  color: var(--primaryWhiteColor);
+  padding-bottom: 30px;
 }
-.ytp-chrome-bottom {
-  width: 91% !important;
-}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -30,7 +27,6 @@ code {
 
 /* Remove default margin and padding */
 html,
-body,
 div,
 span,
 applet,

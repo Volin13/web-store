@@ -24,7 +24,7 @@ const DataPicker = observer(({ user }) => {
         selected={user.commentDate}
         onChange={handleDateChange}
         dateFormat="yyyy-MM-dd"
-        placeholderText="Оберіть дату"
+        placeholderText=" "
       />
     </div>
   );

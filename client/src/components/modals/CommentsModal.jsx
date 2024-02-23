@@ -18,12 +18,19 @@ import RepliesList from '../UI/UX/CommentSection/RepliesList';
 import CommentPagination from '../UI/UX/CommentSection/CommentPagination';
 import MessagesLoading from '../UI/UX/Spinner/MessagesLoading';
 import DeleteMessageModal from './DeleteMessageModal';
-import { fetchAllComments } from '../../http/commentsApi';
+import {
+  deleteComment,
+  deleteReply,
+  editComment,
+  editReply,
+  fetchAllComments,
+} from '../../http/commentsApi';
 import css from '../UI/UX/CommentSection/CommentSection.module.css';
 import editIcon from '../../assets/defultIcons/edit-message.svg';
 import deleteIcon from '../../assets/defultIcons/delete-message.svg';
 import DataPicker from '../UI/UX/DataPicker/DataPicker';
 import { observer } from 'mobx-react-lite';
+import { toast } from 'react-toastify';
 import { DEVICE_ROUTE } from '../../utils/constants';
 
 const CommentsModal = observer(({ show, onHide }) => {
@@ -59,7 +66,7 @@ const CommentsModal = observer(({ show, onHide }) => {
   }, [user, user.commentPage, user.commentDate]);
 
   let typeSchema = yup.object().shape({
-    commentText: yup
+    comment: yup
       .string()
       .trim()
       .min(3, 'Назва занадто коротка')
@@ -69,17 +76,70 @@ const CommentsModal = observer(({ show, onHide }) => {
   });
   const formik = useFormik({
     initialValues: {
-      commentText: '',
+      comment: '',
+      reply: '',
+      messageId: '',
+      type: '',
     },
     validationSchema: typeSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      const { comment, reply, messageId, type } = values;
+      try {
+        if (type === 'comment') {
+          setSubmitting(true);
+          await editComment(messageId, user, comment);
+        }
+        if (type === 'reply') {
+          setSubmitting(true);
+          await editReply(messageId, reply);
+        }
+        setShowReplyInput(false);
+      } catch (error) {
+        toast.error('При відправці сталась помилка, спробуйте пізніше');
+        console.log(error);
+      } finally {
+        fetchAllComments(
+          user.commentDate,
+          user.commentPage,
+          user.commentsLimit
+        ).then(data => {
+          user.setAdminComments(data?.rows);
+          setLoading(false);
+        });
+      }
       setSubmitting(false);
       resetForm(true);
     },
   });
 
-  const handleDeleteClick = () => {};
-  const handleEditClick = () => {};
+  const handleDeleteClick = async deleteMessage => {
+    const { type, commentId } = deleteMessage;
+    try {
+      if (type === 'comment') {
+        setLoading(true);
+        await deleteComment(commentId, user.isAuth, formik.values.comment).then(
+          setShowDeleteModal(false)
+        );
+      }
+      if (type === 'reply') {
+        setLoading(true);
+        await deleteReply(commentId, formik.values.reply).then(
+          setShowDeleteModal(false)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      fetchAllComments(
+        user.commentDate,
+        user.commentPage,
+        user.commentsLimit
+      ).then(data => {
+        user.setAdminComments(data?.rows);
+        setLoading(false);
+      });
+    }
+  };
 
   const isValid = typeSchema.isValidSync(formik.values);
   return (
@@ -131,7 +191,7 @@ const CommentsModal = observer(({ show, onHide }) => {
                         <button
                           onClick={() => {
                             setShowReplyInput(comment?.id);
-                            handleEditClick('comment', comment?.text);
+                            formik.setFieldValue('comment', comment?.text);
                             formik.setFieldValue('messageId', comment?.id);
                             formik.setFieldValue('type', 'comment');
                           }}
@@ -178,42 +238,28 @@ const CommentsModal = observer(({ show, onHide }) => {
                       </p>
                     </NavLink>
 
-                    {showReplies ? (
+                    {showReplies === comment?.id ? (
                       <>
                         <RepliesList
+                          user={user}
                           formik={formik}
-                          isGravatar={''}
+                          isGravatar={() => {}}
                           commentId={comment?.id}
                           repliesList={comment?.reply}
                           handleDeleteClick={handleDeleteClick}
                           setShowReplyInput={setShowReplyInput}
                           setShowDeleteModal={setShowDeleteModal}
-                          handleEditClick={handleEditClick}
+                          setMessageToDelete={setMessageToDelete}
                         />
-                        {!showReplyInput && (
-                          <div
-                            className="d-flex justify-content-end"
-                            style={{ paddingRight: '16px' }}
+                        <div className="text-end">
+                          <button
+                            style={{ color: '#0c6efc' }}
+                            onClick={() => setShowReplies(false)}
+                            type="button"
                           >
-                            <button
-                              className={`${css.messageBtn}`}
-                              onClick={() => setShowReplyInput(true)}
-                              style={{
-                                color: '#0c6efc',
-                                marginRight: '20px',
-                              }}
-                            >
-                              Відповісти
-                            </button>
-                            <button
-                              className={`${css.messageBtn}`}
-                              onClick={() => setShowReplies(false)}
-                              style={{ color: '#0c6efc' }}
-                            >
-                              Закрити
-                            </button>
-                          </div>
-                        )}
+                            Приховати
+                          </button>
+                        </div>
                       </>
                     ) : (
                       <div
@@ -248,55 +294,54 @@ const CommentsModal = observer(({ show, onHide }) => {
                       <MessagesLoading />
                     ) : (
                       <>
-                        {showReplies === comment?.id &&
-                          comment?.reply?.length && (
-                            <Form onSubmit={formik.handleSubmit}>
-                              <Form.Group>
-                                <Form.Control
-                                  placeholder="Дотримуйтесь культури спілкування будь-ласка"
-                                  name="commentText"
-                                  as="textarea"
-                                  value={formik.values.commentText}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  isInvalid={
-                                    formik.touched.commentText &&
-                                    !!formik.errors.commentText
-                                  }
-                                  rows={2}
-                                />
-                                {formik.touched.commentText &&
-                                  formik.errors.commentText && (
-                                    <Form.Control.Feedback type="invalid">
-                                      {formik.errors.commentText}
-                                    </Form.Control.Feedback>
-                                  )}
-                                <div className="d-flex justify-content-end mt-3">
-                                  <Button
-                                    variant="outline-primary"
-                                    type="submit"
-                                    disabled={!isValid}
-                                    className="p-2"
-                                    style={{ marginRight: '10px' }}
-                                    onClick={() => formik.submitForm()}
-                                  >
-                                    Відправити
-                                  </Button>
-                                  <Button
-                                    className="p-2"
-                                    type="button"
-                                    variant="outline-danger"
-                                    onClick={() => {
-                                      formik.setFieldValue('reply', '');
-                                      setShowReplyInput(false);
-                                    }}
-                                  >
-                                    Закрити
-                                  </Button>
-                                </div>
-                              </Form.Group>
-                            </Form>
-                          )}
+                        {showReplyInput === comment?.id && (
+                          <Form onSubmit={formik.handleSubmit}>
+                            <Form.Group>
+                              <Form.Control
+                                placeholder="Дотримуйтесь культури спілкування будь-ласка"
+                                name="comment"
+                                as="textarea"
+                                value={formik.values.comment}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                isInvalid={
+                                  formik.touched.comment &&
+                                  !!formik.errors.comment
+                                }
+                                rows={2}
+                              />
+                              {formik.touched.comment &&
+                                formik.errors.comment && (
+                                  <Form.Control.Feedback type="invalid">
+                                    {formik.errors.comment}
+                                  </Form.Control.Feedback>
+                                )}
+                              <div className="d-flex justify-content-end mt-3">
+                                <Button
+                                  variant="outline-primary"
+                                  type="submit"
+                                  disabled={!isValid}
+                                  className="p-2"
+                                  style={{ marginRight: '10px' }}
+                                  onClick={() => formik.submitForm()}
+                                >
+                                  Відправити
+                                </Button>
+                                <Button
+                                  className="p-2"
+                                  type="button"
+                                  variant="outline-danger"
+                                  onClick={() => {
+                                    formik.setFieldValue('reply', '');
+                                    setShowReplyInput(false);
+                                  }}
+                                >
+                                  Закрити
+                                </Button>
+                              </div>
+                            </Form.Group>
+                          </Form>
+                        )}
                       </>
                     )}
                   </ListGroup.Item>
