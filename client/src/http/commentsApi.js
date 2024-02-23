@@ -3,8 +3,11 @@ import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
-const decodeToken = jwt_decode(token);
-export const userId = decodeToken.id || 1;
+let decodeToken = { id: '' };
+if (token) {
+  decodeToken = jwt_decode(token);
+}
+export const userId = decodeToken.id !== '' ? decodeToken.id : 1;
 
 export const fetchAllComments = async (date = '', page, limit) => {
   try {

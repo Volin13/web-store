@@ -3,15 +3,18 @@ import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
-const decodeToken = jwt_decode(token);
-export const userId = decodeToken.id || 1;
+let decodeToken = { id: '' };
+if (token) {
+  decodeToken = jwt_decode(token);
+}
+export const userId = decodeToken.id !== '' ? decodeToken.id : 1;
 
 export const registration = async (email, password, login) => {
   try {
     const { data } = await $host.post('api/user/registration', {
       email,
       password,
-      role: 'ADMIN',
+      // role: 'ADMIN',
       login,
     });
     return data;

@@ -15,7 +15,10 @@ const Pages = observer(() => {
   return (
     <>
       {pages.length > 1 && (
-        <Pagination className="mt-3 justify-content-center">
+        <Pagination
+          className="mt-3 justify-content-center"
+          style={{ paddingBottom: '30px' }}
+        >
           {pages.map(page => (
             <Pagination.Item
               active={device?.page === page}

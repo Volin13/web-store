@@ -10,7 +10,6 @@ body {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-bottom: 30px;
 }
 
 code {
@@ -27,6 +26,7 @@ code {
 
 /* Remove default margin and padding */
 html,
+body,
 div,
 span,
 applet,
