@@ -299,3 +299,25 @@ hr {
 .scrollToStartBtnImg {
   transform: rotate(90deg);
 }
+/* AUTH */
+.resendConfirmation {
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(13, 110, 253);
+  transition: color 500ms;
+}
+.resendConfirmation:hover,
+.resendConfirmation:focus {
+  color: #0a58ca;
+}
+@media only screen and (min-width: 399px) {
+  .resendConfirmation {
+    bottom: -75px;
+  }
+}
+@media only screen and (min-width: 769px) {
+  .resendConfirmation {
+    bottom: 10px;
+  }
+}

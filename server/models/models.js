@@ -1,17 +1,35 @@
 const sequelize = require('../db');
 const { DataTypes } = require('sequelize');
 
-const User = sequelize.define('user', {
+const User = sequelize.define('users', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   email: { type: DataTypes.STRING, unique: true },
   password: { type: DataTypes.STRING },
+  googlePassword: { type: DataTypes.STRING },
   login: {
     type: DataTypes.STRING,
     defaultValue: DataTypes.UUIDV4,
     unique: true,
   },
-  avatar: { type: DataTypes.STRING, allowNull: false },
+  avatar: {
+    type: DataTypes.STRING,
+    defaultValue:
+      'https://res.cloudinary.com/dwgpcl0nu/image/upload/default/6e65aca7b2a0f2037067099ae5b16594.jpg',
+    allowNull: false,
+  },
   role: { type: DataTypes.STRING, defaultValue: 'USER' },
+  byGoogle: { type: DataTypes.BOOLEAN, defaultValue: false },
+  verify: { type: DataTypes.BOOLEAN, defaultValue: false },
+  verificationToken: { type: DataTypes.STRING, defaultValue: '' },
+  passwordResetStage: { type: DataTypes.STRING, defaultValue: '' },
+  passwordResetTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  timeSinceLastDBSecureRequest: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  userDeviceInfo: { type: DataTypes.STRING, defaultValue: '' },
+  accessToken: { type: DataTypes.STRING, defaultValue: '' },
+  refreshToken: { type: DataTypes.STRING, defaultValue: '' },
 });
 
 const Order = sequelize.define('orders', {

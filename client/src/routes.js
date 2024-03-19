@@ -1,14 +1,20 @@
 import { lazy } from 'react';
+import GoogleAuth from './pages/GoogleAuth/GoogleAuth';
+import ResetPasswordPage from './pages/ResetPasswordPage/ResetPasswordPage';
+import VerifyPage from './pages/VerifyPage/VerifyPage';
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
   DEVICE_ROUTE,
+  GOOGLE_VERIFICATION_ROUTE,
   LOGIN_ROUTE,
   NOT_FOUND_ROUTE,
   ORDERS_ROUTE,
   REGISTRATION_ROUTE,
+  RESET_PASSWORD_ROUTE,
   SHOP_ROUTE,
   USER_ORDERS_ROUTE,
+  VERIFICATION_ROUTE,
 } from './utils/constants';
 
 const AdminPage = lazy(() => import('./pages/AdminPage/AdminPage'));
@@ -71,6 +77,19 @@ export const publicRoutes = [
   {
     path: REGISTRATION_ROUTE,
     Component: AuthPage,
+  },
+  {
+    path: VERIFICATION_ROUTE + '/:verificationToken',
+    Component: VerifyPage,
+  },
+  {
+    path: GOOGLE_VERIFICATION_ROUTE + '/:googleAuthToken',
+    Component: GoogleAuth,
+  },
+  {
+    path: RESET_PASSWORD_ROUTE + '/:resetEmailToken',
+    Component: ResetPasswordPage,
+    redirectTo: LOGIN_ROUTE,
   },
   {
     path: DEVICE_ROUTE + '/:id',

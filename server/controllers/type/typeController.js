@@ -1,5 +1,5 @@
-const { Type } = require("../models/models");
-const ApiError = require("../error/ApiError");
+const { Type } = require('../../models/models');
+const ApiError = require('../../error/ApiError');
 
 class TypeController {
   // Створюю новий тип

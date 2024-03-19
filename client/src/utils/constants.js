@@ -6,4 +6,7 @@ export const DEVICE_ROUTE = '/device';
 export const BASKET_ROUTE = '/basket';
 export const ORDERS_ROUTE = '/orders';
 export const USER_ORDERS_ROUTE = '/orders/user';
+export const VERIFICATION_ROUTE = '/verification-token';
+export const GOOGLE_VERIFICATION_ROUTE = '/verification-token';
+export const RESET_PASSWORD_ROUTE = '/password-reset-token';
 export const NOT_FOUND_ROUTE = '*';

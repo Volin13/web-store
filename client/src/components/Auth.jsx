@@ -24,6 +24,7 @@ const Auth = observer(() => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alreadyUsedName, setAlreadyUsedName] = useState(false);
+  const [resendEmailConfirm, setResendEmailConfirm] = useState(false);
 
   const { user } = useContext(Context);
   const location = useLocation();
@@ -61,10 +62,10 @@ const Auth = observer(() => {
     password: yup
       .string()
       .trim()
-      .matches(
-        /^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ0-9]+(([' -][a-zA-Zа-яА-Я0-9 ])?[a-zA-Zа-яА-Я0-9]*)*$/,
-        'Спеціальні символи не підходять'
-      )
+      // .matches(
+      //   /^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ0-9]+(([' -][a-zA-Zа-яА-Я0-9 ])?[a-zA-Zа-яА-Я0-9]*)*$/,
+      //   'Спеціальні символи не підходять'
+      // )
       .min(6, 'Ваш пароль занадто короткий')
       .max(254, 'Максимальна довжина паролю 254 символа')
       .required('Введіть ваш пароль'),
@@ -91,9 +92,16 @@ const Auth = observer(() => {
             navigate(SHOP_ROUTE);
           }
         } else {
-          userData = await registration(email, password, login);
-          toast.info('Увійдіть у свій аккаунт');
-          navigate(LOGIN_ROUTE);
+          try {
+            userData = await registration(email, password, login);
+            setResendEmailConfirm(true);
+            toast.info(
+              'Ваш акаунт було зараєстровано, перевірте email для підтвердження'
+            );
+            navigate(LOGIN_ROUTE);
+          } catch (e) {
+            console.log(e);
+          }
         }
       } catch (e) {
         toast.error('Сталась помилка, спробуйте пізніше');
@@ -265,6 +273,14 @@ const Auth = observer(() => {
             </Button>
           </div>
         </Form>
+        {resendEmailConfirm && (
+          <button
+            className="position-absolute resendConfirmation"
+            onClick={() => {}}
+          >
+            Відправити підтвердження ще раз
+          </button>
+        )}
       </Card>
     </>
   );

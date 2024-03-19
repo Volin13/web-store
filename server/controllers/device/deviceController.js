@@ -2,10 +2,10 @@ const uuid = require('uuid');
 const path = require('path');
 const fs = require('fs');
 const { Op } = require('sequelize');
-const sequelize = require('../db');
+const sequelize = require('../../db');
 
-const ApiError = require('../error/ApiError');
-const { Device, DeviceInfo, DeviceImages } = require('../models/models');
+const ApiError = require('../../error/ApiError');
+const { Device, DeviceInfo, DeviceImages } = require('../../models/models');
 class DeviceController {
   // СТВОРЕННЯ
   async create(req, res, next) {

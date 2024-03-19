@@ -1,5 +1,5 @@
-const { Device, Comment, Reply, User } = require('../models/models');
-const ApiError = require('../error/ApiError');
+const { Device, Comment, Reply, User } = require('../../models/models');
+const ApiError = require('../../error/ApiError');
 const { Op } = require('sequelize');
 
 class CommentController {
@@ -31,7 +31,7 @@ class CommentController {
       }
       const device = await Device.findByPk(deviceId);
       if (!device) {
-        return next(ApiError.badRequest('Девайс не знайдено'));
+        return next(ApiError.notFound('Девайс не знайдено'));
       }
       const user = await User.findOne({
         where: {
@@ -78,7 +78,7 @@ class CommentController {
         where: { commentId: id },
       });
       if (!comment) {
-        return next(ApiError.badRequest('Коментар не знайдено'));
+        return next(ApiError.notFound('Коментар не знайдено'));
       }
 
       // Перевірка, чи користувач власник коментаря
@@ -146,7 +146,7 @@ class CommentController {
       });
 
       if (!comment) {
-        return next(ApiError.badRequest('Коментар не знайдено'));
+        return next(ApiError.notFound('Коментар не знайдено'));
       }
 
       const reply = await Reply.create({
@@ -183,7 +183,7 @@ class CommentController {
       console.log(userId, typeof userId);
       const reply = await Reply.findByPk(id);
       if (!reply) {
-        return next(ApiError.badRequest('Відповідь не знайдено'));
+        return next(ApiError.notFound('Відповідь не знайдено'));
       }
 
       // Перевірка, чи користувач власник відповіді

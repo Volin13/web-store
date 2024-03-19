@@ -14,13 +14,34 @@ export const registration = async (email, password, login) => {
     const { data } = await $host.post('api/user/registration', {
       email,
       password,
-      // role: 'ADMIN',
       login,
     });
     return data;
   } catch (e) {
     console.log(e.response.data.message);
     toast.error('Сталась помилка, спробуйте пізніше');
+    return;
+  }
+};
+export const verificateUser = async verificationToken => {
+  try {
+    const { data } = await $host.get(`/verify/${verificationToken}`);
+    toast.success(`${data.message}!`);
+    return data;
+  } catch (e) {
+    console.log(e.response.data.message);
+    toast.error(e.response.data.message);
+    return;
+  }
+};
+export const verifyResendEmail = async () => {
+  try {
+    const { data } = await $host.get(`/verify/resend-email`);
+    toast.success(`${data.message}!`);
+    return data;
+  } catch (e) {
+    console.log(e.response.data.message);
+    toast.error(e.response.data.message);
     return;
   }
 };
@@ -34,6 +55,66 @@ export const logIn = async (email, password) => {
     console.log(e.response.data.message);
     toast.error(e.response.data.message);
     return;
+  }
+};
+export const loginWithGoogle = async googleAuthToken => {
+  try {
+    const { data } = await $host.post('api/user/login-google', {
+      googleAuthToken,
+    });
+    toast.success(`Вітаю!`);
+    return data;
+  } catch (error) {
+    if (error.response.status === 401) {
+      toast.error(
+        `${error.response?.data?.message ?? 'Email не підтверджено'}!`
+      );
+    }
+    if (error.response.status === 403) {
+      toast.error(
+        `${
+          error.response?.data?.message ??
+          'Невірний Email або пароль, спробуйте ще раз'
+        }!`
+      );
+    }
+
+    if (error.response.status === 400) {
+      toast.error(
+        `${
+          error.response?.data?.message ?? 'Сталась помилка, спробуйте ще раз'
+        }!`
+      );
+    }
+    return error.message;
+  }
+};
+
+export const postResetPassword = async info => {
+  try {
+    const { data } = await $host.post(`api/user/reset-password`, info);
+    return data;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+// export const postResendLink = async info => {
+//   try {
+//     const { data } = await $host.post(`/users/reset/send-reset-link`, info);
+//     return data;
+//   } catch (error) {
+//     console.log(error.message);
+//     return null;
+//   }
+// };
+export const postSetNewPassword = async info => {
+  try {
+    const { data } = await $host.post(`api/user/set-new-password`, info);
+    return data;
+  } catch (error) {
+    console.log(error.message);
+    return null;
   }
 };
 

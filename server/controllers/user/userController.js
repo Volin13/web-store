@@ -1,9 +1,9 @@
-const { User, Basket } = require('../models/models');
-const ApiError = require('../error/ApiError');
+const { User, Basket } = require('../../models/models');
+const ApiError = require('../../error/ApiError');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const sequelize = require('../db');
+const sequelize = require('../../db');
 const path = require('path');
 
 const fs = require('fs');
@@ -25,7 +25,7 @@ class UserController {
     }
     const candidate = await User.findOne({ where: { email } });
     if (candidate) {
-      return next(ApiError.badRequest('Користувач з таким email уже існує'));
+      return next(ApiError.conflict('Користувач з таким email уже існує'));
     }
     const hashPassword = await bcrypt.hash(password, 5);
     // Створення користувача і його кошика

@@ -1,5 +1,5 @@
-const { Order } = require('../models/models');
-const ApiError = require('../error/ApiError');
+const { Order } = require('../../models/models');
+const ApiError = require('../../error/ApiError');
 class OrderController {
   async createOrder(req, res, next) {
     // Створюєм замовлення з id userId даними користувача та самим вмістом замовлення
