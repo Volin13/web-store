@@ -325,7 +325,7 @@ const CommentsList = ({
   );
 };
 CommentsList.propTypes = {
-  id: PropTypes.number,
+  id: PropTypes.string,
   list: PropTypes.array,
   user: PropTypes.object,
   isValid: PropTypes.bool,

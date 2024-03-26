@@ -2,7 +2,15 @@ import React, { useCallback, useContext, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Image, InputGroup, Card, Form, Button } from 'react-bootstrap';
+import {
+  Image,
+  InputGroup,
+  Card,
+  Form,
+  Button,
+  Tooltip,
+  OverlayTrigger,
+} from 'react-bootstrap';
 import {
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
@@ -16,6 +24,7 @@ import * as yup from 'yup';
 import emailIcon from '../assets/authIcons/emailIcon.svg';
 import loginIcon from '../assets/authIcons/login.svg';
 import passwordIcon from '../assets/authIcons/passwordIcon.svg';
+import googleIcon from '../assets/authIcons/google-color-svgrepo-com.svg';
 import { ReactComponent as VisibleIcon } from '../assets/authIcons/visible-svgrepo-com.svg';
 import { ReactComponent as NotVisible } from '../assets/authIcons/not-visible-svgrepo-com.svg';
 
@@ -62,10 +71,6 @@ const Auth = observer(() => {
     password: yup
       .string()
       .trim()
-      // .matches(
-      //   /^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ0-9]+(([' -][a-zA-Zа-яА-Я0-9 ])?[a-zA-Zа-яА-Я0-9]*)*$/,
-      //   'Спеціальні символи не підходять'
-      // )
       .min(6, 'Ваш пароль занадто короткий')
       .max(254, 'Максимальна довжина паролю 254 символа')
       .required('Введіть ваш пароль'),
@@ -123,23 +128,45 @@ const Auth = observer(() => {
   const checkName = async name => {
     return await checkUsedLogin(name);
   };
-  const handleLoginChange = async value => {
-    try {
-      setLoading(true);
-      await checkName(value).then(data => {
-        setAlreadyUsedName(data);
-        setLoading(false);
-        if (!data) {
-          formik.setFieldError('login', '');
-          return;
+  // const handleLoginChange = async value => {
+  //   try {
+  //     setLoading(true);
+  //     await checkName(value).then(data => {
+  //       setAlreadyUsedName(data);
+  //       setLoading(false);
+  //       if (!data) {
+  //         formik.setFieldError('login', '');
+  //         return;
+  //       }
+  //       authSchema.validateSyncAt('login'); // Викликаємо валідацію
+  //     });
+  //   } catch (error) {
+  //     formik.setFieldError('login', error.message); // Встановлюємо помилку
+  //   }
+  // };
+  // const debounceFn = useCallback(value => _debounce(handleLoginChange, 300), [handleLoginChange]);
+  const debounceFn = useCallback(
+    value => {
+      const handleLoginChange = async value => {
+        try {
+          setLoading(true);
+          await checkName(value).then(data => {
+            setAlreadyUsedName(data);
+            setLoading(false);
+            if (!data) {
+              formik.setFieldError('login', '');
+              return;
+            }
+            authSchema.validateSyncAt('login');
+          });
+        } catch (error) {
+          formik.setFieldError('login', error.message);
         }
-        authSchema.validateSyncAt('login'); // Викликаємо валідацію
-      });
-    } catch (error) {
-      formik.setFieldError('login', error.message); // Встановлюємо помилку
-    }
-  };
-  const debounceFn = useCallback(_debounce(handleLoginChange, 300), []);
+      };
+      _debounce(handleLoginChange, 300)(value);
+    },
+    [formik, setLoading, setAlreadyUsedName, authSchema]
+  );
 
   return (
     <>
@@ -281,6 +308,21 @@ const Auth = observer(() => {
             Відправити підтвердження ще раз
           </button>
         )}
+        <OverlayTrigger
+          placement="bottom"
+          overlay={
+            <Tooltip id="tooltip-bottom">Увійти за допомогою пошти</Tooltip>
+          }
+        >
+          <a
+            href={
+              process.env.REACT_APP_API_URL + 'api/user/redirect-google-login'
+            }
+            className="googleAuthIcon"
+          >
+            <Image width={40} height={40} src={googleIcon} />
+          </a>
+        </OverlayTrigger>
       </Card>
     </>
   );

@@ -1,5 +1,6 @@
 const { google } = require('googleapis');
 const { v4: uuidv4 } = require('uuid');
+const UAParser = require('ua-parser-js');
 const ApiError = require('../../error/ApiError');
 const { User } = require('../../models/models');
 const jwt = require('jsonwebtoken');
@@ -19,7 +20,8 @@ const oAuth2Client = new google.auth.OAuth2(
 const { ACCESS_SECRET_KEY, BASE_FRONTEND_URL } = process.env;
 
 const googleCallback = async (req, res) => {
-  let email, name;
+  let email;
+  let name;
   try {
     const code = req.query.code;
     const { tokens } = await oAuth2Client.getToken(code);
@@ -35,14 +37,22 @@ const googleCallback = async (req, res) => {
   }
 
   const googlePassword = uuidv4();
-  const user = await User.findOne({ email });
+  let user;
+  const userDeviceInfo = JSON.stringify(UAParser(req.headers['user-agent']));
+
+  if (email) {
+    user = await User.findOne({ where: { email: email } });
+  }
   if (!user) {
     await User.create({
-      email,
-      name,
+      email: email,
+      login: name,
       onlyGoogle: true,
       password: uuidv4(),
+      verify: true,
+      byGoogle: true,
       googlePassword,
+      userDeviceInfo,
     });
   } else {
     user.googlePassword = googlePassword;

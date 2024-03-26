@@ -99,7 +99,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       arr.forEach(item => {
         if (item.id === deviceToEdit?.typeId && name === 'type') {
           device.setSelectedType(item);
-        } else if (item.id === deviceToEdit?.typeId && name === 'brand') {
+        } else {
           device.setSelectedBrand(item);
         }
       });

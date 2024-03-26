@@ -11,24 +11,21 @@ const register = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = uuidv4();
   const lowCaseEmail = email.toLowerCase();
-  console.log(User);
-  const user = await User.findOne({ where: { email: email } });
-  console.log(user);
+  const client = await User.findOne({ where: { email: email } });
 
   if (!email || !password) {
     return next(ApiError.forbidden('Ваш email або пароль невірний'));
   }
-  if (user) {
-    if (!user.byGoogle) {
+  if (client) {
+    if (!client.byGoogle) {
       return next(ApiError.conflict('Користувач з таким email уже існує'));
     } else {
-      user.password = hashPassword;
-      user.verificationToken = verificationToken;
-      await user.save();
+      client.password = hashPassword;
+      client.verificationToken = verificationToken;
+      await client.save();
     }
   } else {
-    console.log('1');
-    user = await User.create({
+    client = await User.create({
       login,
       role,
       email: lowCaseEmail,
@@ -36,18 +33,16 @@ const register = async (req, res) => {
       verificationToken,
     });
 
-    const basket = await Basket.create({ userId: user.id });
+    const basket = await Basket.create({ userId: client.id });
     await basket.save();
   }
-  console.log('2');
-
   const verificationEmail = {
     to: email,
     subject: 'Підтвердження пошти',
     html: emailConfirmation(verificationToken),
   };
   await sendEmail(verificationEmail);
-  const token = generateJwt(user.id, user.email, user.role);
+  const token = generateJwt(client.id, client.email, client.role);
   res.json({ token });
 };
 

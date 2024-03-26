@@ -62,35 +62,38 @@ const UserMenu = observer(({ show, onHide, user }) => {
       setSubmitting(true);
     },
   });
-
+  console.log(user.userLogin);
   useEffect(() => {
     if (user.userLogin) {
       formik.setFieldValue('userName', user.userLogin);
     }
-  }, [user.userLogin]);
+  }, [user.userLogin, formik]);
   const isValid = userDataSchema.isValidSync(formik.values);
   const checkName = async name => {
     return await checkUsedLogin(name);
   };
-  const handleLoginChange = async value => {
-    try {
-      setLoading(true);
-      await checkName(value).then(data => {
-        setAlreadyUsedName(data);
-        setLoading(false);
-        if (!data) {
-          formik.setFieldError('userName', '');
-          return;
+  const debounceFn = useCallback(
+    value => {
+      const handleLoginChange = async value => {
+        try {
+          setLoading(true);
+          await checkName(value).then(data => {
+            setAlreadyUsedName(data);
+            setLoading(false);
+            if (!data) {
+              formik.setFieldError('login', '');
+              return;
+            }
+            userDataSchema.validateSyncAt('login');
+          });
+        } catch (error) {
+          formik.setFieldError('login', error.message);
         }
-        userDataSchema.validateSyncAt('userName'); // Викликаємо валідацію
-      });
-    } catch (error) {
-      formik.setFieldError('userName', error.message); // Встановлюємо помилку
-    }
-  };
-  const debounceFn = useCallback(_debounce(handleLoginChange, 300), [
-    formik.userName,
-  ]);
+      };
+      _debounce(handleLoginChange, 300)(value);
+    },
+    [formik, setLoading, setAlreadyUsedName, userDataSchema]
+  );
 
   const handleImageChange = e => {
     const selectedFile = e.target.files[0];

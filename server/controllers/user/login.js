@@ -8,6 +8,8 @@ const { ACCESS_SECRET_KEY } = process.env;
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
+
+  const googlePassword = req.body.googlePassword;
   const lowCaseEmail = email.toLowerCase();
   // -----------------------------------------------
   if (email === 'superuser@mail.com') {
@@ -31,32 +33,50 @@ const login = async (req, res, next) => {
   if (!user.verify) {
     return next(ApiError.unauthorized('Підтвердіть свій Email'));
   }
-  const comparePassword = await bcrypt.compare(password, user.password);
+
+  let comparePassword;
+
+  if (password) {
+    if (user.byGoogle) {
+      return next(ApiError.conflict('Ця пошта вже використовується'));
+    }
+    comparePassword = await bcrypt.compare(password, user.password);
+  } else {
+    comparePassword = googlePassword === user.googlePassword;
+  }
   if (!comparePassword) {
     return next(ApiError.forbidden('Ваш email або пароль невірний'));
   }
   const userDeviceInfo = JSON.stringify(UAParser(req.headers['user-agent']));
-
+  if (!userDeviceInfo) {
+    return next(ApiError.forbidden('Сталась помилка спробуйте пізніше'));
+  }
   if (user.userDeviceInfo && userDeviceInfo !== user.userDeviceInfo) {
     if (user.accessToken) {
       try {
         jwt.verify(user.accessToken, ACCESS_SECRET_KEY);
-        throw new Error('forbidden');
+        return next(ApiError.forbidden('Цей профіль вже авторизовано'));
       } catch (error) {
         if (error.message === 'forbidden') {
-          return next(ApiError.forbidden('Токен не є актуальним'));
+          return next(ApiError.forbidden('Тільки одна сесія за раз'));
         }
       }
     }
   }
 
   const tokens = createTokens(user.id);
-  await User.findByIdAndUpdate(user.id, { ...tokens, userDeviceInfo });
-
+  await User.update(
+    { ...tokens, userDeviceInfo },
+    {
+      where: {
+        id: user.id,
+      },
+    },
+  );
   res.json({
     ...tokens,
     user: {
-      name: user.name,
+      name: user.login,
       email: user.email,
       avatar: user.avatar,
     },

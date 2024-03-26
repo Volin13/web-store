@@ -311,13 +311,34 @@ hr {
 .resendConfirmation:focus {
   color: #0a58ca;
 }
+
+.googleAuthIcon {
+  opacity: 0.8;
+  position: absolute;
+  top: 2.5rem;
+  right: 1.5rem;
+  transition: all 500ms;
+}
+.googleAuthIcon:hover,
+.googleAuthIcon:focus {
+  opacity: 1;
+  scale: 1.15;
+}
 @media only screen and (min-width: 399px) {
   .resendConfirmation {
     bottom: -75px;
+  }
+  .googleAuthIcon {
+    top: 2.7rem;
+    right: 3rem;
   }
 }
 @media only screen and (min-width: 769px) {
   .resendConfirmation {
     bottom: 10px;
+  }
+  .googleAuthIcon {
+    top: 3rem;
+    right: 3rem;
   }
 }
