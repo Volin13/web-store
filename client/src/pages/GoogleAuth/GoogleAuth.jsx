@@ -16,11 +16,15 @@ const GoogleAuth = () => {
         const data = await loginWithGoogle(googleAuthToken);
         if (data) {
           user.setUser(data);
-          user.setUserLogin(data.user.login);
-          user.setEmail(data.user.email);
-          user.setAvatar(data.user.avatar);
+          user.setUserLogin(data.user?.login);
+          user.setEmail(data.user?.email);
+          user.setRole(data.user?.role);
+          user.setAvatar(data.user?.avatar);
+          user.setRefreshToken(data.refreshToken);
+          user.setAccessToken(data.accessToken);
           user.setIsAuth(true);
           navigate(SHOP_ROUTE);
+          console.log(data);
         }
       } catch (error) {
         console.log(error);

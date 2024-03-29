@@ -126,9 +126,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
             <label htmlFor="newAvatartURL" className={css.avatarChangerLebel}>
               <div
                 style={{
-                  backgroundImage: imageFile
-                    ? 'none'
-                    : `url(${process.env.REACT_APP_API_URL + user?.avatar})`,
+                  backgroundImage: imageFile ? 'none' : `url(${user?.avatar})`,
                 }}
                 className={css.avatarPrevew}
               >

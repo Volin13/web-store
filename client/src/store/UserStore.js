@@ -8,6 +8,8 @@ export default class UserStore {
   _id = 0;
   _role = '';
   _email = '';
+  _refreshToken = '';
+  _accessToken = '';
   _adminComments = [];
   _commentPage = 1;
   _commentDate = '';
@@ -17,6 +19,8 @@ export default class UserStore {
   constructor() {
     makeObservable(this, {
       _isAuth: observable,
+      _refreshToken: observable,
+      _accessToken: observable,
       _user: observable,
       _userLogin: observable,
       _avatar: observable,
@@ -29,6 +33,8 @@ export default class UserStore {
       _commentsLimit: observable,
       _totalCommentCount: observable,
       setIsAuth: action,
+      setRefreshToken: action,
+      setAccessToken: action,
       setUser: action,
       setUserLogin: action,
       setAvatar: action,
@@ -41,6 +47,8 @@ export default class UserStore {
       setTotalCommentCount: action,
       setAdminComments: action,
       isAuth: computed,
+      accessToken: computed,
+      refreshToken: computed,
       user: computed,
       userLogin: computed,
       avatar: computed,
@@ -54,6 +62,13 @@ export default class UserStore {
       commentDate: computed,
     });
   }
+  setRefreshToken(refreshToken) {
+    this._refreshToken = refreshToken;
+  }
+  setAccessToken(accessToken) {
+    this._accessToken = accessToken;
+  }
+
   setIsAuth(bool) {
     this._isAuth = bool;
   }
@@ -90,6 +105,13 @@ export default class UserStore {
   }
   setTotalCommentCount(totalCommentCount) {
     this._totalCommentCount = totalCommentCount;
+  }
+
+  get refreshToken() {
+    return this._refreshToken;
+  }
+  get accessToken() {
+    return this._accessToken;
   }
   get isAuth() {
     return this._isAuth;

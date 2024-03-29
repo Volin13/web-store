@@ -49,7 +49,9 @@ export const verifyResendEmail = async () => {
 export const logIn = async (email, password) => {
   try {
     const { data } = await $host.post('api/user/login', { email, password });
-    localStorage.setItem('token', data.token);
+    // localStorage.setItem('token', data.token);
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
     return jwt_decode(data.token);
   } catch (e) {
     console.log(e.response.data.message);
@@ -63,6 +65,8 @@ export const loginWithGoogle = async googleAuthToken => {
       googleAuthToken,
     });
     toast.success(`Вітаю!`);
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
     return data;
   } catch (error) {
     if (error.response.status === 401) {
@@ -118,11 +122,12 @@ export const postSetNewPassword = async info => {
   }
 };
 
-export const check = async () => {
+export const refreshTokens = async refreshToken => {
   try {
-    const { data } = await $authHost.get('api/user/auth');
-    localStorage.setItem('token', data.token);
-    return jwt_decode(data.token);
+    const { data } = await $authHost.get('api/user/refresh', refreshToken);
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return data;
   } catch (error) {
     console.log(error);
     return;

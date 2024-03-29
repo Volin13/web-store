@@ -10,7 +10,6 @@ const redirectGoogleLogin = require('./redirectGoogleLogin');
 const googleCallback = require('./googleCallback');
 const logOut = require('./logOut');
 const refresh = require('./refresh');
-const getCurrent = require('./getCurrent');
 const sendPasswordResetEmail = require('./sendPasswordResetEmail');
 const resetPassword = require('./resetPassword');
 const setNewPassword = require('./setNewPassword');
@@ -29,7 +28,6 @@ module.exports = {
   redirectGoogleLogin: controllerWrapper(redirectGoogleLogin),
   googleCallback: controllerWrapper(googleCallback),
   refresh: controllerWrapper(refresh),
-  getCurrent: controllerWrapper(getCurrent),
   sendPasswordResetEmail: controllerWrapper(sendPasswordResetEmail),
   resetPassword: controllerWrapper(resetPassword),
   setNewPassword: controllerWrapper(setNewPassword),
