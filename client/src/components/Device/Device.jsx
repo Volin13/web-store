@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchSingleDevice } from '../../http/deviceApi';
+import {
+  fetchSingleDevice,
+  fetchBrands,
+  fetchTypes,
+} from '../../http/deviceApi';
 import CountUp from 'react-countup';
 import Rating from '../UI/UX/Rating/Rating';
 import CommentSection from '../UI/UX/CommentSection/CommentSection';
@@ -19,7 +23,10 @@ import EditDeviceModal from '../modals/EditDevice';
 import DeviceImgSlider from '../modals/DeviceImgSlider';
 
 const Device = () => {
-  const [device, setDevice] = useState({ info: [], deviceImages: [] });
+  const [singleDevice, setSingleDevice] = useState({
+    info: [],
+    deviceImages: [],
+  });
   const [clickedState, setClickedState] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
   const [showList, setShowList] = useState(false);
@@ -32,7 +39,7 @@ const Device = () => {
   const containerRef = useRef(null);
 
   const { id } = useParams();
-  const { user, basket } = useContext(Context);
+  const { user, basket, device } = useContext(Context);
 
   const localbasketData = sessionStorage.getItem('basket');
   const localBasket = localbasketData
@@ -40,21 +47,16 @@ const Device = () => {
     : basket.basket;
 
   // Отримання інформації про девайс
+  // При першому завантаженні записую в стор типи і бренди, шоб потім вибрати з існуючих
+
   useEffect(() => {
-    let isMounted = true;
-
     fetchSingleDevice(id).then(data => {
-      if (isMounted) {
-        setDevice(data);
-        setLoading(false);
-      }
+      setSingleDevice(data);
+      setLoading(false);
     });
-
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchTypes().then(data => device.setTypes(data));
+    fetchBrands().then(data => device.setBrands(data));
+  }, [id]);
 
   // Визначення величини кошика для зміни іконки при кліку на кнопку "купити"
   useEffect(() => {
@@ -72,20 +74,20 @@ const Device = () => {
       // Перевірка, чи вміст більший за висоту
       setIsOverflowed(isContentOverflowed);
     }
-  }, [device?.info?.length]);
+  }, [singleDevice?.info?.length]);
 
   // Формування замовлення в кошик
   const hendleOrderClick = () => setClickedState(true);
   const addOrder = () => {
     basket.addToBasket({
-      id: device.id,
-      title: device.name,
-      price: device.newPrice || device.price,
+      id: singleDevice.id,
+      title: singleDevice.name,
+      price: singleDevice.newPrice || singleDevice.price,
       added: Date.now(),
-      mainImg: device.mainImg,
+      mainImg: singleDevice.mainImg,
     });
 
-    toast.info(`${device.name} було додано до кошика`);
+    toast.info(`${singleDevice.name} було додано до кошика`);
     sessionStorage.setItem('basket', JSON.stringify(basket.basket));
   };
 
@@ -107,11 +109,11 @@ const Device = () => {
               <Image
                 width={'100%'}
                 height={300}
-                className={`${!device?.inStock ? css.greyColors : ''}`}
+                className={`${!singleDevice?.inStock ? css.greyColors : ''}`}
                 src={
                   loading
                     ? loadImg
-                    : process.env.REACT_APP_API_URL + device.mainImg
+                    : process.env.REACT_APP_API_URL + singleDevice.mainImg
                 }
                 style={{ objectFit: 'contain' }}
               />
@@ -139,7 +141,7 @@ const Device = () => {
               setShowEditDeviceModal(true);
             }}
           >
-            <span>Edit device</span>
+            <span>Редагувати</span>
             <Image width={30} height={30} src={editDeviceImg} />{' '}
           </button>
           <h1
@@ -150,7 +152,7 @@ const Device = () => {
               overflow: 'hidden',
             }}
           >
-            {device.name}
+            {singleDevice.name}
           </h1>
         </Col>
         <Col md={4}>
@@ -163,7 +165,7 @@ const Device = () => {
               border: '5px solid lightgray',
             }}
           >
-            {device?.inStock && device?.discount ? (
+            {singleDevice?.inStock && singleDevice?.discount ? (
               <>
                 <h3
                   className={css.initialPrice}
@@ -174,16 +176,21 @@ const Device = () => {
                     fontSize: '20px',
                   }}
                 >
-                  {device.price}
+                  {singleDevice.price}
                 </h3>
                 <h3 className={css.newPrice}>
-                  <CountUp start={0} end={+device.newPrice} duration={2} />
+                  <CountUp
+                    start={0}
+                    end={+singleDevice.newPrice}
+                    duration={2}
+                  />
                   {' грн'}
                 </h3>{' '}
               </>
             ) : (
               <h3>
-                {' Від:'} <CountUp start={0} end={+device.price} duration={2} />
+                {' Від:'}{' '}
+                <CountUp start={0} end={+singleDevice.price} duration={2} />
                 {' грн.'}
               </h3>
             )}
@@ -197,9 +204,11 @@ const Device = () => {
                   hendleOrderClick();
                   setBasketLength(basketLength + 1);
                 }}
-                disabled={!device?.inStock}
+                disabled={!singleDevice?.inStock}
               >
-                {device?.inStock ? 'Додати до корзини' : 'Немає в наявності'}
+                {singleDevice?.inStock
+                  ? 'Додати до корзини'
+                  : 'Немає в наявності'}
               </Button>
             ) : (
               <Button
@@ -227,15 +236,15 @@ const Device = () => {
           <Col md={6}>
             <Rating
               userId={user.id}
-              deviceId={device.id}
-              apiRating={device.rating}
+              deviceId={singleDevice.id}
+              apiRating={singleDevice.rating}
               isAuth={user.isAuth}
             />
           </Col>
         </Row>
 
         {/* Девайс інфо  */}
-        {device?.info?.length > 0 && (
+        {singleDevice?.info?.length > 0 && (
           <ul
             className={css.deviceInfoThumb}
             ref={containerRef}
@@ -243,7 +252,7 @@ const Device = () => {
               maxHeight: showList ? '10000px' : '155px',
             }}
           >
-            {device?.info.map((info, index) => (
+            {singleDevice?.info.map((info, index) => (
               <li
                 key={info.id}
                 className="d-flex justify-content-between align-items-center"
@@ -288,16 +297,17 @@ const Device = () => {
           </button>
         )}
       </Row>
-      <CommentSection user={user} id={id} device={device} />
+      <CommentSection user={user} id={id} device={singleDevice} />
       <DeviceImgSlider
         onHide={() => setShowSlider(false)}
-        deviceImages={device?.deviceImages}
-        mainImg={device?.mainImg}
+        deviceImages={singleDevice?.deviceImages}
+        mainImg={singleDevice?.mainImg}
         show={showSlider}
       />
+
       <EditDeviceModal
         show={showEditDeviceModal}
-        deviceToEdit={device}
+        deviceToEdit={singleDevice}
         onHide={() => setShowEditDeviceModal(false)}
       />
     </Container>

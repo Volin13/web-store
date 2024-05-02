@@ -231,7 +231,7 @@ const CommentSection = observer(({ user, id }) => {
 
 CommentSection.propTypes = {
   user: PropTypes.object,
-  id: PropTypes.number,
+  id: PropTypes.string,
 };
 
 export default CommentSection;

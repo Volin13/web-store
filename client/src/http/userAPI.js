@@ -2,9 +2,9 @@ import { $host, $authHost } from './index';
 import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem('accessToken');
 let decodeToken = { id: '' };
-if (token) {
+if (token && token !== 'superuser') {
   decodeToken = jwt_decode(token);
 }
 export const userId = decodeToken.id !== '' ? decodeToken.id : 1;
@@ -49,10 +49,9 @@ export const verifyResendEmail = async () => {
 export const logIn = async (email, password) => {
   try {
     const { data } = await $host.post('api/user/login', { email, password });
-    // localStorage.setItem('token', data.token);
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
-    return jwt_decode(data.token);
+    return data;
   } catch (e) {
     console.log(e.response.data.message);
     toast.error(e.response.data.message);
@@ -103,15 +102,18 @@ export const postResetPassword = async info => {
     return null;
   }
 };
-// export const postResendLink = async info => {
-//   try {
-//     const { data } = await $host.post(`/users/reset/send-reset-link`, info);
-//     return data;
-//   } catch (error) {
-//     console.log(error.message);
-//     return null;
-//   }
-// };
+export const resendEmailAuth = async (email, password) => {
+  try {
+    const { data } = await $host.post(`api/user/verify/resend-email`, {
+      email,
+      password,
+    });
+    return data;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
 export const postSetNewPassword = async info => {
   try {
     const { data } = await $host.post(`api/user/set-new-password`, info);
@@ -124,9 +126,20 @@ export const postSetNewPassword = async info => {
 
 export const refreshTokens = async refreshToken => {
   try {
-    const { data } = await $authHost.get('api/user/refresh', refreshToken);
+    const { data } = await $authHost.post('api/user/refresh', { refreshToken });
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
+    return data;
+  } catch (error) {
+    console.log(error);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    return;
+  }
+};
+export const check = async () => {
+  try {
+    const { data } = await $authHost.get('api/user/auth');
     return data;
   } catch (error) {
     console.log(error);
@@ -156,13 +169,13 @@ export const getUserData = async () => {
   }
 };
 
-export const changeUserData = async (userId, login, newImage) => {
+export const changeUserData = async (userId, login, file) => {
   const formData = new FormData();
   formData.append('login', login);
-  formData.append('avatar', newImage);
+  formData.append('avatar', file);
   try {
     const { data } = await $authHost.patch(
-      'api/user/auth/data/' + userId,
+      'api/user/auth/set-user-info/' + userId,
       formData,
       {
         headers: {

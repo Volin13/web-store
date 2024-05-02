@@ -1,4 +1,3 @@
-const { User } = require('../../models/models');
 const ApiError = require('../../error/ApiError');
 const { saveImage, deleteImage } = require('../../helpers');
 
@@ -7,14 +6,7 @@ const changeUserData = async (req, res, next) => {
     const { userId } = req.params;
     const { login } = req.body;
     const { avatar } = req.files;
-
-    let user = await User.findOne({
-      where: { id: Number(userId) },
-    });
-
-    if (!user) {
-      return next(ApiError.notFound('Користувача не знайдено'));
-    }
+    const user = req.user;
 
     if (login && login !== user.login) {
       user.login = login;
@@ -23,12 +15,23 @@ const changeUserData = async (req, res, next) => {
     if (!avatar) {
       return res.json(user);
     } else {
+      try {
+        const defaultAvatar =
+          'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/zbl5elxaq9kgkqehmrl0.jpg';
+        if (user.avatar !== defaultAvatar) {
+          await deleteImage(user.avatar);
+        }
+      } catch (error) {
+        console.error('Помилка під час видалення зображення: ', error.message);
+      }
+
       const saveAvatarURL = async result => {
-        const avatar = result.secure_url;
-        user.avatar = avatar;
+        const avatarURL = result.secure_url;
+        user.avatar = avatarURL;
+        await user.save();
       };
       try {
-        await saveImage(buffer, saveAvatarURL, userId);
+        await saveImage(saveAvatarURL, userId, avatar.data);
       } catch (error) {
         console.error('Помилка при збереженні зображення: ', error.message);
         return next(
@@ -36,11 +39,6 @@ const changeUserData = async (req, res, next) => {
         );
       }
 
-      try {
-        await deleteImage(user.avatar);
-      } catch (error) {
-        console.error('Помилка під час видалення зображення: ', error.message);
-      }
       return res.json({ login: user.login, avatar: user.avatar });
     }
   } catch (error) {

@@ -24,7 +24,6 @@ const GoogleAuth = () => {
           user.setAccessToken(data.accessToken);
           user.setIsAuth(true);
           navigate(SHOP_ROUTE);
-          console.log(data);
         }
       } catch (error) {
         console.log(error);

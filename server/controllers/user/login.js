@@ -9,24 +9,23 @@ const { ACCESS_SECRET_KEY } = process.env;
 const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const googlePassword = req.body.googlePassword;
   const lowCaseEmail = email.toLowerCase();
-  // -----------------------------------------------
   if (email === 'superuser@mail.com') {
     const superuser = await User.findOne({ where: { email: email } });
     res.json({
       accessToken: 'superuser',
       refreshToken: 'superuser',
       user: {
-        name: superuser.name,
+        name: superuser.login,
         email: superuser.email,
         avatar: superuser.avatar,
       },
     });
     return;
   }
-  // ------------------------------------------------
+
   const user = await User.findOne({ where: { email: lowCaseEmail } });
+
   if (!user) {
     return next(ApiError.forbidden('Ваш email або пароль невірний'));
   }
@@ -42,6 +41,7 @@ const login = async (req, res, next) => {
     }
     comparePassword = await bcrypt.compare(password, user.password);
   } else {
+    const googlePassword = req.body.googlePassword;
     comparePassword = googlePassword === user.googlePassword;
   }
   if (!comparePassword) {
@@ -64,7 +64,7 @@ const login = async (req, res, next) => {
     }
   }
 
-  const tokens = createTokens(user.id);
+  const tokens = createTokens(user.id, user.email, user.role);
   await User.update(
     { ...tokens, userDeviceInfo },
     {

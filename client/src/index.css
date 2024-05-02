@@ -311,6 +311,9 @@ hr {
 .resendConfirmation:focus {
   color: #0a58ca;
 }
+.resendConfirmation:disabled {
+  color: grey;
+}
 
 .googleAuthIcon {
   opacity: 0.8;

@@ -2,9 +2,11 @@ const jwt = require('jsonwebtoken');
 
 const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
-const createTokens = id => {
+const createTokens = (id, email, role) => {
   const payload = {
     id,
+    email,
+    role,
   };
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_KEY, {

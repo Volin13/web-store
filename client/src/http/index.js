@@ -31,9 +31,11 @@ let failedRequests = [];
 export const setupInterceptors = store => {
   $authHost.interceptors.request.use(
     config => {
-      const token = store.accessToken;
+      const token = localStorage.getItem('accessToken');
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${localStorage.getItem(
+          'accessToken'
+        )}`;
       }
       return config;
     },
@@ -44,7 +46,11 @@ export const setupInterceptors = store => {
     response => response,
     async error => {
       const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        !originalRequest._retry
+      ) {
         if (isRefreshing) {
           try {
             const accessToken = await new Promise((resolve, reject) => {
@@ -61,7 +67,7 @@ export const setupInterceptors = store => {
         isRefreshing = true;
 
         try {
-          const refreshToken = store.refreshToken;
+          const refreshToken = localStorage.getItem('refreshToken');
 
           const data = await refreshTokens(refreshToken);
           stopTokenRefreshInterval();

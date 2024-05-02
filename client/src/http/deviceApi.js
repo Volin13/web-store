@@ -38,8 +38,11 @@ export const editDevice = async (id, device) => {
 
 export const createRating = async (deviceId, rate, user) => {
   if (user) {
-    const token = localStorage.getItem('token');
-    const decodeToken = jwt_decode(token);
+    const token = localStorage.getItem('accessToken');
+    let decodeToken = { id: 1 };
+    if (token && token !== 'superuser') {
+      decodeToken = jwt_decode(token);
+    }
     const userId = decodeToken.id;
     try {
       const { data } = await $authHost.post('api/rating', {

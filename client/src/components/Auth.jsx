@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +22,12 @@ import {
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
 } from '../utils/constants';
-import { checkUsedLogin, logIn, registration } from '../http/userAPI';
+import {
+  checkUsedLogin,
+  logIn,
+  registration,
+  resendEmailAuth,
+} from '../http/userAPI';
 import { Context } from '../index';
 import { toast } from 'react-toastify';
 import _debounce from 'lodash/debounce';
@@ -34,11 +45,23 @@ const Auth = observer(() => {
   const [loading, setLoading] = useState(false);
   const [alreadyUsedName, setAlreadyUsedName] = useState(false);
   const [resendEmailConfirm, setResendEmailConfirm] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const { user } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
   const navigate = useNavigate();
+
+  // Деактивую свій ресенд мейл лінк на 10 секунд до повторного натиснення
+  useEffect(() => {
+    if (isButtonDisabled) {
+      const timer = setTimeout(() => {
+        setButtonDisabled(false);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isButtonDisabled]);
 
   const myEmailRegex =
     /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
@@ -57,14 +80,14 @@ const Auth = observer(() => {
       .required('Введіть ваш імеіл'),
     login: yup
       .string()
-      .matches(/^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ1-9']+$/, {
+      .matches(/^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ1-9']*$/, {
         message: 'Логін не має містити спец символи',
       })
+      .notRequired()
+      .nullable()
       .trim()
       .max(12, 'Ваш логін занадто довгий')
       .lowercase()
-      .notRequired()
-      .nullable()
       .test('checkLogin', 'Такий логін вже існує', () => {
         return !alreadyUsedName;
       }),
@@ -94,6 +117,9 @@ const Auth = observer(() => {
           if (userData) {
             user.setUser(userData);
             user.setIsAuth(true);
+            user.setUserLogin(userData?.user?.name);
+            user.setAvatar(userData?.user?.avatar);
+            user.setEmail(userData?.user?.email);
             navigate(SHOP_ROUTE);
           }
         } else {
@@ -109,6 +135,7 @@ const Auth = observer(() => {
           }
         }
       } catch (e) {
+        console.log(e);
         toast.error('Сталась помилка, спробуйте пізніше');
       } finally {
         setLoading(false);
@@ -117,7 +144,6 @@ const Auth = observer(() => {
     },
   });
   const isValid = authSchema.isValidSync(formik.values);
-
   const togglePasswordVisibility = () => {
     if (passwordInput.current.type === 'password') {
       passwordInput.current.type = 'text';
@@ -128,23 +154,6 @@ const Auth = observer(() => {
   const checkName = async name => {
     return await checkUsedLogin(name);
   };
-  // const handleLoginChange = async value => {
-  //   try {
-  //     setLoading(true);
-  //     await checkName(value).then(data => {
-  //       setAlreadyUsedName(data);
-  //       setLoading(false);
-  //       if (!data) {
-  //         formik.setFieldError('login', '');
-  //         return;
-  //       }
-  //       authSchema.validateSyncAt('login'); // Викликаємо валідацію
-  //     });
-  //   } catch (error) {
-  //     formik.setFieldError('login', error.message); // Встановлюємо помилку
-  //   }
-  // };
-  // const debounceFn = useCallback(value => _debounce(handleLoginChange, 300), [handleLoginChange]);
   const debounceFn = useCallback(
     value => {
       const handleLoginChange = async value => {
@@ -302,8 +311,12 @@ const Auth = observer(() => {
         </Form>
         {resendEmailConfirm && (
           <button
+            disabled={isButtonDisabled}
             className="position-absolute resendConfirmation"
-            onClick={() => {}}
+            onClick={() => {
+              setButtonDisabled(true);
+              resendEmailAuth(formik.values.email, formik.values.password);
+            }}
           >
             Відправити підтвердження ще раз
           </button>

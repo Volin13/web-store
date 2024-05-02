@@ -28,6 +28,7 @@ import MenuIcon from '../UI/UX/MenuIcon/MenuIcon';
 import MainFilter from '../UI/UX/MainFilter/MainFilter';
 import UserMenu from '../modals/userMenu/UserMenu';
 import { getUserData } from '../../http/userAPI';
+import { toast } from 'react-toastify';
 
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
@@ -52,9 +53,11 @@ const NavBar = observer(() => {
   const logOut = () => {
     user.setUser({});
     user.setIsAuth(false);
+    toast.info('До зустрічі!');
     sessionStorage.removeItem('basket');
-    localStorage.removeItem('token');
-    navigate(LOGIN_ROUTE);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    navigate(SHOP_ROUTE);
   };
 
   const localbasketData = sessionStorage.getItem('basket');
@@ -69,6 +72,7 @@ const NavBar = observer(() => {
         user.setEmail(data?.email);
         user.setRole(data?.role);
         user.setId(data?.id);
+        console.log(data);
       });
     }
   }, []);
@@ -223,7 +227,6 @@ const NavBar = observer(() => {
         </Container>
       </Navbar>
       <UserMenu
-        user={user}
         show={userMenuVisible}
         onHide={() => setUserMenuVisible(false)}
       />

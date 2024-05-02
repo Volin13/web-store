@@ -6,6 +6,9 @@ const emailConfirmTemplate = require('../../data/templates/emailConfirmation');
 
 const resendVerification = async (req, res, next) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return next(ApiError.forbidden('Введіть ваш email і пароль'));
+  }
   const user = await User.findOne({ where: { email: email } });
   if (!user) {
     return next(ApiError.forbidden('Ваш email або пароль невірний'));

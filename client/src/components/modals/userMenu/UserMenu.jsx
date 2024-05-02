@@ -1,21 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Modal, Button, Form, InputGroup, Image } from 'react-bootstrap';
 import css from './UserMenu.module.css';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import passwordIcon from '../../../assets/defultIcons/edit-message.svg';
 import plusIcon from '../../../assets/authIcons/userMenu/plus.svg';
-// import erorrIcon from '../../../assets/authIcons/userMenu/error-16-svgrepo-com.svg';
 import closeIcon from '../../../assets/authIcons/userMenu/close-circle-svgrepo-com.svg';
 import { useFormik } from 'formik';
 import { changeUserData, checkUsedLogin } from '../../../http/userAPI';
 import _debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
+import { Context } from '../../..';
 
-const UserMenu = observer(({ show, onHide, user }) => {
+const UserMenu = observer(({ show, onHide }) => {
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [alreadyUsedName, setAlreadyUsedName] = useState(false);
+  const { user } = useContext(Context);
 
   let userDataSchema = yup.object().shape({
     image: yup
@@ -32,7 +33,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
     userName: yup
       .string()
       .trim()
-      .matches(/^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ1-9']+$/, {
+      .matches(/^[a-zA-Zа-яА-ЯА-ЩЬьЮюЯяЇїІіЄєҐґ1-9'\s]+$/, {
         message: 'Логін не має містити спец символи',
       })
       .test('checkLogin', 'Такий логін вже існує', value => {
@@ -42,32 +43,43 @@ const UserMenu = observer(({ show, onHide, user }) => {
         return !alreadyUsedName;
       })
       .min(3, 'Your name must be 1 character at least')
-      .max(12, '12 characters max'),
+      .max(34, '34 characters max'),
   });
 
   const formik = useFormik({
     initialValues: {
-      image: null,
-      userName: '',
+      image: '',
+      userName: user.login || '',
     },
     validationSchema: userDataSchema,
 
     onSubmit: (values, { setSubmitting }) => {
       const { image, userName } = values;
       changeUserData(user?.id, userName.trim(), image).then(data => {
-        user.setAvatar(data?.avatar);
-        user.setUserLogin(data?.login);
+        if (data) {
+          user.setAvatar(data.avatar);
+          user.setUserLogin(data.login);
+        }
       });
       setLoading(false);
       setSubmitting(true);
     },
   });
-  console.log(user.userLogin);
+  console.log(formik.values);
+  console.log(user.login);
+
   useEffect(() => {
-    if (user.userLogin) {
+    formik.setFieldValue('userName', user.userLogin);
+  }, []);
+
+  useEffect(() => {
+    if (user.userLogin !== formik.userName) {
       formik.setFieldValue('userName', user.userLogin);
     }
-  }, [user.userLogin, formik]);
+    if (user.avatar !== imageFile) {
+      setImageFile(user.avatar);
+    }
+  }, [user.userLogin, user.avatar]);
   const isValid = userDataSchema.isValidSync(formik.values);
   const checkName = async name => {
     return await checkUsedLogin(name);
@@ -101,12 +113,18 @@ const UserMenu = observer(({ show, onHide, user }) => {
     if (selectedFile) {
       formik.values.image = selectedFile;
       setImageFile(selectedFile);
+    } else if (user.avatar) {
+      setImageFile(user.avatar);
     } else {
       setImageFile('');
     }
   };
   const onClearImgClick = () => {
-    setImageFile('');
+    if (user.avatar) {
+      setImageFile(user.avatar);
+    } else {
+      setImageFile('');
+    }
   };
 
   return (
@@ -114,7 +132,6 @@ const UserMenu = observer(({ show, onHide, user }) => {
       size="lg"
       show={show}
       onHide={() => {
-        formik.resetForm();
         onHide();
       }}
       centered
@@ -126,7 +143,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
             <label htmlFor="newAvatartURL" className={css.avatarChangerLebel}>
               <div
                 style={{
-                  backgroundImage: imageFile ? 'none' : `url(${user?.avatar})`,
+                  backgroundImage: imageFile ? `url(${user?.avatar})` : 'none',
                 }}
                 className={css.avatarPrevew}
               >
@@ -141,7 +158,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
                   id="newAvatartURL"
                   accept="image/*"
                 />
-                {imageFile ? (
+                {imageFile instanceof File ? (
                   <button
                     type="button"
                     onClick={onClearImgClick}
@@ -166,7 +183,11 @@ const UserMenu = observer(({ show, onHide, user }) => {
                 {imageFile && (
                   <div className={css.userAvatar}>
                     <img
-                      src={URL.createObjectURL(imageFile)}
+                      src={
+                        imageFile instanceof File
+                          ? URL.createObjectURL(imageFile)
+                          : imageFile
+                      }
                       alt="selected"
                       className={css.defaultImg}
                     />
@@ -185,7 +206,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
             </InputGroup.Text>
             <Form.Control
               style={{ height: '38px' }}
-              type="userName"
+              type="text"
               name="userName"
               value={formik.values.userName}
               onChange={e => {
@@ -193,7 +214,7 @@ const UserMenu = observer(({ show, onHide, user }) => {
                 debounceFn(e.target.value);
               }}
               onBlur={formik.handleBlur}
-              isInvalid={formik.values.userName && formik.errors.userName}
+              isInvalid={!!formik.errors.userName}
               placeholder="Введіть ваш логін"
             />
             <Form.Control.Feedback type="invalid">

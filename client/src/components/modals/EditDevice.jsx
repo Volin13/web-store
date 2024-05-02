@@ -11,7 +11,7 @@ import {
   Dropdown,
   Card,
 } from 'react-bootstrap';
-import { editDevice, fetchBrands, fetchTypes } from '../../http/deviceApi';
+import { editDevice } from '../../http/deviceApi';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { useFormik } from 'formik';
@@ -29,13 +29,6 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
   const [deviceImages, setDeviceImages] = useState([]);
   const [imageSectionVisible, setImageSectionVisible] = useState(false);
   const [infoSectionVisible, setInfoSectionVisible] = useState(false);
-
-  // При першому завантаженні записую в стор типи і бренди, шоб потім вибрати з існуючих
-  useEffect(() => {
-    fetchTypes().then(data => device.setTypes(data));
-    fetchBrands().then(data => device.setBrands(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   // За наявності даних девайсу заповнюю поля введення його інформацією
   useEffect(() => {
     if (deviceToEdit) {
@@ -45,13 +38,13 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
       formik.setFieldValue('brandId', deviceToEdit.brandId);
       formik.setFieldValue('typeId', deviceToEdit.typeId);
       formik.setFieldValue('info', deviceToEdit.info);
-      setInfo(deviceToEdit?.info);
-      setDeviceImages(deviceToEdit?.deviceImages || []);
-      formik.setFieldValue('deviceImages', deviceImages);
+      setInfo(deviceToEdit.info);
+      setDeviceImages(deviceToEdit.deviceImages || []);
+      formik.setFieldValue('deviceImages', deviceToEdit.deviceImages || []);
+      // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceToEdit]);
-
+  console.log(deviceToEdit);
   // Зберегти додані і додати нову статтю в характеристики девайсу
   const addInfo = () => {
     setInfo([...info, { title: '', description: '', number: Date.now() }]);
@@ -96,6 +89,7 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
   // Задаємо тип і бренд по айді
   const ChoseDevPropByID = (arr, name) => {
     runInAction(() => {
+      console.log('poof');
       arr.forEach(item => {
         if (item.id === deviceToEdit?.typeId && name === 'type') {
           device.setSelectedType(item);
@@ -135,10 +129,6 @@ const EditDeviceModal = observer(({ show, onHide, deviceToEdit }) => {
     formData.append('deviceImagesNames', JSON.stringify(fileNames));
     editDevice(deviceToEdit?.id, formData).then(() => onHide());
   };
-
-  // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
-  let deviceNames = [];
-  device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
 
   const formik = useFormik({
     initialValues: {

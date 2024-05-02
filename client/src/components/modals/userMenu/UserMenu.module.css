@@ -5,6 +5,7 @@
   height: 150px;
   width: 150px;
   border-radius: 50%;
+  margin-bottom: 30px;
 }
 .avatarPrevew {
   background-size: contain;
@@ -22,14 +23,14 @@
 .btnIcon {
   position: absolute;
   z-index: 3;
-  bottom: -15px;
+  bottom: -20px;
   right: 0px;
 }
 .fileWarning {
   display: block;
   width: 199%;
   position: absolute;
-  bottom: -35px;
+  bottom: -60px;
   left: 50%;
   transform: translateX(-50%);
   color: red;
@@ -39,4 +40,13 @@
   height: 150px;
   width: 150px;
   border-radius: 50%;
+}
+@media screen and (min-width: 400px) {
+  .avatarChangerLebel {
+    margin-bottom: 0;
+  }
+  .fileWarning {
+    width: 240%;
+    bottom: -35px;
+  }
 }

@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
 let decodeToken = { id: '' };
-if (token) {
+if (token && token !== 'superuser') {
   decodeToken = jwt_decode(token);
 }
 export const userId = decodeToken.id !== '' ? decodeToken.id : 1;

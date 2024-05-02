@@ -6,6 +6,7 @@ const upload = multer({
     fileSize: 2000000,
   },
   fileFilter: function (req, file, cb) {
+    console.log(req);
     const filetypes = /jpeg|jpg|png/;
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase(),
