@@ -19,14 +19,16 @@ const Basket = observer(() => {
 
   useEffect(() => {
     const uniqueItems = [];
-    basketData.forEach(item => {
-      const existingItem = uniqueItems.find(uItem => uItem.id === item.id);
-      if (existingItem) {
-        existingItem.count += 1;
-      } else {
-        uniqueItems.push({ ...item, count: 1 });
-      }
-    });
+    if (basketData) {
+      basketData.forEach(item => {
+        const existingItem = uniqueItems.find(uItem => uItem.id === item.id);
+        if (existingItem) {
+          existingItem.count += 1;
+        } else {
+          uniqueItems.push({ ...item, count: 1 });
+        }
+      });
+    }
 
     setList([...uniqueItems]);
     recalculateTotal(uniqueItems);
@@ -111,7 +113,12 @@ const Basket = observer(() => {
       </Card>
       <Row></Row>
       <Row className="mt-3">
-        <Checkout list={list} total={totalPrice} user={user.isAuth} />
+        <Checkout
+          list={list}
+          total={totalPrice}
+          user={user.isAuth}
+          basket={basket}
+        />
       </Row>
     </div>
   );

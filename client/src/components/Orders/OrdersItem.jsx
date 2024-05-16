@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ORDERS_ROUTE, USER_ORDERS_ROUTE } from '../../utils/constants';
 import css from './Orders.module.css';
+import formatDate from '../../utils/formatDate';
 
 const OrdersItem = ({ item, index }) => {
   const [isHidden, setIsHidden] = useState(true);
-
-  const dateObject = new Date(item.updatedAt);
-  const formattedDate = dateObject.toLocaleString();
   const navigate = useNavigate();
 
   return (
@@ -39,7 +37,9 @@ const OrdersItem = ({ item, index }) => {
           <span className={css.ordersItemData}>{item.userData.city}</span>
         </Col>{' '}
         <Col md="3" style={{ overflow: 'hidden' }}>
-          <span className={css.ordersItemData}>{formattedDate}</span>
+          <span className={css.ordersItemData}>
+            {formatDate(item.updatedAt)}
+          </span>
         </Col>
       </div>
       <div

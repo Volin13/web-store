@@ -7,13 +7,16 @@ import NPregionsFilter from '../UI/UX/NPAddressFilters/NPregionsFilter';
 import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
 import { createOrder } from '../../http/ordersApi';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { SHOP_ROUTE } from '../../utils/constants';
 
-const Checkout = ({ list, total, user }) => {
+const Checkout = ({ list, total, user, basket }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const terminalInput = useRef(null);
   const regionInput = useRef(null);
   const cityInput = useRef(null);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -30,7 +33,12 @@ const Checkout = ({ list, total, user }) => {
 
     validationSchema: checkoutSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      createOrder(user, values, list);
+      createOrder(user, values, list).then(() => {
+        basket.setBasket([]);
+        basket.setOrder({});
+        sessionStorage.removeItem('basket');
+        navigate(SHOP_ROUTE);
+      });
 
       setSubmitting(false);
       resetForm(false);
@@ -227,6 +235,7 @@ const Checkout = ({ list, total, user }) => {
 
 Checkout.propTypes = {
   list: PropTypes.array,
+  basket: PropTypes.object,
   total: PropTypes.number,
   user: PropTypes.bool,
 };

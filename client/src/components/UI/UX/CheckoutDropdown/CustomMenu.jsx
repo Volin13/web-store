@@ -28,7 +28,7 @@ const CustomMenu = React.forwardRef(({ children, className }, ref) => {
 CustomMenu.displayName = 'CustomMenu';
 
 CustomMenu.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.array,
   className: PropTypes.string,
 };
 

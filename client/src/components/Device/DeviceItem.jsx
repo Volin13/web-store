@@ -64,7 +64,7 @@ const DeviceItem = ({ device, loading, index }) => {
               className={`${css.deviceItem_img} ${
                 !device?.inStock ? css.greyColors : ''
               }`}
-              src={process.env.REACT_APP_API_URL + device.mainImg}
+              src={device.mainImg}
             />
             <Stateofgoods device={device} />
           </div>

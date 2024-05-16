@@ -65,8 +65,6 @@ const UserMenu = observer(({ show, onHide }) => {
       setSubmitting(true);
     },
   });
-  console.log(formik.values);
-  console.log(user.login);
 
   useEffect(() => {
     formik.setFieldValue('userName', user.userLogin);

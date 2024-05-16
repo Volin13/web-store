@@ -52,7 +52,12 @@ const Device = sequelize.define('device', {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
   rating: { type: DataTypes.FLOAT, defaultValue: 9 },
-  mainImg: { type: DataTypes.STRING, allowNull: false },
+  mainImg: {
+    type: DataTypes.STRING,
+    defaultValue:
+      'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/izi262wviuzdoxpeegl0',
+    allowNull: false,
+  },
   inStock: { type: DataTypes.BOOLEAN, defaultValue: true },
   discount: { type: DataTypes.BOOLEAN, defaultValue: false },
   newPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
@@ -83,6 +88,8 @@ const Brand = sequelize.define('brand', {
 const Rating = sequelize.define('rating', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   rate: { type: DataTypes.FLOAT, allowNull: false },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+  deviceId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 const Comment = sequelize.define('comments', {

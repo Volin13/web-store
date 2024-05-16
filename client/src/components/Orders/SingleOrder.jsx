@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, Col } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { checkOrder, declineOrder, fetchOrderById } from '../../http/ordersApi';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { useReactToPrint } from 'react-to-print';
 import Invoice from './Invoice';
 import css from './Orders.module.css';
+import { DEVICE_ROUTE } from '../../utils/constants';
 var numberToString = require('number-to-cyrillic');
 
 const SingleOrder = () => {
@@ -54,12 +55,14 @@ const SingleOrder = () => {
                   className={css.orderData}
                   style={{ minWidth: '150px' }}
                 >
-                  <Card.Img
-                    className={css.orderDataImg}
-                    height="130px"
-                    variant="top"
-                    src={process.env.REACT_APP_API_URL + item.img}
-                  />
+                  <NavLink to={DEVICE_ROUTE + '/' + item.id}>
+                    <Card.Img
+                      className={css.orderDataImg}
+                      height="130px"
+                      variant="top"
+                      src={item.mainImg}
+                    />
+                  </NavLink>
                 </Col>
                 <Col
                   md="7"
@@ -116,8 +119,12 @@ const SingleOrder = () => {
         </Card.Body>
       </Card>
       {order.userData?.comment?.length > 0 && (
-        <Card calssName="mb-2">
-          <Card.Text>{order.userData?.comment}</Card.Text>
+        <Card className="mb-3">
+          <Card.Header>Додатково:</Card.Header>
+
+          <Card.Text className="p-2 text-center">
+            {order.userData?.comment}
+          </Card.Text>
         </Card>
       )}
 

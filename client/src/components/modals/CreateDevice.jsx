@@ -19,6 +19,7 @@ import deviceNameIcon from '../../assets/adminIcons/deviceNameIcon.svg';
 import priceIcon from '../../assets/adminIcons/priceIcon.svg';
 import ratingIcon from '../../assets/adminIcons/ratingIcon.svg';
 import PropTypes from 'prop-types';
+import addDevice from '../../utils/createDevice';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
@@ -83,27 +84,6 @@ const CreateDevice = observer(({ show, onHide }) => {
     }
   };
 
-  // Функція для збору і відправки даних на бекенд
-
-  const addDevice = values => {
-    const formData = new FormData();
-    formData.append('name', values.name);
-    formData.append('price', `${values.price}`);
-    formData.append('mainImg', values.mainImg);
-    formData.append('rating', values.rating);
-    formData.append('brandId', device.selectedBrand.id);
-    formData.append('typeId', device.selectedType.id);
-    formData.append('info', JSON.stringify(info));
-    values.deviceImages.forEach((deviceImages, index) => {
-      formData.append(
-        `images[${index}][deviceImage]`,
-        deviceImages.deviceImage
-      );
-      formData.append(`images[${index}][number]`, deviceImages.number);
-    });
-    createDevice(formData).then(() => onHide());
-  };
-
   // Формую масив назв девайсів, які уже є для подальшої перевірки в схемі
   let deviceNames = [];
   device.devices.map(device => deviceNames.push(device.name.toLowerCase()));
@@ -148,18 +128,23 @@ const CreateDevice = observer(({ show, onHide }) => {
       price: 0,
       mainImg: null,
       deviceImages: [],
-      rating: 0,
+      rating: '',
       brandId: '',
       typeId: '',
       info: [],
     },
     validationSchema: deviceSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      addDevice(values);
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      await addDevice(values, device, info, createDevice, onHide);
+      setInfo([]);
+      setDeviceImages([]);
       setSubmitting(false);
+      device.setSelectedType('');
+      device.setSelectedBrand('');
       resetForm();
     },
   });
+
   const isValid = deviceSchema.isValidSync(formik.values);
   return (
     <Modal size="lg" show={show} onHide={onHide} centered>

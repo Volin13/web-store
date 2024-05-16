@@ -6,12 +6,16 @@ import { observer } from 'mobx-react-lite';
 
 const DataPicker = observer(({ user }) => {
   const handleDateChange = date => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
-    user.setCommentDate(formattedDate);
+      const formattedDate = `${year}-${month}-${day}`;
+      user.setCommentDate(formattedDate);
+    } else {
+      user.setCommentDate('');
+    }
   };
 
   return (

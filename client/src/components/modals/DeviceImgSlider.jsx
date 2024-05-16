@@ -29,7 +29,7 @@ const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
               <Carousel.Item key={item?.id}>
                 <Image
                   height={250}
-                  src={process.env.REACT_APP_API_URL + item?.fileName}
+                  src={item?.fileName}
                   style={{
                     objectFit: 'scale-down',
                   }}
@@ -42,7 +42,7 @@ const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
             <Image
               height="400px"
               //   className={`${!device?.inStock ? css.greyColors : ''}`}
-              src={process.env.REACT_APP_API_URL + mainImg}
+              src={mainImg}
               style={{
                 margin: '0 auto',
               }}

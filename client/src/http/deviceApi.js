@@ -27,8 +27,16 @@ export const fetchRatings = async () => {
 };
 
 export const createDevice = async device => {
-  const { data } = await $authHost.post('api/device', device);
-  return data;
+  try {
+    const { data } = await $authHost.post('api/device', device, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (data) return data;
+  } catch (e) {
+    return console.log(e);
+  }
 };
 
 export const editDevice = async (id, device) => {
@@ -48,7 +56,7 @@ export const createRating = async (deviceId, rate, user) => {
       const { data } = await $authHost.post('api/rating', {
         deviceId,
         userId: userId,
-        rate,
+        rate: Number(rate),
       });
       toast.success('Дякую за вашу оцінку');
       return data;

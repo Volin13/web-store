@@ -42,7 +42,7 @@ const BasketItem = ({
             style={{ width: 'auto' }}
             height="130px"
             variant="top"
-            src={process.env.REACT_APP_API_URL + item.mainImg}
+            src={item.mainImg}
           />
         </button>
         <Card.Body style={{ flex: ' 0 1 auto' }}>

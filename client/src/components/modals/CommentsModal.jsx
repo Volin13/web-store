@@ -243,7 +243,6 @@ const CommentsModal = observer(({ show, onHide }) => {
                         <RepliesList
                           user={user}
                           formik={formik}
-                          isGravatar={() => {}}
                           commentId={comment?.id}
                           repliesList={comment?.reply}
                           handleDeleteClick={handleDeleteClick}

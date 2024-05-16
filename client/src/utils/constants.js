@@ -5,6 +5,7 @@ export const SHOP_ROUTE = '/';
 export const DEVICE_ROUTE = '/device';
 export const BASKET_ROUTE = '/basket';
 export const ORDERS_ROUTE = '/orders';
+export const CUSTOMERS_ORDERS_ROUTE = '/cstm-orders';
 export const USER_ORDERS_ROUTE = '/orders/user';
 export const VERIFICATION_ROUTE = '/verification-token';
 export const GOOGLE_VERIFICATION_ROUTE = '/google-auth';

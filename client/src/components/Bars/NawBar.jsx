@@ -15,6 +15,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
+  CUSTOMERS_ORDERS_ROUTE,
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
@@ -29,6 +30,7 @@ import MainFilter from '../UI/UX/MainFilter/MainFilter';
 import UserMenu from '../modals/userMenu/UserMenu';
 import { getUserData } from '../../http/userAPI';
 import { toast } from 'react-toastify';
+import logout from '../../utils/logOut';
 
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
@@ -37,7 +39,6 @@ const NavBar = observer(() => {
   const [show, setShow] = useState(false);
 
   const { user, basket, device } = useContext(Context);
-
   const navigate = useNavigate();
   const location = useLocation();
   const authLocation =
@@ -49,16 +50,6 @@ const NavBar = observer(() => {
     location.pathname === BASKET_ROUTE ||
     location.pathname === LOGIN_ROUTE ||
     location.pathname === REGISTRATION_ROUTE;
-
-  const logOut = () => {
-    user.setUser({});
-    user.setIsAuth(false);
-    toast.info('До зустрічі!');
-    sessionStorage.removeItem('basket');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    navigate(SHOP_ROUTE);
-  };
 
   const localbasketData = sessionStorage.getItem('basket');
   let localBasket = null;
@@ -72,9 +63,9 @@ const NavBar = observer(() => {
         user.setEmail(data?.email);
         user.setRole(data?.role);
         user.setId(data?.id);
-        console.log(data);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Встановлюю кількість покупок в кошику залежно від записаного в sessionStorage або в store MobX
@@ -193,6 +184,14 @@ const NavBar = observer(() => {
                   >
                     Профіль
                   </Button>{' '}
+                  <NavLink to={CUSTOMERS_ORDERS_ROUTE}>
+                    <Button
+                      variant="outline-dark"
+                      onClick={() => setShow(false)}
+                    >
+                      Ваші покупки
+                    </Button>{' '}
+                  </NavLink>
                   {user?.role === 'ADMIN' && (
                     <NavLink to={ADMIN_ROUTE}>
                       <Button
@@ -207,7 +206,7 @@ const NavBar = observer(() => {
                     variant="outline-dark"
                     onClick={() => {
                       setShow(false);
-                      logOut();
+                      logout(user, navigate, toast, LOGIN_ROUTE);
                     }}
                   >
                     Вийти

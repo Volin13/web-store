@@ -1,12 +1,14 @@
-const uuid = require('uuid');
-const path = require('path');
-const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../../db');
+
+const { saveImage, deleteImage } = require('../../helpers');
 
 const ApiError = require('../../error/ApiError');
 const { Device, DeviceInfo, DeviceImages } = require('../../models/models');
 
 const edit = async (req, res, next) => {
+  const t = await sequelize.transaction();
+
   try {
     let {
       name,
@@ -23,7 +25,11 @@ const edit = async (req, res, next) => {
     const { id } = req.params;
     const images = req.files;
     const mainImg = req.files && req.files.mainImg ? req.files.mainImg : null;
-    const t = await sequelize.transaction();
+
+    const options = {
+      resource_type: 'image',
+      public_id: `devices/device_${id}/${uuidv4()}`,
+    };
 
     const device = await Device.findByPk(id);
     if (!device) {
@@ -37,69 +43,80 @@ const edit = async (req, res, next) => {
     device.rating = rating;
 
     // Перевірка чи існує девайс з заданим ідентифікатором
+    const saveImgURL = async result => {
+      const mainImgUrl = result.secure_url;
+      device.mainImg = mainImgUrl;
+      await device.save();
+    };
 
     if (mainImg) {
-      await Device.update(
-        { mainImg: mainImg },
-        {
-          where: { id: id },
-          returning: true,
-          plain: true,
-        },
-      );
+      // Виклик функції для видалення старого mainImg
+      await deleteImage(oldMainImg);
 
-      // Функція для видалення файлу
-      function deleteFile(filePath) {
-        try {
-          fs.unlinkSync(filePath);
-          console.log(`File ${filePath} deleted successfully.`);
-        } catch (error) {
-          console.error(`Error deleting file ${filePath}:`, error);
+      // Зберігаємо новий mainImg
+      try {
+        await saveImage(saveImgURL, mainImg.data, options);
+      } catch (error) {
+        console.error(
+          'Помилка при збереженні головного зображення: ',
+          error.message,
+        );
+        return next(
+          ApiError.internal(
+            'Сталась помилка під час збереження головного зображення',
+          ),
+        );
+      }
+    }
+
+    // знаходимо нові зображення
+    if (images) {
+      const imageFiles =
+        images?.map &&
+        Object.keys(images)
+          .filter(key => key.startsWith('images['))
+          .map(key => images[key]);
+
+      // зберігаємо другорядні фото
+      const saveSideImgURL = async result => {
+        const imageUrl = result.secure_url;
+        await DeviceImages.create({ fileName: imageUrl, deviceId: device.id });
+      };
+      // Зберігаємо додаткові фотографії та пов'язуємо їх з девайсом
+      if (imageFiles?.length) {
+        for (const image of imageFiles) {
+          try {
+            await saveImage(saveSideImgURL, image.data, options);
+          } catch (error) {
+            console.error(
+              'Помилка при збереженні додаткового зображення: ',
+              error.message,
+            );
+            return next(
+              ApiError.internal(
+                'Сталась помилка під час збереження додаткового зображення',
+              ),
+            );
+          }
         }
       }
-      const oldMainImgPath = path.resolve(
-        __dirname,
-        '..',
-        'static',
-        oldMainImg,
-      );
-
-      // Виклик функції для видалення старого mainImg
-      deleteFile(oldMainImgPath);
-    }
-    // Зберігаємо зміни в основному девайсі
-    await device.save();
-    // знаходимо нові зображення
-    const imageFiles =
-      images?.map &&
-      Object.keys(images)
-        .filter(key => key.startsWith('images['))
-        .map(key => images[key]);
-
-    // Зберігаємо додаткові фотографії та пов'язуємо їх з девайсом
-    if (imageFiles?.length) {
-      for (const image of imageFiles) {
-        let fileName = uuid.v4() + '.jpg';
-        image.mv(path.resolve(__dirname, '..', 'static', fileName));
-
-        await DeviceImages.create({ fileName, deviceId: device.id });
+      // Видалення існуючих фотографій за ідентифікаторами
+      if (deviceImagesNames) {
+        const newNames = JSON.parse(deviceImagesNames);
+        const oldNames = JSON.parse(oldDeviceImages);
+        if (newNames) {
+          await Promise.all(
+            oldNames.map(async name => {
+              const includesFile = newNames.includes(name);
+              if (!includesFile) {
+                await deleteImage(name);
+                await DeviceImages.destroy({ where: { fileName: name } });
+              }
+            }),
+          );
+        }
       }
     }
-    // Видалення існуючих фотографій за ідентифікаторами
-    const newNames = JSON.parse(deviceImagesNames);
-    const oldNames = JSON.parse(oldDeviceImages);
-    if (newNames) {
-      await Promise.all(
-        oldNames.map(async name => {
-          const oldMainImgPath = path.resolve(__dirname, '..', 'static', name);
-          const includesFile = newNames.includes(name);
-          if (!includesFile) {
-            await deleteFile(oldMainImgPath);
-          }
-        }),
-      );
-    }
-
     try {
       // Видалення існуючих записів для deviceId
       await DeviceInfo.destroy({ where: { deviceId: id }, transaction: t });

@@ -1,14 +1,23 @@
-module.exports = async function calculateAverageRating(device) {
-  const ratings = await device.getRatings();
-  const totalRatings = ratings.length;
-  if (totalRatings === 0) {
-    return 0;
+const sequelize = require('../db');
+
+module.exports = async function calculateAverageRating(deviceId) {
+  try {
+    const result = await sequelize.query(
+      `SELECT AVG(rate) AS averageRating
+       FROM Ratings
+       WHERE deviceId = :deviceId`,
+      {
+        replacements: { deviceId },
+        type: sequelize.QueryTypes.SELECT,
+      },
+    );
+    console.log(result);
+    const averageRating = result[0].averageRating || 0;
+    const roundedAverage = parseFloat(averageRating.toFixed(1));
+
+    return roundedAverage;
+  } catch (error) {
+    console.error('Помилка під час обчислення середнього рейтингу:', error);
+    throw new Error('Помилка під час обчислення середнього рейтингу');
   }
-  const sum = ratings.reduce((acc, rating) => acc + rating.rate, 0);
-  const average = sum / totalRatings;
-
-  // Округлення до десятих за допомогою toFixed та parseFloat
-  const roundedAverage = parseFloat(average.toFixed(1));
-
-  return roundedAverage;
 };

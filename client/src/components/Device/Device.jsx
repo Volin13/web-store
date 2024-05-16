@@ -27,6 +27,7 @@ const Device = () => {
     info: [],
     deviceImages: [],
   });
+  const [info, setInfo] = useState([]);
   const [clickedState, setClickedState] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
   const [showList, setShowList] = useState(false);
@@ -56,7 +57,7 @@ const Device = () => {
     });
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
-  }, [id]);
+  }, [id, device]);
 
   // Визначення величини кошика для зміни іконки при кліку на кнопку "купити"
   useEffect(() => {
@@ -110,11 +111,7 @@ const Device = () => {
                 width={'100%'}
                 height={300}
                 className={`${!singleDevice?.inStock ? css.greyColors : ''}`}
-                src={
-                  loading
-                    ? loadImg
-                    : process.env.REACT_APP_API_URL + singleDevice.mainImg
-                }
+                src={loading ? loadImg : singleDevice.mainImg}
                 style={{ objectFit: 'contain' }}
               />
             </div>
@@ -308,6 +305,8 @@ const Device = () => {
       <EditDeviceModal
         show={showEditDeviceModal}
         deviceToEdit={singleDevice}
+        info={info}
+        setInfo={setInfo}
         onHide={() => setShowEditDeviceModal(false)}
       />
     </Container>

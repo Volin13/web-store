@@ -5,6 +5,7 @@ import VerifyPage from './pages/VerifyPage/VerifyPage';
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
+  CUSTOMERS_ORDERS_ROUTE,
   DEVICE_ROUTE,
   GOOGLE_VERIFICATION_ROUTE,
   LOGIN_ROUTE,
@@ -28,6 +29,9 @@ const SingleOrderPage = lazy(() =>
 const UserOrdersPage = lazy(() =>
   import('./pages/UserOrdersPage/UserOrdersPage.jsx')
 );
+const CustomersOrdersPage = lazy(() =>
+  import('./pages/CustomersOrdersPage/CustomersOrdersPage.jsx')
+);
 const ShopPage = lazy(() => import('./pages/ShopPage/ShopPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage/NotFound'));
 
@@ -47,6 +51,10 @@ export const authRoutes = [
   {
     path: ORDERS_ROUTE,
     Component: OrdersPage,
+  },
+  {
+    path: CUSTOMERS_ORDERS_ROUTE,
+    Component: CustomersOrdersPage,
   },
   {
     path: ORDERS_ROUTE + '/:id',

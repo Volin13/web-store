@@ -1,27 +1,21 @@
-const { v4: uuidv4 } = require('uuid');
-const { Readable } = require('stream');
-const { CLOUDINARY_KEY, CLOUDINARY_SECRET } = process.env;
-const cloudinary = require('cloudinary').v2;
-
-cloudinary.config({
-  cloud_name: 'dwgpcl0nu',
-  api_key: CLOUDINARY_KEY,
-  api_secret: CLOUDINARY_SECRET,
-});
-
-const saveCloudinaryImage = async (saveAvatarURL, userId, fileData) => {
-  const options = {
-    resource_type: 'image',
-    public_id: `${userId}/${uuidv4()}`,
-  };
-
+const saveCloudinaryImage = async (saveAvatarURL, fileData, options) => {
   try {
+    // Опції для обробки зображення (розмір, формат, фон тощо)
+    const transformationOptions = {
+      width: 800,
+      height: 800,
+      crop: 'fit',
+      quality: 'auto',
+      fetch_format: 'auto',
+      background: 'white',
+    };
+
     // Створюємо Readable Stream з буфера даних
     const readableStream = Readable.from([fileData]);
 
     // Створюємо потік завантаження до Cloudinary з опціями та обробником подій
     const uploadStream = cloudinary.uploader.upload_stream(
-      options,
+      { ...transformationOptions },
       async (error, result) => {
         if (error) {
           console.log(error.message);

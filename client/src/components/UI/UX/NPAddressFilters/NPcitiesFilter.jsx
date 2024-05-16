@@ -9,7 +9,6 @@ const NPcityFilter = forwardRef(function NPcityFilter({ formik }, ref) {
   const [npData, setNpData] = useState([]);
   const [cityInput, setCityInput] = useState('');
   const [onShow, setOnShow] = useState(false);
-
   // Зменшення числа запитів при введенні знаків у інпут
   const hendlePostDataChange = _debounce(async value => {
     const city = value.trim();

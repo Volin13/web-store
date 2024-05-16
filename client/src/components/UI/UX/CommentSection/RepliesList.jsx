@@ -12,7 +12,6 @@ const RepliesList = forwardRef(
       userId,
       formik,
       commentId,
-      isGravatar,
       repliesList,
       handleEditClick,
       setShowReplyInput,
@@ -34,11 +33,7 @@ const RepliesList = forwardRef(
                   width={40}
                   height={40}
                   className={css.commentAvatar}
-                  src={
-                    isGravatar(item?.avatar)
-                      ? item?.avatar
-                      : process.env.REACT_APP_API_URL + item?.avatar
-                  }
+                  src={item?.avatar}
                 />
                 <span>{item?.login}</span>
               </div>
@@ -101,7 +96,6 @@ RepliesList.propTypes = {
   user: PropTypes.object,
   formik: PropTypes.object,
   userId: PropTypes.number,
-  isGravatar: PropTypes.func,
   commentId: PropTypes.number,
   repliesList: PropTypes.array,
   handleEditClick: PropTypes.func,

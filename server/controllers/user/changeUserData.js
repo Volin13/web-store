@@ -1,5 +1,6 @@
 const ApiError = require('../../error/ApiError');
 const { saveImage, deleteImage } = require('../../helpers');
+const { v4: uuidv4 } = require('uuid');
 
 const changeUserData = async (req, res, next) => {
   try {
@@ -30,8 +31,13 @@ const changeUserData = async (req, res, next) => {
         user.avatar = avatarURL;
         await user.save();
       };
+      const options = {
+        resource_type: 'image',
+        public_id: `user${userId}/${uuidv4()}`,
+      };
+
       try {
-        await saveImage(saveAvatarURL, userId, avatar.data);
+        await saveImage(saveAvatarURL, avatar.data, options);
       } catch (error) {
         console.error('Помилка при збереженні зображення: ', error.message);
         return next(

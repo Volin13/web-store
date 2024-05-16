@@ -52,14 +52,14 @@ export const checkoutSchema = yup.object().shape({
     .required('Оберіть місто з випадаючого списку'),
   phone: yup
     .string()
+    .test('startsWith+380', 'Номер телефону має починатися з +380', value => {
+      return value && value.startsWith('+380');
+    })
     .min(10, 'Ваш номер телефону занадто короткий')
     .max(13, 'Максимальна довжина номеру телефону 13 символів')
     .matches(phoneRegex, {
       message: 'Номер не має включати спец. символи та літери',
       excludeEmptyString: true,
-    })
-    .test('startsWith+380', 'Номер телефону має починатися з +380', value => {
-      return value && value.startsWith('+380');
     })
     .required('Введіть ваш номер телефону'),
   terminal: yup
