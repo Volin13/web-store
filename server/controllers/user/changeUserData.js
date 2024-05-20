@@ -18,7 +18,7 @@ const changeUserData = async (req, res, next) => {
     } else {
       try {
         const defaultAvatar =
-          'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/zbl5elxaq9kgkqehmrl0.jpg';
+          'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/vjj4nqijxlcbhxu34drg';
         if (user.avatar !== defaultAvatar) {
           await deleteImage(user.avatar);
         }
@@ -33,7 +33,7 @@ const changeUserData = async (req, res, next) => {
       };
       const options = {
         resource_type: 'image',
-        public_id: `user${userId}/${uuidv4()}`,
+        public_id: `user_${userId}/${uuidv4()}`,
       };
 
       try {

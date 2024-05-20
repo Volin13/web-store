@@ -19,7 +19,7 @@ export const registration = async (email, password, login) => {
     return data;
   } catch (e) {
     console.log(e.response.data.message);
-    toast.error('Сталась помилка, спробуйте пізніше');
+    toast.error(e.response.data.message);
     return;
   }
 };

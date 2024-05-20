@@ -68,15 +68,11 @@ const edit = async (req, res, next) => {
         );
       }
     }
-
     // знаходимо нові зображення
     if (images) {
-      const imageFiles =
-        images?.map &&
-        Object.keys(images)
-          .filter(key => key.startsWith('images['))
-          .map(key => images[key]);
-
+      const imageFiles = Object.keys(images)
+        .filter(key => key.startsWith('images['))
+        .map(key => images[key]);
       // зберігаємо другорядні фото
       const saveSideImgURL = async result => {
         const imageUrl = result.secure_url;
@@ -85,6 +81,10 @@ const edit = async (req, res, next) => {
       // Зберігаємо додаткові фотографії та пов'язуємо їх з девайсом
       if (imageFiles?.length) {
         for (const image of imageFiles) {
+          const options = {
+            resource_type: 'image',
+            public_id: `devices/device_${device.id}/${uuidv4()}`,
+          };
           try {
             await saveImage(saveSideImgURL, image.data, options);
           } catch (error) {
@@ -101,7 +101,7 @@ const edit = async (req, res, next) => {
         }
       }
       // Видалення існуючих фотографій за ідентифікаторами
-      if (deviceImagesNames) {
+      if (deviceImagesNames && oldDeviceImages) {
         const newNames = JSON.parse(deviceImagesNames);
         const oldNames = JSON.parse(oldDeviceImages);
         if (newNames) {
@@ -143,7 +143,7 @@ const edit = async (req, res, next) => {
       await t.rollback();
       throw error; // Перенаправлення помилки наверх для обробки вище
     }
-    return res.json({ message: 'Device updated successfully', device });
+    return res.json({ message: 'Девайс змінено', device });
   } catch (e) {
     next(
       ApiError.badRequest(

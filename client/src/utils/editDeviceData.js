@@ -20,14 +20,16 @@ const editData = async (
   formData.append('brandId', device.selectedBrand.id);
   formData.append('typeId', device.selectedType.id);
   formData.append('info', JSON.stringify(info));
-  deviceImages.forEach((item, index) => {
-    if (item.deviceImage instanceof File) {
-      formData.append(`images[${index}][deviceImage]`, item.deviceImage);
-      formData.append(`images[${index}][number]`, item.number);
-    } else if (item.fileName) {
-      fileNames.push(item.fileName);
-    }
-  });
+  if (deviceImages.length) {
+    deviceImages.forEach((item, index) => {
+      if (item.deviceImage instanceof File) {
+        formData.append(`images[${index}][deviceImage]`, item.deviceImage);
+        formData.append(`images[${index}][number]`, item.number);
+      } else if (item.fileName) {
+        fileNames.push(item.fileName);
+      }
+    });
+  }
   deviceToEdit.deviceImages.forEach(image => {
     oldfileNames.push(image.fileName);
   });

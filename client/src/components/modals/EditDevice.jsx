@@ -97,7 +97,7 @@ const EditDeviceModal = observer(
         arr.forEach(item => {
           if (item.id === deviceToEdit?.typeId && name === 'type') {
             device.setSelectedType(item);
-          } else if (item.id === deviceToEdit?.typeId && name === 'brand') {
+          } else if (item.id === deviceToEdit?.brandId && name === 'brand') {
             device.setSelectedBrand(item);
           }
         });
@@ -137,6 +137,7 @@ const EditDeviceModal = observer(
         }
       },
     });
+
     const isValid = editDeviceSchema.isValidSync(formik.values);
     return (
       <Modal size="lg" show={show} onHide={onHide} centered>

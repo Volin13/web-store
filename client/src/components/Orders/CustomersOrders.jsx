@@ -11,39 +11,58 @@ const CustomersOrders = () => {
   const [visible, setVisible] = useState('');
   const { user } = useContext(Context);
 
-  console.log(userOrderList);
-
   useEffect(() => {
     fetchUserOrders(user.id).then(data => setUserOrderList(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const hendleBtnClick = () => {
     fetchUserOrders(user.id).then(data => setUserOrderList(data));
   };
-  const hendleOrderClick = index => {
-    setVisible(index);
+  const hendleOrderClick = (index, visible) => {
+    if (visible && index !== visible) {
+      setVisible(index);
+    } else if (index === visible) {
+      setVisible('');
+    } else {
+      setVisible(index);
+    }
   };
+
+  const pickOrderColor = (declined, checked) => {
+    if (checked && declined) {
+      return '#fbc1bc';
+    } else if (checked && !declined) {
+      return '#ABEBAB';
+    } else {
+      return '#FEEFBE';
+    }
+  };
+
   return (
     <div>
       <h3 className="mb-2">Ваші замовлення:</h3>
       {userOrderList.length ? (
-        <Card className="mb-3 p-3">
+        <Card className="mb-3 p-3" style={{ height: '60vh', overflow: 'auto' }}>
           <ul>
             {userOrderList?.map((item, index) => (
               <li
-                onClick={() => hendleOrderClick(index)}
+                onClick={() => hendleOrderClick(index, visible)}
                 className="mb-2"
                 key={item?.id}
               >
                 <div
-                  className="d-flex justify-content-between gap-1 text-center mb-2"
+                  className="d-flex justify-content-md-center justify-content-xl-between gap-1 text-center flex-wrap flex-xl-nowrap  mb-2"
                   style={{
                     borderRadius: '8px',
-                    backgroundColor: item?.checked ? '#ABEBAB' : '#fbc1bc',
+                    backgroundColor: pickOrderColor(
+                      item?.declined,
+                      item?.checked
+                    ),
                     cursor: 'pointer',
                   }}
                 >
                   <Col md="1">
-                    <span className={css.ordersItemData}>{index + 1}</span>
+                    <span className={css.ordersItemData}>{index + 1}.</span>
                   </Col>
                   <Col md="2">
                     <span className={css.ordersItemData}>
@@ -77,13 +96,51 @@ const CustomersOrders = () => {
         </Card>
       ) : (
         <Card
-          className="d-flex align-items-center mb-3"
+          className="d-flex justify-content-center align-items-center mb-3"
           style={{ minHeight: '20vh' }}
         >
           <h4 className="text-center">У вас ще не було замовлень</h4>
         </Card>
       )}
-      <div className="text-end">
+      <div className="d-flex justify-content-between">
+        <div
+          className="d-flex justify-content-md-around align-items-center flex-wrap"
+          style={{ flex: 1 }}
+        >
+          <div className="d-flex justify-content-between align-items-center m-1">
+            <span style={{ marginRight: '5px' }}>В обробці:</span>
+            <span
+              className="d-inline-block"
+              style={{
+                width: '50px',
+                height: '30px',
+                backgroundColor: '#FEEFBE',
+              }}
+            ></span>
+          </div>
+          <div className="d-flex justify-content-between align-items-center m-1">
+            <span style={{ marginRight: '5px' }}>Відправлено:</span>
+            <span
+              className="d-inline-block"
+              style={{
+                width: '50px',
+                height: '30px',
+                backgroundColor: '#ABEBAB',
+              }}
+            ></span>
+          </div>
+          <div className="d-flex justify-content-between align-items-center m-1">
+            <span style={{ marginRight: '5px' }}>Відхилено:</span>{' '}
+            <span
+              className="d-inline-block"
+              style={{
+                width: '50px',
+                height: '30px',
+                backgroundColor: '#fbc1bc',
+              }}
+            ></span>
+          </div>
+        </div>
         <Button variant="outline-dark" onClick={() => hendleBtnClick()}>
           Оновити
         </Button>

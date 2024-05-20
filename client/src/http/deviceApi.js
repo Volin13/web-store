@@ -40,7 +40,11 @@ export const createDevice = async device => {
 };
 
 export const editDevice = async (id, device) => {
-  const { data } = await $authHost.patch('api/device/' + id, device);
+  const { data } = await $authHost.patch('api/device/' + id, device, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return data;
 };
 

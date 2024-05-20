@@ -8,10 +8,10 @@ import { DEVICE_ROUTE } from '../../utils/constants';
 const CastomerSingleOrder = ({ list, visible, index }) => {
   return (
     <>
-      {index == visible && (
+      {index === visible && (
         <Card className="mx-auto my-3">
           <Card.Body>
-            <ul className={css.orderDataList}>
+            <ul className={`d-flex flex-column ${css.orderDataList}`}>
               {list.map(item => (
                 <li key={item.id} className="d-flex justify-content-between">
                   <Col

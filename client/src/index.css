@@ -345,3 +345,10 @@ hr {
     right: 3rem;
   }
 }
+
+.form-check-input {
+  cursor: pointer;
+}
+.modal-header {
+  padding: 10px !important;
+}

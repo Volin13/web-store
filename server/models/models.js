@@ -8,14 +8,13 @@ const User = sequelize.define('user', {
   googlePassword: { type: DataTypes.STRING },
   login: {
     type: DataTypes.STRING,
-    // defaultValue: DataTypes.UUIDV4,
-    defaultValue: 'USER',
-    // unique: true
+    defaultValue: DataTypes.UUIDV4,
+    unique: true,
   },
   avatar: {
     type: DataTypes.STRING,
     defaultValue:
-      'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/zbl5elxaq9kgkqehmrl0.jpg',
+      'https://res.cloudinary.com/dwgpcl0nu/image/upload/v1709034825/images/upload/default/vjj4nqijxlcbhxu34drg',
     allowNull: false,
   },
   role: { type: DataTypes.STRING, defaultValue: 'USER' },
