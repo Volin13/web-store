@@ -36,7 +36,8 @@ const CommentSection = observer(({ user, id }) => {
         setLoading(false);
       }
     );
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   //  відправка повідомлення/відповіді + редагування
   const handleSendMessageClick = async (type, commentId) => {

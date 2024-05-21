@@ -68,6 +68,7 @@ const UserMenu = observer(({ show, onHide }) => {
 
   useEffect(() => {
     formik.setFieldValue('userName', user.userLogin);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const UserMenu = observer(({ show, onHide }) => {
     if (user.avatar !== imageFile) {
       setImageFile(user.avatar);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.userLogin, user.avatar]);
   const isValid = userDataSchema.isValidSync(formik.values);
   const checkName = async name => {
