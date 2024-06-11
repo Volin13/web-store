@@ -18,7 +18,6 @@ const authenticate = async (req, res, next) => {
     });
     req.user = superuser;
     next();
-    return;
   }
   try {
     const { id } = jwt.verify(accessToken, ACCESS_SECRET_KEY);

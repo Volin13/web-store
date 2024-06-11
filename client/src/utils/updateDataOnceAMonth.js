@@ -9,6 +9,7 @@ const updateDataOnceAMonth = async () => {
     const newData = await fetchAndUpdateData();
     localStorage.setItem('npRegions', JSON.stringify(newData));
     localStorage.setItem('lastUpdateNpRegions', currentDate.toISOString());
+    return newData;
   }
 
   const yourData = JSON.parse(localData) || [];

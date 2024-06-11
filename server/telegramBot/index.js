@@ -10,6 +10,10 @@ const startBot = () => {
   bot.on('message', async msg => {
     const chatId = msg.chat.id;
     const text = msg.text;
+    await bot.sendMessage(
+      chatId,
+      'Вибачте бот ще на стадії розробики, спробуйте пізніше',
+    );
 
     if (text === '/start') {
       await bot.sendMessage(chatId, 'Заповніть форму, після кліку на кнопку', {

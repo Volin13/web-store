@@ -17,9 +17,18 @@ const getAll = async (req, res, next) => {
     whereCondition.typeId = typeId;
   }
   if (query) {
-    whereCondition.name = {
-      [Op.iLike]: `%${query}%`,
-    };
+    // Розділіть вхідний рядок на окремі слова
+    const words = query.split(' ');
+
+    // Побудуйте умови для кожного слова
+    const wordConditions = words.map(word => ({
+      name: {
+        [Op.iLike]: `%${word}%`,
+      },
+    }));
+
+    // Об'єднайте умови за допомогою OR
+    whereCondition[Op.or] = wordConditions;
   }
   // сортування девайсів
   let filterArr = [

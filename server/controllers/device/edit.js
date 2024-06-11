@@ -13,6 +13,9 @@ const edit = async (req, res, next) => {
     let {
       name,
       price,
+      newPrice,
+      inStock,
+      discount,
       brandId,
       typeId,
       info,
@@ -25,7 +28,6 @@ const edit = async (req, res, next) => {
     const { id } = req.params;
     const images = req.files;
     const mainImg = req.files && req.files.mainImg ? req.files.mainImg : null;
-
     const options = {
       resource_type: 'image',
       public_id: `devices/device_${id}/${uuidv4()}`,
@@ -41,6 +43,12 @@ const edit = async (req, res, next) => {
     device.brandId = brandId;
     device.typeId = typeId;
     device.rating = rating;
+    device.inStock = inStock;
+    device.discount = discount;
+    if (newPrice > 0) {
+      device.newPrice = newPrice;
+    }
+    await device.save();
 
     // Перевірка чи існує девайс з заданим ідентифікатором
     const saveImgURL = async result => {

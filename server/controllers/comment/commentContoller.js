@@ -180,7 +180,6 @@ class CommentController {
     try {
       const { id } = req.params;
       const { userId } = req.query;
-      console.log(userId, typeof userId);
       const reply = await Reply.findByPk(id);
       if (!reply) {
         return next(ApiError.notFound('Відповідь не знайдено'));
@@ -203,7 +202,6 @@ class CommentController {
     try {
       const { id } = req.params;
       const { text, userId } = req.body.params;
-      console.log(id, text, userId);
       const reply = await Reply.findByPk(id);
       if (!reply) {
         return next(ApiError.badRequest('Відповідь не знайдено'));

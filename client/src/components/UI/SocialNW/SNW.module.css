@@ -1,0 +1,27 @@
+.iconThumb {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  stroke: white;
+  border: 1px solid transparent;
+  padding: 5px;
+  transition: all 500ms;
+}
+.icon {
+  width: 25px;
+  height: 25px;
+}
+.iconThumb:hover,
+.iconThumb:focus {
+  scale: 1.35;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid white;
+}
+
+@media screen and (min-width: 576px) and (max-width: 1024px) {
+  .icon {
+    width: 35px;
+    height: 35px;
+  }
+}

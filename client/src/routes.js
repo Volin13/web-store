@@ -97,7 +97,6 @@ export const publicRoutes = [
   {
     path: RESET_PASSWORD_ROUTE + '/:resetEmailToken',
     Component: ResetPasswordPage,
-    redirectTo: LOGIN_ROUTE,
   },
   {
     path: DEVICE_ROUTE + '/:id',

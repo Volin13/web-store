@@ -39,7 +39,10 @@ const EditDeviceModal = observer(
         formik.setFieldValue('rating', deviceToEdit.rating);
         formik.setFieldValue('brandId', deviceToEdit.brandId);
         formik.setFieldValue('typeId', deviceToEdit.typeId);
-        formik.setFieldValue('info', deviceToEdit.info);
+        formik.setFieldValue('discount', deviceToEdit.discount);
+        formik.setFieldValue('inStock', deviceToEdit.inStock);
+        formik.setFieldValue('newPrice', deviceToEdit.newPrice);
+        formik.setFieldValue('deviceImages', deviceToEdit.deviceImages);
         setInfo(deviceToEdit.info);
         setDeviceImages(deviceToEdit.deviceImages || []);
         formik.setFieldValue('deviceImages', deviceToEdit.deviceImages || []);
@@ -112,7 +115,7 @@ const EditDeviceModal = observer(
         inStock: deviceToEdit?.inStock || true,
         newPrice: deviceToEdit?.newPrice || 0,
         mainImg: deviceToEdit?.mainImg || null,
-        deviceImages: deviceToEdit?.info || [],
+        deviceImages: deviceToEdit?.deviceImages || [],
         rating: deviceToEdit?.rating || 0,
         brandId: deviceToEdit?.brandId || '',
         typeId: deviceToEdit?.typeId || '',
@@ -345,7 +348,7 @@ const EditDeviceModal = observer(
                 </Button>
                 <ul>
                   {deviceImages.map(i => (
-                    <Row key={i?.number} as="li" className="my-3">
+                    <Row key={i?.id} as="li" className="my-3">
                       <Col
                         md={6}
                         className="d-flex align-items-center justify-content-center mb-2"

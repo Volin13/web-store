@@ -1,13 +1,5 @@
 import { $host, $authHost } from './index';
-import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
-
-const token = localStorage.getItem('accessToken');
-let decodeToken = { id: '' };
-if (token && token !== 'superuser') {
-  decodeToken = jwt_decode(token);
-}
-export const userId = decodeToken.id !== '' ? decodeToken.id : 1;
 
 export const registration = async (email, password, login) => {
   try {
@@ -158,7 +150,7 @@ export const checkUsedLogin = async login => {
     return;
   }
 };
-export const getUserData = async () => {
+export const getUserData = async userId => {
   try {
     const { data } = await $authHost.get('api/user/auth/data/' + userId);
     return data;

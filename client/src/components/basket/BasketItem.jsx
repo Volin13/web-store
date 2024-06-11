@@ -45,7 +45,7 @@ const BasketItem = ({
             src={item.mainImg}
           />
         </button>
-        <Card.Body style={{ flex: ' 0 1 auto' }}>
+        <Card.Body style={{ flex: ' 0 1 auto', width: '50%' }}>
           <Card.Title>
             {item.price * item.count} грн.{' '}
             {item.count > 1 && (

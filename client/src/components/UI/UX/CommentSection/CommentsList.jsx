@@ -17,7 +17,6 @@ import {
   deleteComment,
   deleteReply,
   fetchDeviceComments,
-  userId,
 } from '../../../../http/commentsApi';
 
 import MessagesLoading from '../Spinner/MessagesLoading';
@@ -126,7 +125,7 @@ const CommentsList = ({
                           style={{
                             marginRight: '15px',
                             display:
-                              userId === comment?.userId ? 'block' : 'none',
+                              user.id === comment?.userId ? 'block' : 'none',
                           }}
                           className={`${css.messageBtn}`}
                           type="button"
@@ -158,7 +157,7 @@ const CommentsList = ({
                         <button
                           style={{
                             display:
-                              userId === comment?.userId ? 'block' : 'none',
+                              user.id === comment?.userId ? 'block' : 'none',
                           }}
                           type="button"
                           className={`${css.messageBtn}`}
@@ -182,7 +181,7 @@ const CommentsList = ({
                 <>
                   <RepliesList
                     formik={formik}
-                    userId={userId}
+                    userId={user.id}
                     ref={replyInput}
                     commentId={comment?.id}
                     repliesList={comment?.reply}

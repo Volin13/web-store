@@ -23,7 +23,6 @@ const login = async (req, res, next) => {
     });
     return;
   }
-
   const user = await User.findOne({ where: { email: lowCaseEmail } });
 
   if (!user) {
@@ -76,6 +75,7 @@ const login = async (req, res, next) => {
   res.json({
     ...tokens,
     user: {
+      id: user.id,
       login: user.login,
       email: user.email,
       avatar: user.avatar,

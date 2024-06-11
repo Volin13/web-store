@@ -12,7 +12,7 @@ const getUserData = async (req, res, next) => {
     if (!user) {
       return next(
         ApiError.internal(
-          'Користувача з вашим id не знайдень, спробуйте пізніше',
+          'Користувача з вашим id не знайдено, спробуйте пізніше',
         ),
       );
     }

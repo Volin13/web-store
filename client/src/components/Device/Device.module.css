@@ -11,12 +11,12 @@
 }
 .editDeviceBtn {
   position: absolute;
+  gap: 10px;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
   min-width: 150px;
   padding: 10px;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   border: 1px solid #e6e9ec;
@@ -99,7 +99,7 @@
 }
 .deviceItemCol:hover,
 .deviceItemCol:focus {
-  transform: scale(1.05);
+  transform: scale(1.15);
 }
 .deviceItemCol:not(:last-child) {
   margin-bottom: 16px;
@@ -128,7 +128,7 @@
 }
 
 /* Для ширини екрану більше 992px, наприклад, на більших екранах 4 в ряд */
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 992px) and (max-width: 1439px) {
   /* Кожен четвертий елемент, крім останнього в ряду */
   .deviceItemCol:not(:nth-child(4n)) {
     margin-right: calc((100% - 600px) / 3);
@@ -136,6 +136,19 @@
 
   /* Крім останнього в кожному ряду */
   .deviceItemCol:not(:nth-last-child(-n + 4)) {
+    margin-bottom: 32px;
+  }
+}
+
+/* Для ширини екрану більше 1440px, наприклад, на більших екранах 4 в ряд */
+@media screen and (min-width: 1440px) {
+  /* Кожен четвертий елемент, крім останнього в ряду */
+  .deviceItemCol:not(:nth-child(5n)) {
+    margin-right: calc((100% - 750px) / 4);
+  }
+
+  /* Крім останнього в кожному ряду */
+  .deviceItemCol:not(:nth-last-child(-n + 5)) {
     margin-bottom: 32px;
   }
 }

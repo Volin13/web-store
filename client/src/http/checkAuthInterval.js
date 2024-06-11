@@ -15,12 +15,12 @@ export const startTokenRefreshInterval = (store, refreshToken) => {
       console.log(error);
     }
   }, 4.2 * 60 * 1000);
-  localStorage.setItem('refreshTokenInterval', interval);
+  sessionStorage.setItem('refreshTokenInterval', interval);
 };
 
 export const stopTokenRefreshInterval = () => {
-  const interval = localStorage.getItem('refreshTokenInterval');
+  const interval = sessionStorage.getItem('refreshTokenInterval');
   if (!interval) return;
   clearInterval(interval);
-  localStorage.removeItem('refreshTokenInterval');
+  sessionStorage.removeItem('refreshTokenInterval');
 };

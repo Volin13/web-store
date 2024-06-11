@@ -117,6 +117,7 @@ const Auth = observer(() => {
           if (userData) {
             user.setUser(userData);
             user.setIsAuth(true);
+            user.setId(userData?.user?.id);
             user.setUserLogin(userData?.user?.name);
             user.setAvatar(userData?.user?.avatar);
             user.setEmail(userData?.user?.email);

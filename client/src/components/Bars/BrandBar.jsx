@@ -10,7 +10,6 @@ const BrandBar = observer(({ loading }) => {
   const { device } = useContext(Context);
   const [hidden, setHidden] = useState(true);
   const [showMoreBtn, setShowMoreBtn] = useState(true);
-  const [showScrollToBtn, setShowScrollToBtn] = useState(false);
   const [checkedItem, setСheckedItem] = useState(false);
   const listRef = useRef(null);
   const timerRef = useRef(null);
@@ -24,13 +23,11 @@ const BrandBar = observer(({ loading }) => {
   useEffect(() => {
     if (isEndOfList && timerRef.current && hiddenList) {
       setShowMoreBtn(false);
-      setShowScrollToBtn(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listRef, timerRef.current]);
 
   const handleScroll = () => {
-    setShowScrollToBtn(false);
     clearTimeout(timerRef.current);
     // кнопка пропадає на час скролінгу
     if (hiddenList) {
@@ -39,9 +36,8 @@ const BrandBar = observer(({ loading }) => {
     // Час для визначення завершення скролінгу
     timerRef.current = setTimeout(() => {
       // кнопка з'являється під кінець склолінгу
-      if (!isEndOfList) {
-        setShowMoreBtn(true);
-      }
+
+      setShowMoreBtn(true);
     }, 300);
   };
 
@@ -53,12 +49,6 @@ const BrandBar = observer(({ loading }) => {
     } else {
       device.setSelectedBrand(brand);
       setСheckedItem(device.selectedBrand);
-    }
-  };
-
-  const scrollToStart = () => {
-    if (list) {
-      listRef.current.scrollTo({ left: 0, behavior: 'smooth' });
     }
   };
 
@@ -171,22 +161,6 @@ const BrandBar = observer(({ loading }) => {
             className={`${
               hidden ? 'brandBarBtnOpenImg' : 'brandBarBtnCloseImg'
             }`}
-          />
-        </button>
-      )}
-      {showScrollToBtn && hidden && !showMoreBtn && (
-        <button
-          onClick={() => {
-            scrollToStart();
-          }}
-          className={`d-flex align-items-center justify-content-center showMoreBtn
-          `}
-        >
-          <Image
-            width={25}
-            height={25}
-            src={Arrow}
-            className="scrollToStartBtnImg"
           />
         </button>
       )}

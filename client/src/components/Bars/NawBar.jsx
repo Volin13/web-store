@@ -21,16 +21,15 @@ import {
   SHOP_ROUTE,
 } from '../../utils/constants';
 import { observer } from 'mobx-react-lite';
-import storeLogo from '../../assets/shopIcons/shoppingLogo.svg';
 import basketImg from '../../assets/shopIcons/buy-cart-discount-3-svgrepo-com.svg';
 import logInIcon from '../../assets/authIcons/login-2-svgrepo-com.svg';
 import BasketModal from '../modals/BasketModal';
 import MenuIcon from '../UI/UX/MenuIcon/MenuIcon';
 import MainFilter from '../UI/UX/MainFilter/MainFilter';
 import UserMenu from '../modals/userMenu/UserMenu';
-import { getUserData } from '../../http/userAPI';
 import { toast } from 'react-toastify';
 import logout from '../../utils/logOut';
+import Logo from '../UI/Logo/Logo';
 
 const NavBar = observer(() => {
   const [basketVisible, setBasketVisible] = useState(false);
@@ -55,19 +54,6 @@ const NavBar = observer(() => {
   let localBasket = null;
   localBasket = localbasketData ? JSON.parse(localbasketData) : basket.basket;
 
-  useEffect(() => {
-    if (user?.isAuth) {
-      getUserData().then(data => {
-        user.setUserLogin(data?.login);
-        user.setAvatar(data?.avatar);
-        user.setEmail(data?.email);
-        user.setRole(data?.role);
-        user.setId(data?.id);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Встановлюю кількість покупок в кошику залежно від записаного в sessionStorage або в store MobX
   useEffect(() => {
     setBasketLength(localBasket?.length || basket.basket.length);
@@ -79,24 +65,7 @@ const NavBar = observer(() => {
         <Container>
           {/* logo */}
           <Col md="3">
-            <NavLink
-              className="navBar_mainLogo"
-              to={SHOP_ROUTE}
-              onClick={() => {
-                device.setSelectedBrand({});
-                device.setSelectedType({});
-                device.setQuery('');
-              }}
-            >
-              Online
-              <Image
-                className="navBar_mainLogo_image"
-                src={storeLogo}
-                width={25}
-                height={25}
-              />
-              Store
-            </NavLink>
+            <Logo toRoute={SHOP_ROUTE} device={device} />
           </Col>
 
           {/* search */}

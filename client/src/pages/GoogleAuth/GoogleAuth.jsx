@@ -16,6 +16,7 @@ const GoogleAuth = () => {
         const data = await loginWithGoogle(googleAuthToken);
         if (data) {
           user.setUser(data);
+          user.setId(data.user?.id);
           user.setUserLogin(data.user?.login);
           user.setEmail(data.user?.email);
           user.setRole(data.user?.role);

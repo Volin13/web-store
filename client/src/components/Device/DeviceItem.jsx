@@ -17,7 +17,13 @@ const DeviceItem = ({ device, loading, index }) => {
       onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
     >
       {loading ? (
-        <Card style={{ width: '150px', textAlign: 'center' }} border={'light'}>
+        <Card
+          style={{
+            width: '150px',
+            textAlign: 'center',
+            border: 'none',
+          }}
+        >
           <div
             className="d-flex align-items-center justify-content-center"
             style={{
@@ -56,7 +62,7 @@ const DeviceItem = ({ device, loading, index }) => {
           </Card.Body>
         </Card>
       ) : (
-        <Card style={{ cursor: 'pointer' }} border={'light'}>
+        <Card style={{ cursor: 'pointer', border: 'none' }}>
           <div
             className={`d-flex justify-content-center align-items-center position-relative mb-2`}
           >

@@ -7,9 +7,9 @@ const MessagesLoading = () => {
       className="d-flex align-items-center justify-content-center"
       style={{ gap: '20px' }}
     >
-      <Spinner animation="grow" variant="info" />
-      <Spinner animation="grow" variant="info" />
-      <Spinner animation="grow" variant="info" />
+      <Spinner animation="grow" variant="dark" />
+      <Spinner animation="grow" variant="dark" />
+      <Spinner animation="grow" variant="dark" />
     </div>
   );
 };

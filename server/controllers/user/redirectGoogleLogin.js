@@ -19,6 +19,7 @@ const redirectGoogleLogin = async (req, res) => {
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
     ],
+    redirect_uri: `${BASE_BACKEND_URL}/user/google-callback`,
   });
 
   res.redirect(authUrl);

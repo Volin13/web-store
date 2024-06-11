@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useContext } from 'react';
-import { Col } from 'react-bootstrap';
 import { Context } from '../..';
 import DeviceItem from './DeviceItem';
 import PropTypes from 'prop-types';
@@ -10,14 +9,14 @@ const DeviceList = observer(({ loading }) => {
   const { device } = useContext(Context);
 
   return (
-    <Col md="12" className=" mt-3">
+    <div className=" mt-3 mb-2" style={{ flex: 1 }}>
       {/* Генеруємо 4 плейсхолдерів поки у нас завантажуються дані */}
       {loading ? (
         <ul
           className="d-flex flex-raw flex-wrap justify-content-around"
           style={{ marginTop: '56px' }}
         >
-          {Array.from({ length: 4 }, (_, index) => (
+          {Array.from({ length: device.limit }, (_, index) => (
             <DeviceItem loading={loading} key={index}></DeviceItem>
           ))}
         </ul>
@@ -47,7 +46,7 @@ const DeviceList = observer(({ loading }) => {
           )}
         </>
       )}
-    </Col>
+    </div>
   );
 });
 

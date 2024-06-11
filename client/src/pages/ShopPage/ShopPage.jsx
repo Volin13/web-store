@@ -12,7 +12,7 @@ import FilterBar from '../../components/Bars/FilterBar';
 const Shop = observer(() => {
   const { device } = useContext(Context);
   const [loading, setLoading] = useState(false);
-
+  const contentWidth = document.documentElement.clientWidth;
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -41,7 +41,9 @@ const Shop = observer(() => {
     fetchData();
     device.setSelectedBrand({});
     device.setSelectedType({});
-
+    if (contentWidth > 1439) {
+      device.setLimit(10);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -64,9 +66,11 @@ const Shop = observer(() => {
           <FilterBar loading={loading} />
         </Col>
         <Col md={9}>
-          <BrandBar loading={loading} />
-          <DeviceList loading={loading} />
-          <Pages />
+          <div className="d-flex flex-column">
+            <BrandBar loading={loading} />
+            <DeviceList loading={loading} />
+            <Pages />
+          </div>
         </Col>
       </Row>
     </Container>

@@ -1,13 +1,5 @@
 import { $host, $authHost } from './index';
-import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
-
-const token = localStorage.getItem('token');
-let decodeToken = { id: '' };
-if (token && token !== 'superuser') {
-  decodeToken = jwt_decode(token);
-}
-export const userId = decodeToken.id !== '' ? decodeToken.id : 1;
 
 export const fetchAllComments = async (date = '', page, limit) => {
   try {
@@ -42,11 +34,11 @@ export const fetchDeviceComments = async (deviceId, page, limit) => {
 
 export const createComment = async (deviceId, user, text) => {
   try {
-    if (user) {
+    if (user?.isAuth) {
       const { data } = await $authHost.post('api/comments', {
         params: {
           deviceId: Number(deviceId),
-          userId: userId,
+          userId: user.id,
           text,
         },
       });
@@ -57,12 +49,12 @@ export const createComment = async (deviceId, user, text) => {
     return toast.error(error.response.data.message);
   }
 };
-export const createReply = async (commentId, text) => {
+export const createReply = async (commentId, user, text) => {
   try {
     const { data } = await $authHost.post('api/replies', {
       params: {
         commentId: Number(commentId),
-        userId: userId,
+        userId: user.id,
         text,
       },
     });
@@ -78,7 +70,7 @@ export const editComment = async (commentId, user, text) => {
     if (user) {
       const { data } = await $authHost.patch('api/comments/' + commentId, {
         params: {
-          userId: userId,
+          userId: user.id,
           text,
         },
       });
@@ -89,11 +81,11 @@ export const editComment = async (commentId, user, text) => {
     return toast.error(error.response.data.message);
   }
 };
-export const editReply = async (replyId, text) => {
+export const editReply = async (replyId, user, text) => {
   try {
     const { data } = await $authHost.patch('api/replies/' + replyId, {
       params: {
-        userId: userId,
+        userId: user.id,
         text,
       },
     });
@@ -109,7 +101,7 @@ export const deleteComment = async (commentId, user, text) => {
     if (user) {
       const { data } = await $authHost.delete('api/comments/' + commentId, {
         params: {
-          userId: userId,
+          userId: user.id,
         },
       });
       toast.success(`Коментар ${text} було видалено`);
@@ -120,11 +112,11 @@ export const deleteComment = async (commentId, user, text) => {
     return toast.error(error.response.data.message);
   }
 };
-export const deleteReply = async (replyId, text) => {
+export const deleteReply = async (replyId, user, text) => {
   try {
     const { data } = await $authHost.delete('api/replies/' + replyId, {
       params: {
-        userId: userId,
+        userId: user.id,
       },
     });
     toast.success(`Коментар ${text} було видалено`);

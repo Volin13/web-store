@@ -24,7 +24,6 @@ class RatingController {
       await device.addRating(rating);
       // обчислюю і встановлюю середній рейтинг девайсу
       device.rating = await calculateAverageRating(device);
-      console.log(device.rating);
       await device.save();
 
       return res.json(rating);

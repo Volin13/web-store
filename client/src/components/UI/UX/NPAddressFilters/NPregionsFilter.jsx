@@ -11,7 +11,6 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
 
   // При першому завантаженюю сторінки виконується перевірка
   // на оновлення списку міст НП, який зберігається в локал стореджі
-
   useEffect(() => {
     const fetchData = async () => {
       const storageList = await updateDataOnceAMonth();
@@ -20,7 +19,7 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
     fetchData();
   }, []);
 
-  const hendleInputChange = value => {
+  const handleInputChange = value => {
     if (!value.trim()) {
       setRegionInput('');
     } else {
@@ -45,7 +44,7 @@ const NPregionsFilter = forwardRef(function NPregionsFilter({ formik }, ref) {
           value={regionInput}
           onInput={e => {
             const inputValue = e.target.value;
-            hendleInputChange(inputValue);
+            handleInputChange(inputValue);
             formik.setFieldValue('region', inputValue);
           }}
           onChange={formik.handleChange}

@@ -38,7 +38,6 @@ const Device = () => {
   const navigate = useNavigate();
 
   const containerRef = useRef(null);
-
   const { id } = useParams();
   const { user, basket, device } = useContext(Context);
 
@@ -137,6 +136,7 @@ const Device = () => {
             onClick={() => {
               setShowEditDeviceModal(true);
             }}
+            style={{ display: user.role === 'ADMIN' ? 'flex' : 'none' }}
           >
             <span>Редагувати</span>
             <Image width={30} height={30} src={editDeviceImg} />{' '}

@@ -33,7 +33,7 @@ const changeUserData = async (req, res, next) => {
       };
       const options = {
         resource_type: 'image',
-        public_id: `user_${userId}/${uuidv4()}`,
+        public_id: `users/user_${userId}/${uuidv4()}`,
       };
 
       try {

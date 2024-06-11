@@ -22,6 +22,7 @@ const { ACCESS_SECRET_KEY, BASE_FRONTEND_URL } = process.env;
 const googleCallback = async (req, res) => {
   let email;
   let name;
+  let pictureUrl;
   try {
     const code = req.query.code;
     const { tokens } = await oAuth2Client.getToken(code);
@@ -31,6 +32,7 @@ const googleCallback = async (req, res) => {
       .userinfo.get({ auth: oAuth2Client });
     email = userInfo.data.email;
     name = userInfo.data.name;
+    pictureUrl = userInfo.data.picture;
   } catch (error) {
     console.log(error.message);
     return next(ApiError.unauthorized('Підтвердіть свій Email'));
@@ -53,9 +55,13 @@ const googleCallback = async (req, res) => {
       byGoogle: true,
       googlePassword,
       userDeviceInfo,
+      avatar: pictureUrl,
     });
   } else {
     user.googlePassword = googlePassword;
+    if (!user.avatar) {
+      user.avatar = pictureUrl;
+    }
     await user.save();
   }
   const payload = {

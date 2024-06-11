@@ -4,10 +4,10 @@ module.exports = async function calculateAverageRating(deviceId) {
   try {
     const result = await sequelize.query(
       `SELECT AVG(rate) AS averageRating
-       FROM Ratings
-       WHERE deviceId = :deviceId`,
+       FROM ratings
+       WHERE ratings."deviceId" = :deviceId`,
       {
-        replacements: { deviceId },
+        replacements: { deviceId: deviceId },
         type: sequelize.QueryTypes.SELECT,
       },
     );

@@ -117,13 +117,13 @@ const CommentsModal = observer(({ show, onHide }) => {
     try {
       if (type === 'comment') {
         setLoading(true);
-        await deleteComment(commentId, user.isAuth, formik.values.comment).then(
+        await deleteComment(commentId, user, formik.values.comment).then(
           setShowDeleteModal(false)
         );
       }
       if (type === 'reply') {
         setLoading(true);
-        await deleteReply(commentId, formik.values.reply).then(
+        await deleteReply(commentId, user, formik.values.reply).then(
           setShowDeleteModal(false)
         );
       }

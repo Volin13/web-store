@@ -9,7 +9,7 @@ const googleAuthMiddlware = async (req, res, next) => {
   }
   try {
     const { googleAuthToken } = req.body;
-    console.log(googleAuthToken);
+
     const { email, name, googlePassword } = jwt.verify(
       googleAuthToken,
       ACCESS_SECRET_KEY,
@@ -17,7 +17,6 @@ const googleAuthMiddlware = async (req, res, next) => {
     req.body.email = email;
     req.body.name = name;
     req.body.googlePassword = googlePassword;
-    console.log(email, name, googlePassword);
   } catch (error) {
     console.log(error.message);
     return next(ApiError.badRequest());

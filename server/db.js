@@ -11,10 +11,10 @@ module.exports = new Sequelize(dbName, user, password, {
   dialect: 'postgres',
   host: host,
   port: port,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
+  // dialectOptions: {
+  //   ssl: {
+  //     require: true,
+  //     rejectUnauthorized: false,
+  //   },
+  // },
 });

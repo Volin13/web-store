@@ -1,0 +1,35 @@
+.navBar_mainLogo {
+  transition: all 500ms;
+  color: white;
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+}
+.navBar_mainLogo::after {
+  position: absolute;
+  content: '';
+  height: 2px;
+  background-color: #1cb4e3;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  transition: all 0.3s;
+}
+
+.navBar_mainLogo:hover::after,
+.navBar_mainLogo:focus::after {
+  width: 100%;
+}
+
+.navBar_mainLogo_image {
+  animation: drag 3s linear infinite;
+}
+@keyframes drag {
+  0% {
+    transform: perspective(400px) rotateY(45deg);
+  }
+
+  100% {
+    transform: perspective(400px) rotateY(-45deg);
+  }
+}

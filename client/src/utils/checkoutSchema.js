@@ -9,11 +9,11 @@ export const checkoutSchema = yup.object().shape({
   firstName: yup
     .string()
     .matches(ukrainianRegex, {
-      message: 'Введіть ім&#39;я українською, без спец символів',
+      message: "Введіть ім'я українською, без спец символів",
       excludeEmptyString: true,
     })
     .max(50, 'Максимальна довжина імені 50 символів')
-    .required('Введіть своє ім&#39;я'),
+    .required("Введіть своє ім'я"),
   lastName: yup
     .string()
     .matches(ukrainianRegex, {

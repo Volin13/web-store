@@ -12,21 +12,19 @@ import {
   editReply,
 } from '../../../../http/commentsApi';
 import { toast } from 'react-toastify';
-
 import PropTypes from 'prop-types';
 import MessagesLoading from '../Spinner/MessagesLoading';
 import CommentsList from './CommentsList';
 import CommentPagination from './CommentPagination';
 
-const CommentSection = observer(({ user, id }) => {
-  const [showReplyInput, setShowReplyInput] = useState(false);
+const CommentSection = observer(({ id }) => {
+  const [showReplyInput, setShowReplyInput] = useState(null);
   const [isEdditing, setIsEdditing] = useState(false);
   const [commentsList, setCommentsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const messageInput = useRef(null);
 
-  const { device } = useContext(Context);
-
+  const { device, user } = useContext(Context);
   // Завантажуєм коментарі до девайсу при першому завантаженні сторінки
   useEffect(() => {
     setLoading(true);
@@ -38,34 +36,44 @@ const CommentSection = observer(({ user, id }) => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  //  відправка повідомлення/відповіді + редагування
+  // Відправка повідомлення/відповіді + редагування
   const handleSendMessageClick = async (type, commentId) => {
     if (isEdditing) {
       await editMessage(type, formik.values.messageId);
       setIsEdditing(false);
-    }
-    if (type === 'comment' && !isEdditing) {
+    } else if (type === 'comment') {
       const commentText = formik.values.comment;
-      await createComment(id, user, commentText.trim());
-    }
-    if (type === 'reply' && !isEdditing) {
+      const newComment = await createComment(id, user, commentText.trim());
+      // Перевіряємо, чи є replies масивом, якщо ні - ініціалізуємо порожнім масивом
+      setCommentsList(prevComments => [
+        ...prevComments,
+        { ...newComment, replies: [] },
+      ]);
+    } else if (type === 'reply') {
       const replyText = formik.values.reply;
-      await createReply(commentId, replyText.trim());
-      setShowReplyInput(false);
+      const newReply = await createReply(commentId, user, replyText.trim());
+      // Перевіряємо, чи є replies масивом, якщо ні - ініціалізуємо порожнім масивом
+      setCommentsList(prevComments =>
+        prevComments.map(comment =>
+          comment.id === commentId
+            ? { ...comment, replies: [...(comment.replies || []), newReply] }
+            : comment
+        )
+      );
+      setShowReplyInput(null);
     }
   };
-  // редагую коментар/відповідь
+  // Редагую коментар/відповідь
   const editMessage = async (type, messageId) => {
     if (type === 'comment') {
       await editComment(messageId, user, formik.values.comment);
-    }
-    if (type === 'reply') {
-      await editReply(messageId, formik.values.reply);
-      setShowReplyInput(false);
+    } else if (type === 'reply') {
+      await editReply(messageId, user, formik.values.reply);
+      setShowReplyInput(null);
     }
   };
-  // обробка кліку на кнопку едіт - встановлюю режим редагування, тип і скролю до відповідного інпута
+
+  // Обробка кліку на кнопку едіт - встановлюю режим редагування, тип і скролю до відповідного інпута
   const handleEditClick = (type, text, ref) => {
     formik.setFieldValue(type, text);
     formik.setFieldValue('type', type);
@@ -77,8 +85,9 @@ const CommentSection = observer(({ user, id }) => {
       messageInput?.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
-  // скидаю режим редагування (якшо є) скидаю значення інпуту
-  // (якшо є) встановлюю тип і значення інпута який треба показувати
+
+  // Скидаю режим редагування (якщо є) скидаю значення інпуту
+  // (якщо є) встановлюю тип і значення інпута який треба показувати
   const handleReplyClick = (type, commentId, ref) => {
     setShowReplyInput(commentId);
     formik.setFieldValue('messageId', commentId);
@@ -92,6 +101,7 @@ const CommentSection = observer(({ user, id }) => {
       messageInput?.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
   const formik = useFormik({
     initialValues: {
       comment: '',
@@ -104,24 +114,18 @@ const CommentSection = observer(({ user, id }) => {
       const { type, messageId } = values;
       try {
         setLoading(true);
-        handleSendMessageClick(type, messageId);
+        await handleSendMessageClick(type, messageId);
         setIsEdditing(false);
+        resetForm(true);
       } catch (error) {
         toast.error('При відправці сталась помилка, спробуйте пізніше');
         console.log(error);
       } finally {
-        await fetchDeviceComments(
-          id,
-          device.commentPage,
-          device.commentsLimit
-        ).then(data => {
-          setCommentsList(data.rows);
-          resetForm(true);
-          setLoading(false);
-        });
+        setLoading(false);
       }
     },
   });
+
   const isValid = commentSchema.isValidSync(formik.values);
 
   return (
@@ -159,7 +163,7 @@ const CommentSection = observer(({ user, id }) => {
                 )}
               </Row>
             )}
-            {(formik.values.type === 'comment' || !showReplyInput) && (
+            {(formik.values.type === 'comment' || showReplyInput === null) && (
               <>
                 <Row className="p-3">
                   {loading ? (
@@ -183,7 +187,6 @@ const CommentSection = observer(({ user, id }) => {
                         as="textarea"
                         rows={3}
                       />
-
                       {formik.touched.comment && formik.errors.comment && (
                         <Form.Control.Feedback type="invalid">
                           {formik.errors.comment}
@@ -208,15 +211,14 @@ const CommentSection = observer(({ user, id }) => {
                     <Button
                       style={{ marginLeft: '15px' }}
                       variant="outline-danger"
-                      type="submit"
-                      disabled={!isValid}
+                      type="button"
                       className="p-2"
                       onClick={() => {
                         setIsEdditing(false);
-                        formik.setFieldValue('comment', '');
+                        formik.resetForm();
                       }}
                     >
-                      Відмінити{' '}
+                      Відмінити
                     </Button>
                   )}
                 </div>
@@ -231,7 +233,6 @@ const CommentSection = observer(({ user, id }) => {
 });
 
 CommentSection.propTypes = {
-  user: PropTypes.object,
   id: PropTypes.string,
 };
 

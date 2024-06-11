@@ -8,10 +8,12 @@ import NPcityFilter from '../UI/UX/NPAddressFilters/NPcitiesFilter';
 import { createOrder } from '../../http/ordersApi';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { SHOP_ROUTE } from '../../utils/constants';
+import { CUSTOMERS_ORDERS_ROUTE } from '../../utils/constants';
+import MessagesLoading from '../UI/UX/Spinner/MessagesLoading';
 
 const Checkout = ({ list, total, user, basket }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const terminalInput = useRef(null);
   const regionInput = useRef(null);
@@ -32,16 +34,21 @@ const Checkout = ({ list, total, user, basket }) => {
     },
 
     validationSchema: checkoutSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      createOrder(user, values, list).then(() => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      try {
+        setLoading(true);
+        await createOrder(user, values, list);
         basket.setBasket([]);
         basket.setOrder({});
         sessionStorage.removeItem('basket');
-        navigate(SHOP_ROUTE);
-      });
-
-      setSubmitting(false);
-      resetForm(false);
+        navigate(CUSTOMERS_ORDERS_ROUTE);
+        setSubmitting(false);
+        resetForm(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     },
   });
 
@@ -224,8 +231,14 @@ const Checkout = ({ list, total, user, basket }) => {
           </Card.Body>
         </Card>
         <div className="text-end">
-          <Button variant="info" disabled={!isValid} type="submit">
-            {!isValid ? 'Заповніть ваші дані' : 'Оформити замовлення'}
+          <Button variant="info" disabled={!isValid || loading} type="submit">
+            {loading ? (
+              <MessagesLoading />
+            ) : !isValid ? (
+              'Заповніть ваші дані'
+            ) : (
+              'Оформити замовлення'
+            )}
           </Button>
         </div>
       </Form>
