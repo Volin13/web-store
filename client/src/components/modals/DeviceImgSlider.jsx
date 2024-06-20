@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 import { Carousel, Image, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import useBreakpoint from '../../hooks/useBreakpoint';
 
 const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
   const [index, setIndex] = useState(0);
   const handleSelect = selectedIndex => {
     setIndex(selectedIndex);
   };
-
+  let breakpoint = useBreakpoint();
+  const getImgSize = () => {
+    switch (breakpoint) {
+      case 'xs':
+        return 250;
+      case 'sm':
+        return 450;
+      case 'md':
+        return 550;
+      case 'lg':
+        return 650;
+      case 'xl':
+        return 750;
+      default:
+        return 250;
+    }
+  };
   return (
     <Modal
-      dialogClassName="modal-90h"
-      // size="lg"
+      // dialogClassName="modal-90h"
+      size="lg"
       show={show}
       onHide={onHide}
       centered
@@ -34,7 +51,7 @@ const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
             {deviceImages?.map(item => (
               <Carousel.Item key={item?.id}>
                 <Image
-                  height={250}
+                  height={getImgSize()}
                   src={item?.fileName}
                   style={{
                     objectFit: 'scale-down',

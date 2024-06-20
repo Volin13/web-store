@@ -18,17 +18,18 @@ const authenticate = async (req, res, next) => {
     });
     req.user = superuser;
     next();
-  }
-  try {
-    const { id } = jwt.verify(accessToken, ACCESS_SECRET_KEY);
-    const user = await User.findByPk(id);
-    if (!user || !user.accessToken || user.accessToken !== accessToken) {
-      return next(ApiError.unauthorized('Email або пароль невірний 2'));
+  } else {
+    try {
+      const { id } = jwt.verify(accessToken, ACCESS_SECRET_KEY);
+      const user = await User.findByPk(id);
+      if (!user || !user.accessToken || user.accessToken !== accessToken) {
+        return next(ApiError.unauthorized('Email або пароль невірний 2'));
+      }
+      req.user = user;
+      next();
+    } catch (error) {
+      return next(ApiError.unauthorized('Email або пароль невірний 3'));
     }
-    req.user = user;
-    next();
-  } catch (error) {
-    return next(ApiError.unauthorized('Email або пароль невірний 3'));
   }
 };
 
