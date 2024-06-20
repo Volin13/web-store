@@ -36,6 +36,7 @@ const NavBar = observer(() => {
   const [userMenuVisible, setUserMenuVisible] = useState(false);
   const [basketLength, setBasketLength] = useState(0);
   const [show, setShow] = useState(false);
+  const [role, setRole] = useState('USER');
 
   const { user, basket, device } = useContext(Context);
   const navigate = useNavigate();
@@ -59,6 +60,10 @@ const NavBar = observer(() => {
     setBasketLength(localBasket?.length || basket.basket.length);
   }, [basket.basket.length, localBasket.length]);
 
+  // Встановлюю кількість покупок в кошику залежно від записаного в sessionStorage або в store MobX
+  useEffect(() => {
+    setRole(user.role);
+  }, [user.role]);
   return (
     <>
       <Navbar sticky="top" bg="dark" data-bs-theme="dark">
@@ -161,7 +166,7 @@ const NavBar = observer(() => {
                       Ваші покупки
                     </Button>{' '}
                   </NavLink>
-                  {user?.role === 'ADMIN' && (
+                  {role === 'ADMIN' && (
                     <NavLink to={ADMIN_ROUTE}>
                       <Button
                         variant="outline-dark"

@@ -1,21 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Context } from '..';
 import { authRoutes, publicRoutes } from '../routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NotFoundPage from '../pages/NotFoundPage/NotFound';
+import { observer } from 'mobx-react-lite';
 
-const AppRouter = () => {
+const AppRouter = observer(() => {
   const { user } = useContext(Context);
+  const [isAuth, setIsAuth] = useState('false');
+
   // const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user.isAuth) {
-  //     navigate('/login');
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [user.isAuth]);
+  useEffect(() => {
+    setIsAuth(user.isAuth);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.isAuth]);
 
   return (
     <>
@@ -28,11 +29,11 @@ const AppRouter = () => {
         theme="dark"
       />
       <Routes>
-        {user.isAuth &&
+        {isAuth &&
           authRoutes.map(({ path, Component }) => (
             <Route key={path} path={path} element={<Component />} />
           ))}
-        {!user.isAuth &&
+        {!isAuth &&
           publicRoutes.map(({ path, Component }) => (
             <Route key={path} path={path} element={<Component />} />
           ))}
@@ -40,5 +41,5 @@ const AppRouter = () => {
       </Routes>
     </>
   );
-};
+});
 export default AppRouter;

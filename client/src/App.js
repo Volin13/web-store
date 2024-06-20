@@ -13,8 +13,9 @@ import { getUserData, refreshTokens } from './http/userAPI';
 const App = observer(() => {
   const { user } = useContext(Context);
 
-  const token = localStorage.getItem('refreshToken');
   useEffect(() => {
+    const token = localStorage.getItem('refreshToken');
+    let userIdFromToken = 1;
     if (token) {
       refreshTokens(token).then(data => {
         if (data) {
@@ -22,8 +23,10 @@ const App = observer(() => {
         }
       });
       if (!user.id) {
-        const decodedToken = jwtDecode(token);
-        const userIdFromToken = decodedToken.id;
+        if (token !== 'superuser') {
+          const decodedToken = jwtDecode(token);
+          userIdFromToken = decodedToken.id;
+        }
         getUserData(userIdFromToken).then(data => {
           user.setUserLogin(data?.login);
           user.setAvatar(data?.avatar);

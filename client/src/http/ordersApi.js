@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 export const createOrder = async (user, userData, orderList) => {
   if (user) {
     const token = localStorage.getItem('accessToken');
-    let decodeToken = { id: 1 };
+    let decodeToken = { id: null };
     if (token && token !== 'superuser') {
       decodeToken = jwt_decode(token);
     }

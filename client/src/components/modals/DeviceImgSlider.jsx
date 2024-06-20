@@ -9,7 +9,13 @@ const DeviceImgSlider = ({ show, onHide, deviceImages = [], mainImg = '' }) => {
   };
 
   return (
-    <Modal dialogClassName="modal-90h" show={show} onHide={onHide} centered>
+    <Modal
+      dialogClassName="modal-90h"
+      // size="lg"
+      show={show}
+      onHide={onHide}
+      centered
+    >
       <Modal.Header closeButton></Modal.Header>
       <Modal.Body>
         {deviceImages?.length > 0 ? (

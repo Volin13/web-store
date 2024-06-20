@@ -33,8 +33,10 @@ export const createDevice = async device => {
         'Content-Type': 'multipart/form-data',
       },
     });
+    toast.info('Девайс успішно створено');
     if (data) return data;
   } catch (e) {
+    toast.error(e.response.data.message);
     return console.log(e);
   }
 };
@@ -51,7 +53,7 @@ export const editDevice = async (id, device) => {
 export const createRating = async (deviceId, rate, user) => {
   if (user) {
     const token = localStorage.getItem('accessToken');
-    let decodeToken = { id: 1 };
+    let decodeToken = { id: null };
     if (token && token !== 'superuser') {
       decodeToken = jwt_decode(token);
     }
@@ -65,7 +67,7 @@ export const createRating = async (deviceId, rate, user) => {
       toast.success('Дякую за вашу оцінку');
       return data;
     } catch (e) {
-      return toast.info(e.response.data.message);
+      return toast.error(e.response.data.message);
     }
   }
   toast.info('Будь ласка, спочатку увійдіть в свій аккаунт');

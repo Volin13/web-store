@@ -6,7 +6,7 @@ export default class UserStore {
   _userLogin = '';
   _avatar = '';
   _id = 0;
-  _role = '';
+  _role = 'USER';
   _email = '';
   _refreshToken = '';
   _accessToken = '';

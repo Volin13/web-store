@@ -121,6 +121,7 @@ const Auth = observer(() => {
             user.setUserLogin(userData?.user?.name);
             user.setAvatar(userData?.user?.avatar);
             user.setEmail(userData?.user?.email);
+            user.setRole(userData?.user?.role);
             navigate(SHOP_ROUTE);
           }
         } else {

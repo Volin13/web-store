@@ -278,8 +278,10 @@ const CreateDevice = observer(({ show, onHide }) => {
             </InputGroup.Text>
             <Form.Control
               style={{ height: '38px' }}
-              type="text"
+              type="number"
+              inputMode="decimal"
               name="rating"
+              step="any"
               isInvalid={formik.values.rating && formik.errors.rating}
               value={formik.values.rating}
               onChange={e => {

@@ -16,9 +16,11 @@ const login = async (req, res, next) => {
       accessToken: 'superuser',
       refreshToken: 'superuser',
       user: {
+        id: superuser.id,
         name: superuser.login,
         email: superuser.email,
         avatar: superuser.avatar,
+        role: superuser.role,
       },
     });
     return;
