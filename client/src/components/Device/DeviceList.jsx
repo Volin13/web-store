@@ -12,10 +12,7 @@ const DeviceList = observer(({ loading }) => {
     <div className=" mt-3 mb-2" style={{ flex: 1 }}>
       {/* Генеруємо 4 плейсхолдерів поки у нас завантажуються дані */}
       {loading ? (
-        <ul
-          className="d-flex flex-raw flex-wrap justify-content-around"
-          style={{ marginTop: '56px' }}
-        >
+        <ul className="d-flex flex-raw flex-wrap justify-content-around">
           {Array.from({ length: device.limit }, (_, index) => (
             <DeviceItem loading={loading} key={index}></DeviceItem>
           ))}
