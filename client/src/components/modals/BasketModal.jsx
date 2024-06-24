@@ -22,7 +22,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       if (existingItem) {
         existingItem.count += 1;
       } else {
-        uniqueItems.push({ ...item });
+        uniqueItems.push({ ...item, count: 1 });
       }
     });
 
