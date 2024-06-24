@@ -62,7 +62,6 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   const addItemCount = id => {
     const listItem = list.find(item => item.id === id);
     listItem.count += 1;
-    basket.setBasket(list);
     recalculateTotal(list);
     recalculateAmount(list);
     sessionStorage.setItem('basket', JSON.stringify(list));
@@ -83,7 +82,6 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     }
     recalculateTotal(list);
     recalculateAmount(list);
-    basket.setBasket(list);
 
     sessionStorage.setItem('basket', JSON.stringify(list));
   };
@@ -162,7 +160,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
           onClick={() => {
             navigate(BASKET_ROUTE);
             sessionStorage.setItem('basket', JSON.stringify(list));
-
+            basket.setBasket(list);
             onHide();
           }}
         >
