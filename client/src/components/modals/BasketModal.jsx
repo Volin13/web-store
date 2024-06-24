@@ -22,7 +22,7 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
       if (existingItem) {
         existingItem.count += 1;
       } else {
-        uniqueItems.push({ ...item, count: 1 });
+        uniqueItems.push({ ...item });
       }
     });
 
@@ -58,7 +58,6 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
   };
 
   // Збільшення кількості 1 типу девайсу на 1 одиницю
-
   const addItemCount = id => {
     const listItem = list.find(item => item.id === id);
     listItem.count += 1;
@@ -66,7 +65,6 @@ const BasketModal = observer(({ localBasket, basket, show, onHide }) => {
     recalculateAmount(list);
     sessionStorage.setItem('basket', JSON.stringify(list));
   };
-  console.log(list);
   // Зменшення кількості 1 типу девайсу на 1 одиницю
 
   const reduceItemCount = id => {

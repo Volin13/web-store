@@ -16,7 +16,8 @@ const Basket = observer(() => {
   const basketData = JSON.parse(localBasket);
 
   // Обробка змін кількості девайсів у кошику разом з змінами підрахованої кількості і ціни
-
+  console.log(basketData);
+  console.log(list);
   useEffect(() => {
     const uniqueItems = [];
     if (basketData) {
@@ -25,7 +26,7 @@ const Basket = observer(() => {
         if (existingItem) {
           existingItem.count += 1;
         } else {
-          uniqueItems.push({ ...item, count: 1 });
+          uniqueItems.push({ ...item });
         }
       });
     }
